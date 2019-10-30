@@ -1,22 +1,138 @@
 .App {
+  background-color: white;
+  height: 100vh;
   text-align: center;
+  overflow: hidden;
 }
 
-.App-logo {
-  height: 40vmin;
+.Home {
+  position: absolute;
+  left: 30%;
+  right: 30%;
+  line-height: 30px;
+  font-size: 16px;
+  border-width: 1px;
+  background-color: transparent;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.sidebar {
+  width: 130px;
+  position: fixed;
+  z-index: 1;
+  top: 100px;
+  left: 10px;
+  background: lightsteelblue;
+  overflow-x: hidden;
+  padding: 8px 0;
 }
 
-.App-link {
-  color: #09d3ac;
+.link {
+  color: #fff;
+  font-weight: 800;
+  padding: 20px 30px;
+  color: black;
+  font-size: 20px;
+  text-align: center;
+  text-decoration: none;
+}
+
+.link:hover,
+link:active {
+  background-color: lightblue;
+}
+
+.linkStyle {
+  color: #fff;
+  text-decoration: none;
+}
+.notes {
+  text-align: center;
+  font-family: Open Sans, sans-serif;
+  font-weight: bold;
+  color: black;
+  margin-bottom: 30px;
+}
+
+.form {
+  font-size: 20px;
+  font-weight: bold;
+  text-align: left;
+  display: inline-block;
+}
+
+.inputBox {
+  width: 100%;
+  padding: 6px 10px;
+  border: 2px solid darkslategray;
+  border-radius: 4px;
+}
+
+.input {
+  border: none;
+  width: 100%;
+  border-bottom: 2px solid darkslategray;
+}
+
+.playBotton {
+  background-color: black;
+  color: #fff;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.password {
+  font-family: caption;
+  -webkit-text-security: disc;
+  -moz-text-security: disc;
+  -webkit-text-security: disc;
+}
+
+.buttonDE {
+  background: darkred;
+  color: #fff;
+  border: none;
+  padding: 5px 9px;
+  border-radius: 12px;
+  cursor: pointer;
+  float: right;
+}
+.submitButton {
+  background-color: black;
+  color: #fff;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+/* Position and sizing of burger button */
+.bm-burger-button {
+  position: fixed;
+  width: 50px;
+  height: 50px;
+  left: 36px;
+  top: 36px;
+}
+
+/* Color/shape of close button cross */
+.bm-cross {
+  background: black;
+}
+/* Color/shape of burger icon bars */
+.bm-burger-bars {
+  background: #373a47;
+}
+/* Color/shape of burger icon bars on hover*/
+.bm-burger-bars-hover {
+  background: steelblue;
+}
+.bm-menu {
+  background: lightsteelblue;
+  padding: 2.5em 1.5em 0;
+  font-size: 1.15em;
+}
+
+.errmsg {
+  color: red;
 }

@@ -1,54 +1,58 @@
-import React from 'react';
-import Login from "./Login";
-import Register from "./Register";
+import React, { Component } from "react";
+import Login from "./Pages/Login";
+import Register from "./Pages/Register";
+import Header from "./Pages/Header";
 import axios from "axios";
-import { Link } from "react-router-dom";
 import { BrowserRouter as Router, Route } from "react-router-dom";
-import './App.css';
+import "./App.css";
 
-class App extends React.Component {
+class App extends Component {
+  state = {
+    user: null
+  };
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      user: null
-    };
-  }
-
-  login = (user) => {
+  login = user => {
     this.setState({ user: user });
   };
 
   render() {
     return (
       <Router>
-
-        /* Login component */
-        <Route
-          exact
-          path="/login"
-          render={props => (
-            <React.Fragment>
-              <Login login={this.login} />
-            </React.Fragment>
-          )}
-        />
-
-          /* Register component */
-        <Route
-            exact
-            path="/register"
-            render={props => (
+        <div className="App">
+          <Header />
+          <div className="Home">
+            <Route
+              exact
+              path="/"
+              render={props => (
                 <React.Fragment>
-                    <Register/>
+                  <Login login={this.login} />
                 </React.Fragment>
-            )}
-        />
-
+              )}
+            />
+            <Route
+              exact
+              path="/login"
+              render={props => (
+                <React.Fragment>
+                  <Login login={this.login} />
+                </React.Fragment>
+              )}
+            />
+            <Route
+              exact
+              path="/register"
+              render={props => (
+                <React.Fragment>
+                  <Register />
+                </React.Fragment>
+              )}
+            />
+          </div>
+        </div>
       </Router>
-    )
+    );
   }
-
 }
 
 export default App;
