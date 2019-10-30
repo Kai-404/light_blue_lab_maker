@@ -3,11 +3,12 @@ import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import axios from "axios";
-import "../App.css";
+import "./App.css";
 import Login from "./Login";
 
 class Register extends Component {
 
+    /* States */
     state = {
         username: "",
         email: "",
@@ -16,12 +17,14 @@ class Register extends Component {
         errmsg: ""
     };
 
+    /* Change page to homepage */
     routeChange = () => {
         this.props.history.push("/");
     };
     
     onChange = e => this.setState({ [e.target.name]: e.target.value });
 
+    /* adds user info to database */
     register = (username, email, password) => {
         let data = JSON.stringify({
             username,
@@ -56,6 +59,7 @@ class Register extends Component {
             });
     };
 
+    /* Does error checking, if everything is ok call register function */
     onSubmit = e => {
         e.preventDefault();
         const { username, email, password, password2 } = this.state;

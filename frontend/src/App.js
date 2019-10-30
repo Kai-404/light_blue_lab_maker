@@ -1,6 +1,9 @@
 import React from 'react';
 import Login from "./Login";
-import Login from "./Home";
+import Register from "./Register";
+import axios from "axios";
+import { Link } from "react-router-dom";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 import './App.css';
 
 class App extends React.Component {
@@ -18,16 +21,9 @@ class App extends React.Component {
 
   render() {
     return (
-      <div>
+      <Router>
 
-        <Route
-          exact
-          path="/"
-          render={props => (
-            <Home user={this.state.user} />
-          )}
-        />
-
+        /* Login component */
         <Route
           exact
           path="/login"
@@ -38,7 +34,18 @@ class App extends React.Component {
           )}
         />
 
-      </div>
+          /* Register component */
+        <Route
+            exact
+            path="/register"
+            render={props => (
+                <React.Fragment>
+                    <Register/>
+                </React.Fragment>
+            )}
+        />
+
+      </Router>
     )
   }
 

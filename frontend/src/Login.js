@@ -6,6 +6,7 @@ import './App.css';
 
 class Login extends React.Component {
 
+    /* States */
     constructor(props) {
         super(props);
         this.state = {
@@ -15,15 +16,19 @@ class Login extends React.Component {
         };
     }
 
+    /* Change page to registration page */
     routeRegister = () => {
         this.props.history.push("/register");
     };
 
+    /* Change page to homepage */
     routeHome = () => {
         this.props.history.push("/");
     };
 
     onChange = e => this.setState({ [e.target.name]: e.target.value });
+
+    /* When login button is clicked, retrieve user info from database */
     onSubmit = e => {
         e.preventDefault();
         const { email, password } = this.state;
@@ -37,7 +42,7 @@ class Login extends React.Component {
             })
                 .then(res => {
                     if (res.data != "") {
-                        this.props.login(res.data)
+                        this.props.login(res.data);
                         this.setState({
                             email: "",
                             password: "",
