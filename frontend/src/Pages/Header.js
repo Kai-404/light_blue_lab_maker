@@ -1,8 +1,11 @@
 import React, { Component } from "react";
-import { Nav, Container, Row, Col } from "react-bootstrap";
+import { Nav, Container, Row, Col, Button, ButtonGroup } from "react-bootstrap";
+import { withRouter } from "react-router";
 import { Link } from "react-router-dom";
 import Logo from "../Image/tran_logo.png";
 import Page from "../editor/page.png";
+import UserIcon from "../Image/profileicon.png";
+import LogoutIcon from "../Image/logout.png";
 import "./Header.css";
 import "../App.css";
 
@@ -26,9 +29,24 @@ class Header extends Component {
             </Nav>
           </Col>
   */
+  backToHome = () => {
+    this.props.history.push("/home");
+  };
+
+  backToLogin = () => {
+    this.props.history.push("/login");
+  };
+
   render() {
     return (
       <Container>
+        <div align="right">
+          <ButtonGroup >
+            <button className="IconButton" onClick={this.backToHome}> <img src={UserIcon} className="UserIcon" /> User Name </button>
+            <button className="IconButton" onClick={this.backToLogin}><img src={LogoutIcon} className="UserIcon" /></button>
+          </ButtonGroup>
+        </div>
+
         <Row>
           <Col>
             <Nav justify variant="tabs" defaultActiveKey="/home">
@@ -61,4 +79,4 @@ class Header extends Component {
   }
 }
 
-export default Header;
+export default withRouter(Header);

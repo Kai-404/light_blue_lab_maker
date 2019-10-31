@@ -10,3 +10,15 @@
   height: 100px;
   width: 200px;
 }
+
+.UserIcon {
+  border-radius: 8px;
+  padding: 5px;
+  height: 40px;
+  width: 40px;
+}
+
+.IconButton {
+  background-color: white;
+  border: none;
+}
