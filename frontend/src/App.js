@@ -5,6 +5,8 @@ import Header from "./Pages/Header";
 import HomePage from "./Pages/HomePage";
 import LabsPage from "./Pages/LabsPage";
 import Announcements from "./Pages/Announcements";
+import Discussion from "./Pages/Discussion";
+import Grade from "./Pages/Grade";
 import Makelab from "./Lab/Makelab";
 import Dolab from "./Lab/Dolab";
 import axios from "axios";
@@ -103,6 +105,15 @@ class App extends Component {
             />
             <Route
               exact
+              path="/discussion"
+              render={props => (
+                <React.Fragment>
+                  <Discussion />
+                </React.Fragment>
+              )}
+            />
+            <Route
+              exact
               path="/announcements"
               render={props => (
                 <React.Fragment>
@@ -116,6 +127,15 @@ class App extends Component {
               render={props => (
                 <React.Fragment>
                   <Makelab />
+                </React.Fragment>
+              )}
+            />
+            <Route
+              exact
+              path="/grade"
+              render={props => (
+                <React.Fragment>
+                  <Grade />
                 </React.Fragment>
               )}
             />

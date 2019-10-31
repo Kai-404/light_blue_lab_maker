@@ -49,7 +49,7 @@ class Header extends Component {
                 </Link>
               </Nav.Item>
               <Nav.Item>
-                <Link to="/Grade" className="link">
+                <Link to="/grade" className="link">
                   Grade
                 </Link>
               </Nav.Item>
