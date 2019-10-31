@@ -92,7 +92,7 @@ class Login extends Component {
             className="submitButton"
             onClick={this.routeRegister}
           >
-            New Account
+            Register
           </button>
           {"  "}
           <button

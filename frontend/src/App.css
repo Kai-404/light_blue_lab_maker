@@ -73,15 +73,6 @@ link:active {
   border-bottom: 2px solid darkslategray;
 }
 
-.playBotton {
-  background-color: black;
-  color: #fff;
-  padding: 12px 20px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
 .password {
   font-family: caption;
   -webkit-text-security: disc;
@@ -99,38 +90,12 @@ link:active {
   float: right;
 }
 .submitButton {
-  background-color: black;
+  background-color: #469d93;
   color: #fff;
   padding: 12px 20px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
-}
-/* Position and sizing of burger button */
-.bm-burger-button {
-  position: fixed;
-  width: 50px;
-  height: 50px;
-  left: 36px;
-  top: 36px;
-}
-
-/* Color/shape of close button cross */
-.bm-cross {
-  background: black;
-}
-/* Color/shape of burger icon bars */
-.bm-burger-bars {
-  background: #373a47;
-}
-/* Color/shape of burger icon bars on hover*/
-.bm-burger-bars-hover {
-  background: steelblue;
-}
-.bm-menu {
-  background: lightsteelblue;
-  padding: 2.5em 1.5em 0;
-  font-size: 1.15em;
 }
 
 .errmsg {
