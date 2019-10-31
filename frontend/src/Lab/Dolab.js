@@ -4,6 +4,9 @@ import { Card, CardDeck, Button, ProgressBar } from "react-bootstrap";
 import "../App.css";
 
 class Dolab extends Component {
+  back = () => {
+    this.props.history.push("/labspage");
+  };
   render() {
     let now = 60;
     let progressInstance = <ProgressBar now={now} label={`${now}%`} />;
@@ -38,7 +41,9 @@ class Dolab extends Component {
         <br />
         <Button className="submitButton">Save</Button>
         <Button className="submitButton">Submit</Button>
-        <Button className="submitButton">Cancel</Button>
+        <Button className="submitButton" onClick={this.back}>
+          Cancel
+        </Button>
       </React.Fragment>
     );
   }
