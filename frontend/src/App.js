@@ -16,11 +16,9 @@ class App extends Component {
     showSidebar: false
   };
 
-  /*
   login = user => {
     this.setState({ user: user });
   };
-  */
 
   showbar = val => {
     this.setState({ showSidebar: val });

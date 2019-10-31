@@ -4,6 +4,11 @@ import { Card, ListGroup, Button } from "react-bootstrap";
 import "../App.css";
 
 class HomePage extends Component {
+  showBar = () => {
+    this.props.bar(true);
+    this.props.history.push("/course");
+  };
+
   render() {
     return (
       <ListGroup>
@@ -12,7 +17,7 @@ class HomePage extends Component {
           <Card.Body>
             <Card.Title>Software Engineering</Card.Title>
             <Card.Text>Richard McKenna</Card.Text>
-            <Button variant="primary" href="/course">
+            <Button variant="primary" onClick={this.showBar}>
               Go to the course
             </Button>
           </Card.Body>
@@ -23,7 +28,9 @@ class HomePage extends Component {
           <Card.Body>
             <Card.Title>Course Title</Card.Title>
             <Card.Text>Instructor Name</Card.Text>
-            <Button variant="primary">Go to the course</Button>
+            <Button variant="primary" onClick={this.showBar}>
+              Go to the course
+            </Button>
           </Card.Body>
         </Card>
         <br></br>
