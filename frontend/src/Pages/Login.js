@@ -29,6 +29,9 @@ class Login extends Component {
 
   /* When login button is clicked, retrieve user info from database */
   onSubmit = e => {
+    this.props.login = true;
+    this.props.history.push("/");
+    /*
     e.preventDefault();
     const { email, password } = this.state;
     if (email === "" || password === "") {
@@ -55,7 +58,8 @@ class Login extends Component {
         .catch(err => {
           console.log(err);
         });
-    }
+        
+    }*/
   };
 
   render() {
