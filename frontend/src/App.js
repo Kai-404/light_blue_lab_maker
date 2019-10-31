@@ -38,7 +38,7 @@ class App extends Component {
         <Route
           render={props => (
             <React.Fragment>
-              <Header />
+              <Header bar={this.showbar} />
             </React.Fragment>
           )}
         />

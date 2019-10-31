@@ -31,10 +31,12 @@ class Header extends Component {
   */
   backToHome = () => {
     this.props.history.push("/home");
+    this.props.bar(false);
   };
 
   backToLogin = () => {
     this.props.history.push("/login");
+    this.props.bar(false);
   };
 
   render() {

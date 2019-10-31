@@ -11,20 +11,10 @@ import {
   CardDeck,
   ListGroup
 } from "react-bootstrap";
+import Addtool from "./Addtool";
 import "../App.css";
 
 class Makelab extends Component {
-
-  constructor(props) {
-    super(props);
-    this.state = { showPopup: false };
-  }
-
-  togglePopup() {
-    this.setState({
-      showPopup: !this.state.showPopup
-    });
-  }
   /*
 <Nav className="justify-content-end" activeKey="/home">
           <Nav.Item>
@@ -75,14 +65,7 @@ class Makelab extends Component {
             </Dropdown.Menu>
           </Dropdown>
         </ButtonGroup>
-        <Button className="addtoolButton" onClick={this.togglePopup.bind(this)}>Add Tool</Button>
-        {this.state.showPopup ?
-          <Popup
-            text='Click "Close Button" to hide popup'
-            closePopup={this.togglePopup.bind(this)}
-          />
-          : null
-        }
+        <Addtool />
         <br />
         <CardDeck>
           <Card className="col-md-8">
