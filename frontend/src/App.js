@@ -12,16 +12,22 @@ import "./Pages/Header.css";
 class App extends Component {
   state = {
     user: null,
-    LoginFlag: false
+    showSidebar: false
   };
 
+  /*
   login = user => {
     this.setState({ user: user });
+  };
+  */
+
+  showbar = val => {
+    this.setState({ showSidebar: val });
   };
 
   render() {
     let header = <img src={Logo} className="Header"></img>;
-    if (this.state.LoginFlag) {
+    if (this.state.showSidebar) {
       header = (
         <Route
           render={props => (
@@ -42,7 +48,7 @@ class App extends Component {
               path="/"
               render={props => (
                 <React.Fragment>
-                  <Login login={this.state.LoginFlag} />
+                  <Login login={this.login} />
                 </React.Fragment>
               )}
             />
@@ -51,7 +57,7 @@ class App extends Component {
               path="/login"
               render={props => (
                 <React.Fragment>
-                  <Login login={this.state.LoginFlag} />
+                  <Login login={this.login} />
                 </React.Fragment>
               )}
             />
@@ -60,7 +66,7 @@ class App extends Component {
               path="/home"
               render={props => (
                 <React.Fragment>
-                  <HomePage />
+                  <HomePage bar={this.showbar} />
                 </React.Fragment>
               )}
             />

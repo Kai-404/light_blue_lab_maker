@@ -29,8 +29,7 @@ class Login extends Component {
 
   /* When login button is clicked, retrieve user info from database */
   onSubmit = e => {
-    this.props.login = true;
-    this.props.history.push("/");
+    this.props.history.push("/home");
     /*
     e.preventDefault();
     const { email, password } = this.state;
