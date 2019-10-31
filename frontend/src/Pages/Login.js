@@ -26,7 +26,7 @@ class Login extends Component {
   };
 
   routeResetPassword = () => {
-    this.props.history.push("/resetpassword")
+    this.props.history.push("/resetpassword");
   };
 
   onChange = e => this.setState({ [e.target.name]: e.target.value });
@@ -105,18 +105,18 @@ class Login extends Component {
           <button
             type="button"
             className="submitButton"
-            onClick={this.routeHome}
-          >
-            Cancel
-          </button>
-          <button
-            type="button"
-            className="submitButton"
             onClick={this.routeResetPassword}
           >
             Reset Password
           </button>
-
+          {"  "}
+          <button
+            type="button"
+            className="submitButton"
+            onClick={this.routeHome}
+          >
+            Cancel
+          </button>
         </form>
       </div>
     );

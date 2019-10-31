@@ -78,13 +78,13 @@ class App extends Component {
               )}
             />
             <Route
-                exact
-                path="/resetpassword"
-                render={props=> (
-                    <React.Fragment>
-                        <ResetPassword/>
-                    </React.Fragment>
-                )}
+              exact
+              path="/resetpassword"
+              render={props => (
+                <React.Fragment>
+                  <ResetPassword />
+                </React.Fragment>
+              )}
             />
             <Route
               exact
@@ -137,6 +137,15 @@ class App extends Component {
               render={props => (
                 <React.Fragment>
                   <Makelab />
+                </React.Fragment>
+              )}
+            />
+            <Route
+              exact
+              path="/grade"
+              render={props => (
+                <React.Fragment>
+                  <Grade />
                 </React.Fragment>
               )}
             />
