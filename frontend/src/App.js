@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import Login from "./Pages/Login";
 import Register from "./Pages/Register";
 import Header from "./Pages/Header";
+import HomePage from "./Pages/HomePage";
 import axios from "axios";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import "./App.css";
@@ -36,6 +37,15 @@ class App extends Component {
               render={props => (
                 <React.Fragment>
                   <Login login={this.login} />
+                </React.Fragment>
+              )}
+            />
+            <Route
+              exact
+              path="/home"
+              render={props => (
+                <React.Fragment>
+                  <HomePage />
                 </React.Fragment>
               )}
             />
