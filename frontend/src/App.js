@@ -14,6 +14,7 @@ import { BrowserRouter as Router, Route } from "react-router-dom";
 import Logo from "./Image/tran_logo.png";
 import "./App.css";
 import "./Pages/Header.css";
+import ResetPassword from "./Pages/ResetPassword";
 
 class App extends Component {
   state = {
@@ -77,6 +78,15 @@ class App extends Component {
               )}
             />
             <Route
+                exact
+                path="/resetpassword"
+                render={props=> (
+                    <React.Fragment>
+                        <ResetPassword/>
+                    </React.Fragment>
+                )}
+            />
+            <Route
               exact
               path="/home"
               render={props => (
@@ -127,15 +137,6 @@ class App extends Component {
               render={props => (
                 <React.Fragment>
                   <Makelab />
-                </React.Fragment>
-              )}
-            />
-            <Route
-              exact
-              path="/grade"
-              render={props => (
-                <React.Fragment>
-                  <Grade />
                 </React.Fragment>
               )}
             />
