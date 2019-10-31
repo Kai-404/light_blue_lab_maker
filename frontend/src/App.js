@@ -5,6 +5,7 @@ import Header from "./Pages/Header";
 import HomePage from "./Pages/HomePage";
 import LabsPage from "./Pages/LabsPage";
 import Announcements from "./Pages/Announcements";
+import Dolab from "./Lab/Dolab";
 import axios from "axios";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import Logo from "./Image/tran_logo.png";
@@ -78,6 +79,15 @@ class App extends Component {
               render={props => (
                 <React.Fragment>
                   <LabsPage />
+                </React.Fragment>
+              )}
+            />
+            <Route
+              exact
+              path="/dolab"
+              render={props => (
+                <React.Fragment>
+                  <Dolab />
                 </React.Fragment>
               )}
             />
