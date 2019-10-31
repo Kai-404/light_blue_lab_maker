@@ -3,6 +3,7 @@ import Login from "./Pages/Login";
 import Register from "./Pages/Register";
 import Header from "./Pages/Header";
 import HomePage from "./Pages/HomePage";
+import LabsPage from "./Pages/LabsPage";
 import axios from "axios";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import Logo from "./Image/tran_logo.png";
@@ -67,6 +68,15 @@ class App extends Component {
               render={props => (
                 <React.Fragment>
                   <HomePage bar={this.showbar} />
+                </React.Fragment>
+              )}
+            />
+            <Route
+              exact
+              path="/labspage"
+              render={props => (
+                <React.Fragment>
+                  <LabsPage />
                 </React.Fragment>
               )}
             />
