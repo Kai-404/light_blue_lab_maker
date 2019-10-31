@@ -6,6 +6,7 @@ import HomePage from "./Pages/HomePage";
 import LabsPage from "./Pages/LabsPage";
 import Announcements from "./Pages/Announcements";
 import Makelab from "./Lab/Makelab";
+import Dolab from "./Lab/Dolab";
 import axios from "axios";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import Logo from "./Image/tran_logo.png";
@@ -66,6 +67,15 @@ class App extends Component {
             />
             <Route
               exact
+              path="/register"
+              render={props => (
+                <React.Fragment>
+                  <Register />
+                </React.Fragment>
+              )}
+            />
+            <Route
+              exact
               path="/home"
               render={props => (
                 <React.Fragment>
@@ -79,6 +89,15 @@ class App extends Component {
               render={props => (
                 <React.Fragment>
                   <LabsPage />
+                </React.Fragment>
+              )}
+            />
+            <Route
+              exact
+              path="/dolab"
+              render={props => (
+                <React.Fragment>
+                  <Dolab />
                 </React.Fragment>
               )}
             />

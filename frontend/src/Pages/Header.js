@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import { Nav, Container, Row, Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import Logo from "../Image/tran_logo.png";
+import Page from "../editor/page.png";
 import "./Header.css";
-
 import "../App.css";
 
 class Header extends Component {
@@ -33,16 +33,25 @@ class Header extends Component {
           <Col>
             <Nav justify variant="tabs" defaultActiveKey="/home">
               <Nav.Item>
-                <Link to="/announcements">Announcements </Link>
+                <img src={Page} />
+                <Link to="/announcements" className="link">
+                  Announcements
+                </Link>
               </Nav.Item>
               <Nav.Item>
-                <Link to="/labspage">Lab</Link>
+                <Link to="/labspage" className="link">
+                  Lab
+                </Link>
               </Nav.Item>
               <Nav.Item>
-                <Link to="/discussion">Discussion</Link>
+                <Link to="/discussion" className="link">
+                  Discussion
+                </Link>
               </Nav.Item>
               <Nav.Item>
-                <Link to="/Grade">Grade</Link>
+                <Link to="/Grade" className="link">
+                  Grade
+                </Link>
               </Nav.Item>
             </Nav>
           </Col>
