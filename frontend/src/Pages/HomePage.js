@@ -6,7 +6,7 @@ import "../App.css";
 class HomePage extends Component {
   showBar = () => {
     this.props.bar(true);
-    this.props.history.push("/course");
+    this.props.history.push("/announcements");
   };
 
   render() {

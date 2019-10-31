@@ -66,6 +66,15 @@ class App extends Component {
             />
             <Route
               exact
+              path="/register"
+              render={props => (
+                <React.Fragment>
+                  <Register />
+                </React.Fragment>
+              )}
+            />
+            <Route
+              exact
               path="/home"
               render={props => (
                 <React.Fragment>
