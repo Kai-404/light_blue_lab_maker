@@ -13,7 +13,7 @@ class Dolab extends Component {
     /*<Card.Img variant="top" src="holder.js/100px160" />*/
     return (
       <React.Fragment>
-        <br />
+        <br /> <br />
         <CardDeck>
           <Card className="col-md-8">
             <Card.Body>
