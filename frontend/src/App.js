@@ -26,7 +26,8 @@ class App extends Component {
   };
 
   render() {
-    let header = <img src={Logo} className="Header"></img>;
+    //let header = <img src={Logo} className="Header"></img>;
+    let header = null;
     if (this.state.showSidebar) {
       header = (
         <Route
@@ -41,6 +42,7 @@ class App extends Component {
     return (
       <Router>
         <div className="App">
+          <img src={Logo} className="Header"></img>
           {header}
           <div className="Home">
             <Route
@@ -67,15 +69,6 @@ class App extends Component {
               render={props => (
                 <React.Fragment>
                   <HomePage bar={this.showbar} />
-                </React.Fragment>
-              )}
-            />
-            <Route
-              exact
-              path="/labspage"
-              render={props => (
-                <React.Fragment>
-                  <LabsPage />
                 </React.Fragment>
               )}
             />

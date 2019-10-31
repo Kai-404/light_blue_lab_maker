@@ -33,7 +33,7 @@ class Header extends Component {
           <Col>
             <Nav justify variant="tabs" defaultActiveKey="/home">
               <Nav.Item>
-                <Link to="/assignment">Assignment </Link>
+                <Link to="/announcements">Announcements </Link>
               </Nav.Item>
               <Nav.Item>
                 <Link to="/labspage">Lab</Link>
