@@ -27,7 +27,7 @@ class Dolab extends Component {
               <br />
             </Card.Body>
           </Card>
-          <Card border="primary" className="col-md-2">
+          <Card border="secondary" className="col-md-2">
             <Card.Body>
               <Card.Title>Lab Progress</Card.Title>
               {progressInstance}
