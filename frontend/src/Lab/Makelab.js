@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import Popup from "reactjs-popup";
 import { withRouter } from "react-router";
 import {
   Nav,
@@ -13,6 +14,17 @@ import {
 import "../App.css";
 
 class Makelab extends Component {
+
+  constructor(props) {
+    super(props);
+    this.state = { showPopup: false };
+  }
+
+  togglePopup() {
+    this.setState({
+      showPopup: !this.state.showPopup
+    });
+  }
   /*
 <Nav className="justify-content-end" activeKey="/home">
           <Nav.Item>
@@ -63,7 +75,14 @@ class Makelab extends Component {
             </Dropdown.Menu>
           </Dropdown>
         </ButtonGroup>
-        <Button className="addtoolButton">Add Tool</Button>
+        <Button className="addtoolButton" onClick={this.togglePopup.bind(this)}>Add Tool</Button>
+        {this.state.showPopup ?
+          <Popup
+            text='Click "Close Button" to hide popup'
+            closePopup={this.togglePopup.bind(this)}
+          />
+          : null
+        }
         <br />
         <CardDeck>
           <Card className="col-md-8">
