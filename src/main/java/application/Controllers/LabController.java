@@ -17,11 +17,11 @@ public class LabController {
     @PostMapping("/newlab")
     @ResponseBody
     public void newLab(@RequestBody LabDTO labdto) {
-        System.out.println(labdto.getTitle() + " " + labdto.getAuthor());
         lab = new MakeLab(labdto.getTitle(), labdto.getAuthor());
     }
 
     @PostMapping("/addstage")
+    @ResponseBody
     public Lab addStage() {
         lab.addStage();
         return lab.getLab();
