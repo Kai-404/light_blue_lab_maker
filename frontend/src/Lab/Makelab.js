@@ -13,8 +13,12 @@ import {
 } from "react-bootstrap";
 import Addtool from "./Addtool";
 import "../App.css";
+import axios from "axios";
 
 class Makelab extends Component {
+    state = {
+        lab: null
+    };
   /*
 <Nav className="justify-content-end" activeKey="/home">
           <Nav.Item>
@@ -43,27 +47,23 @@ class Makelab extends Component {
         </Nav>
 */
 
+  addStage() {
+    axios.post("/addstage")
+        .then(res => {
+            this.setState({ lab: res });
+            console.log(this.state.lab);
+        })
+  };
+
   back = () => {
     this.props.history.push("/labspage");
   };
+
   render() {
     return (
       <React.Fragment>
         <br /> <br />
         <ButtonGroup>
-          <Button className="toolButton">Tool 1</Button>
-          <Button className="toolButton">Tool 2</Button>
-          <Button className="toolButton">Tool 3</Button>
-          <Button className="toolButton">Tool 4</Button>
-          <Dropdown className="toolButton" as={ButtonGroup}>
-            <Dropdown.Toggle variant="Secondary">More Tools</Dropdown.Toggle>
-
-            <Dropdown.Menu>
-              <Dropdown.Item href="#/action-1">Tool 4</Dropdown.Item>
-              <Dropdown.Item href="#/action-2">Tool 5</Dropdown.Item>
-              <Dropdown.Item href="#/action-3">Tool 6</Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown>
         </ButtonGroup>
         <Addtool />
         <br />
@@ -84,10 +84,8 @@ class Makelab extends Component {
             <Card.Body>
               <Card.Title>Lab Stages</Card.Title>
               <ListGroup>
-                <ListGroup.Item>Stage 1</ListGroup.Item>
-                <ListGroup.Item>Stage 2</ListGroup.Item>
                 <ListGroup.Item>
-                  <Button className="addtoolButton">Add Stage</Button>
+                  <Button onClick={()=>this.addStage()} className="addtoolButton">Add Stage</Button>
                 </ListGroup.Item>
               </ListGroup>
             </Card.Body>
