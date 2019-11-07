@@ -1,24 +1,22 @@
 import React, { Component } from "react";
+import Popup from "reactjs-popup";
 import { withRouter } from "react-router";
 import {
   Nav,
   Button,
+  ButtonGroup,
   Dropdown,
+  DropdownButton,
   Card,
   CardDeck,
   ListGroup
 } from "react-bootstrap";
+import Addtool from "./Addtool";
 import "../App.css";
 
 class Makelab extends Component {
-  back = () => {
-    this.props.history.push("/labspage");
-  };
-  render() {
-    return (
-      <React.Fragment>
-        <br /> <br />
-        <Nav className="justify-content-end" activeKey="/home">
+  /*
+<Nav className="justify-content-end" activeKey="/home">
           <Nav.Item>
             <Nav.Link eventKey="link-0">Tool 0</Nav.Link>
           </Nav.Item>
@@ -43,6 +41,31 @@ class Makelab extends Component {
 
           <Button> Add Tool</Button>
         </Nav>
+*/
+
+  back = () => {
+    this.props.history.push("/labspage");
+  };
+  render() {
+    return (
+      <React.Fragment>
+        <br /> <br />
+        <ButtonGroup>
+          <Button className="toolButton">Tool 1</Button>
+          <Button className="toolButton">Tool 2</Button>
+          <Button className="toolButton">Tool 3</Button>
+          <Button className="toolButton">Tool 4</Button>
+          <Dropdown className="toolButton" as={ButtonGroup}>
+            <Dropdown.Toggle variant="Secondary">More Tools</Dropdown.Toggle>
+
+            <Dropdown.Menu>
+              <Dropdown.Item href="#/action-1">Tool 4</Dropdown.Item>
+              <Dropdown.Item href="#/action-2">Tool 5</Dropdown.Item>
+              <Dropdown.Item href="#/action-3">Tool 6</Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+        </ButtonGroup>
+        <Addtool />
         <br />
         <CardDeck>
           <Card className="col-md-8">
@@ -57,14 +80,14 @@ class Makelab extends Component {
               <br />
             </Card.Body>
           </Card>
-          <Card border="primary" className="col-md-3">
+          <Card border="secondary" className="col-md-3">
             <Card.Body>
               <Card.Title>Lab Stages</Card.Title>
               <ListGroup>
                 <ListGroup.Item>Stage 1</ListGroup.Item>
                 <ListGroup.Item>Stage 2</ListGroup.Item>
                 <ListGroup.Item>
-                  <Button>Add Stage</Button>
+                  <Button className="addtoolButton">Add Stage</Button>
                 </ListGroup.Item>
               </ListGroup>
             </Card.Body>

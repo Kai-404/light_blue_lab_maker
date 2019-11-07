@@ -25,6 +25,10 @@ class Login extends Component {
     this.props.history.push("/");
   };
 
+  routeResetPassword = () => {
+    this.props.history.push("/resetpassword");
+  };
+
   onChange = e => this.setState({ [e.target.name]: e.target.value });
 
   /* When login button is clicked, retrieve user info from database */
@@ -96,6 +100,14 @@ class Login extends Component {
             onClick={this.routeRegister}
           >
             Register
+          </button>
+          {"  "}
+          <button
+            type="button"
+            className="submitButton"
+            onClick={this.routeResetPassword}
+          >
+            Reset Password
           </button>
           {"  "}
           <button

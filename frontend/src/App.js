@@ -14,6 +14,7 @@ import { BrowserRouter as Router, Route } from "react-router-dom";
 import Logo from "./Image/tran_logo.png";
 import "./App.css";
 import "./Pages/Header.css";
+import ResetPassword from "./Pages/ResetPassword";
 
 class App extends Component {
   state = {
@@ -37,7 +38,7 @@ class App extends Component {
         <Route
           render={props => (
             <React.Fragment>
-              <Header />
+              <Header bar={this.showbar} />
             </React.Fragment>
           )}
         />
@@ -73,6 +74,15 @@ class App extends Component {
               render={props => (
                 <React.Fragment>
                   <Register />
+                </React.Fragment>
+              )}
+            />
+            <Route
+              exact
+              path="/resetpassword"
+              render={props => (
+                <React.Fragment>
+                  <ResetPassword />
                 </React.Fragment>
               )}
             />

@@ -11,29 +11,29 @@ class Discussion extends Component {
           <thead>
             <tr>
               <th>#</th>
+              <th>Date</th>
               <th>Lab Name</th>
               <th>Grade</th>
-              <th>Date</th>
             </tr>
           </thead>
           <tbody>
             <tr>
               <td>1</td>
+              <td>10/30/19</td>
               <td>Lab 1</td>
               <td>89</td>
-              <td>10/30/19</td>
             </tr>
             <tr>
               <td>2</td>
+              <td>10/30/19</td>
               <td>Lab 2</td>
               <td>89</td>
-              <td>10/30/19</td>
             </tr>
             <tr>
               <td>3</td>
+              <td>10/30/19</td>
               <td>Lab 3</td>
               <td>89</td>
-              <td>10/30/19</td>
             </tr>
           </tbody>
         </Table>

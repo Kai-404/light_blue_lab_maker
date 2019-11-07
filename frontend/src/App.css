@@ -96,6 +96,29 @@ link:active {
   cursor: pointer;
 }
 
+.toolButton {
+  background-color: white;
+  color: black;
+  padding: 12px 20px;
+  border: none;
+  cursor: pointer;
+}
+.toolButton:hover {
+  background-color: white;
+  color: #469d93;
+}
+.addtoolButton {
+  background: lightblue;
+  color: black;
+  padding: 5px 5px;
+  border: none;
+  text-transform: uppercase;
+}
+
+.addtoolButton:hover {
+  background-color: #469d93;
+}
+
 .errmsg {
   color: red;
 }
