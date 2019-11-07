@@ -1,64 +1,68 @@
 import React, { Component } from "react";
-import { Nav, Container, Row, Col } from "react-bootstrap";
+import {
+  Nav,
+  Navbar,
+  Container,
+  Row,
+  Col,
+  Button,
+  ButtonGroup
+} from "react-bootstrap";
+import { LinkContainer } from "react-router-bootstrap";
+import { withRouter } from "react-router";
 import { Link } from "react-router-dom";
 import Logo from "../Image/tran_logo.png";
 import Page from "../editor/page.png";
+import UserIcon from "../Image/profileicon.png";
+import LogoutIcon from "../Image/logout.png";
 import "./Header.css";
 import "../App.css";
 
 class Header extends Component {
-  /*
-<Col>
-            <img src={Logo} className="LogoIcon"></img>
-            <Nav defaultActiveKey="/home" className="flex-column">
-              <Nav.Item>
-                <Link to="/assignment">Assignment </Link>
-              </Nav.Item>
-              <Nav.Item>
-                <Link to="/labspage">Lab</Link>
-              </Nav.Item>
-              <Nav.Item>
-                <Link to="/discussion">Discussion</Link>
-              </Nav.Item>
-              <Nav.Item>
-                <Link to="/Grade">Grade</Link>
-              </Nav.Item>
-            </Nav>
-          </Col>
-  */
+  showBar = () => {
+    this.props.bar(false);
+  };
+
   render() {
     return (
-      <Container>
-        <Row>
-          <Col>
-            <Nav justify variant="tabs" defaultActiveKey="/home">
-              <Nav.Item>
-                <img src={Page} />
-                <Link to="/announcements" className="link">
-                  Announcements
-                </Link>
-              </Nav.Item>
-              <Nav.Item>
-                <Link to="/labspage" className="link">
-                  Lab
-                </Link>
-              </Nav.Item>
-              <Nav.Item>
-                <Link to="/discussion" className="link">
-                  Discussion
-                </Link>
-              </Nav.Item>
-              <Nav.Item>
-                <Link to="/grade" className="link">
-                  Grade
-                </Link>
-              </Nav.Item>
-            </Nav>
-          </Col>
-        </Row>
-      </Container>
+      <Navbar bg="lg" expand="lg">
+        <Navbar.Brand>
+          <img src={Logo} className="LogoIcon" />
+          Lab Maker
+        </Navbar.Brand>
+        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Navbar.Collapse id="basic-navbar-nav">
+          <Nav className="mr-auto">
+            <LinkContainer to="/announcements">
+              <Nav.Link>Announcements</Nav.Link>
+            </LinkContainer>
+            <LinkContainer to="/labspage">
+              <Nav.Link>Lab</Nav.Link>
+            </LinkContainer>
+            <LinkContainer to="/discussion">
+              <Nav.Link>Discussion</Nav.Link>
+            </LinkContainer>
+            <LinkContainer to="/grade">
+              <Nav.Link>Grade</Nav.Link>
+            </LinkContainer>
+          </Nav>
+        </Navbar.Collapse>
+        <ButtonGroup>
+          <LinkContainer to="/home">
+            <button className="IconButton" onClick={this.showBar}>
+              {" "}
+              <img src={UserIcon} className="UserIcon" /> User Name{" "}
+            </button>
+          </LinkContainer>
+          <LinkContainer to="/">
+            <button className="IconButton" onClick={this.showBar}>
+              <img src={LogoutIcon} className="UserIcon" />
+            </button>
+          </LinkContainer>
+        </ButtonGroup>
+      </Navbar>
     );
   }
 }
 
-export default Header;
+export default withRouter(Header);

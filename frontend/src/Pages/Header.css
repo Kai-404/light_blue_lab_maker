@@ -7,6 +7,18 @@
 .LogoIcon {
   border-radius: 8px;
   padding: 5px;
-  height: 100px;
-  width: 200px;
+  height: 50px;
+  width: 100px;
+}
+
+.UserIcon {
+  border-radius: 8px;
+  padding: 5px;
+  height: 40px;
+  width: 40px;
+}
+
+.IconButton {
+  background-color: transparent;
+  border: none;
 }
