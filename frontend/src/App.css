@@ -14,15 +14,9 @@
   background-color: transparent;
 }
 
-.sidebar {
-  width: 130px;
-  position: fixed;
-  z-index: 1;
-  top: 100px;
-  left: 10px;
-  background: lightsteelblue;
-  overflow-x: hidden;
-  padding: 8px 0;
+.sidenav {
+  background: lightgrey;
+  background-color: lightgrey;
 }
 
 .link {

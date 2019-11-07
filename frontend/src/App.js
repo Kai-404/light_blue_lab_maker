@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import Login from "./Pages/Login";
 import Register from "./Pages/Register";
-import Header from "./Pages/Header";
+import Header from "./Layout/Header";
+import Sidebar from "./Layout/Sidebar";
 import HomePage from "./Pages/HomePage";
 import LabsPage from "./Pages/LabsPage";
 import Announcements from "./Pages/Announcements";
@@ -13,13 +14,13 @@ import axios from "axios";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import Logo from "./Image/tran_logo.png";
 import "./App.css";
-import "./Pages/Header.css";
+import "./Layout/Header.css";
 import ResetPassword from "./Pages/ResetPassword";
 
 class App extends Component {
   state = {
     user: null,
-    showSidebar: false
+    showSidebar: true
   };
 
   login = user => {
@@ -34,13 +35,22 @@ class App extends Component {
     let header = <img src={Logo} className="Header"></img>;
     if (this.state.showSidebar) {
       header = (
-        <Route
-          render={props => (
-            <React.Fragment>
-              <Header bar={this.showbar} />
-            </React.Fragment>
-          )}
-        />
+        <React.Fragment>
+          <Route
+            render={props => (
+              <React.Fragment>
+                <Header bar={this.showbar} />
+              </React.Fragment>
+            )}
+          />
+          <Route
+            render={props => (
+              <React.Fragment>
+                <Sidebar bar={this.showbar} />
+              </React.Fragment>
+            )}
+          />
+        </React.Fragment>
       );
     }
     return (

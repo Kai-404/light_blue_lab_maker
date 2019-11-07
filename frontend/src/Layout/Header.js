@@ -16,7 +16,6 @@ import Page from "../editor/page.png";
 import UserIcon from "../Image/profileicon.png";
 import LogoutIcon from "../Image/logout.png";
 import "./Header.css";
-import "../App.css";
 
 class Header extends Component {
   showBar = () => {
@@ -25,7 +24,7 @@ class Header extends Component {
 
   render() {
     return (
-      <Navbar bg="lg" expand="lg">
+      <Navbar bg="light" expand="lg">
         <Navbar.Brand>
           <img src={Logo} className="LogoIcon" />
           Lab Maker
