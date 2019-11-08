@@ -10,9 +10,8 @@ class LabsPage extends Component {
   };
 
   makeLab = () => {
-    axios
-      .post("/newlab", { title: "temp_title", author: "temp_author" })
-      .then(this.props.history.push("/makelab"));
+      axios.post("/newlab", {title: "temp_title", author: "temp_author"})
+          .then(res => {this.props.history.push("/makelab")});
   };
 
   render() {

@@ -36,7 +36,15 @@ class Makelab extends Component {
     this.props.history.push("/labspage");
   };
 
-  render() {
+  componentDidMount() {
+      axios.get("/getlab")
+          .then(res => {
+              console.log(res.data);
+              this.setState({stageList: res.data.stageList});
+          });
+  }
+
+    render() {
     return (
       <React.Fragment>
         <ButtonGroup>
@@ -69,6 +77,7 @@ class Makelab extends Component {
             <Card.Body>
               <Card.Title>Lab Stages</Card.Title>
               <ListGroup>
+
                 {this.state.lab.stageList.map((stage, i) => (
                   <ListGroup.Item>{stage.stageNum}</ListGroup.Item>
                 ))}
