@@ -52,7 +52,6 @@ class Header extends Component {
           </ButtonGroup>
         </Navbar>
         <br />
-        <br />
       </React.Fragment>
     );
   }

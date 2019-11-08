@@ -16,11 +16,11 @@ import "../App.css";
 import axios from "axios";
 
 class Makelab extends Component {
-    state = {
-        lab: {
-            stageList: []
-        }
-    };
+  state = {
+    lab: {
+      stageList: []
+    }
+  };
   /*
 <Nav className="justify-content-end" activeKey="/home">
           <Nav.Item>
@@ -50,11 +50,10 @@ class Makelab extends Component {
 */
 
   addStage() {
-    axios.post("/addstage")
-        .then(res => {
-            this.setState({ lab: res.data });
-        })
-  };
+    axios.post("/addstage").then(res => {
+      this.setState({ lab: res.data });
+    });
+  }
 
   back = () => {
     this.props.history.push("/labspage");
@@ -63,8 +62,20 @@ class Makelab extends Component {
   render() {
     return (
       <React.Fragment>
-        <br /> <br />
         <ButtonGroup>
+          <Button className="toolButton">Tool 1</Button>
+          <Button className="toolButton">Tool 2</Button>
+          <Button className="toolButton">Tool 3</Button>
+          <Button className="toolButton">Tool 4</Button>
+          <Dropdown className="toolButton" as={ButtonGroup}>
+            <Dropdown.Toggle variant="Secondary">More Tools</Dropdown.Toggle>
+
+            <Dropdown.Menu>
+              <Dropdown.Item href="#/action-1">Tool 4</Dropdown.Item>
+              <Dropdown.Item href="#/action-2">Tool 5</Dropdown.Item>
+              <Dropdown.Item href="#/action-3">Tool 6</Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
         </ButtonGroup>
         <Addtool />
         <br />
@@ -85,9 +96,16 @@ class Makelab extends Component {
             <Card.Body>
               <Card.Title>Lab Stages</Card.Title>
               <ListGroup>
-                  {this.state.lab.stageList.map((stage, i) => <ListGroup.Item>{stage.stageNum}</ListGroup.Item>)}
+                {this.state.lab.stageList.map((stage, i) => (
+                  <ListGroup.Item>{stage.stageNum}</ListGroup.Item>
+                ))}
                 <ListGroup.Item>
-                  <Button onClick={()=>this.addStage()} className="addtoolButton">Add Stage</Button>
+                  <Button
+                    onClick={() => this.addStage()}
+                    className="addtoolButton"
+                  >
+                    Add Stage
+                  </Button>
                 </ListGroup.Item>
               </ListGroup>
             </Card.Body>
