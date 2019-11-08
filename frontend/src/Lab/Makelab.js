@@ -17,9 +17,7 @@ import axios from "axios";
 
 class Makelab extends Component {
     state = {
-        lab: {
-            stageList: []
-        }
+        stageList: []
     };
   /*
 <Nav className="justify-content-end" activeKey="/home">
@@ -52,7 +50,8 @@ class Makelab extends Component {
   addStage() {
     axios.post("/addstage")
         .then(res => {
-            this.setState({ lab: res.data });
+            console.log(res.data);
+            this.setState({ stageList: res.data.stageList });
         })
   };
 
@@ -60,7 +59,15 @@ class Makelab extends Component {
     this.props.history.push("/labspage");
   };
 
-  render() {
+  componentDidMount() {
+      axios.get("/getlab")
+          .then(res => {
+              console.log(res.data);
+              this.setState({stageList: res.data.stageList});
+          });
+  }
+
+    render() {
     return (
       <React.Fragment>
         <br /> <br />
@@ -85,7 +92,7 @@ class Makelab extends Component {
             <Card.Body>
               <Card.Title>Lab Stages</Card.Title>
               <ListGroup>
-                  {this.state.lab.stageList.map((stage, i) => <ListGroup.Item>{stage.stageNum}</ListGroup.Item>)}
+                  {this.state.stageList.map((stage, i) => <ListGroup.Item>{stage.stageNum}</ListGroup.Item>)}
                 <ListGroup.Item>
                   <Button onClick={()=>this.addStage()} className="addtoolButton">Add Stage</Button>
                 </ListGroup.Item>
