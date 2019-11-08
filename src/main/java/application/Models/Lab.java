@@ -7,13 +7,12 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 
 @Data
 @Getter
 @Document
-import java.util.List;
-
 public class Lab {
     @Id
     private String id;
