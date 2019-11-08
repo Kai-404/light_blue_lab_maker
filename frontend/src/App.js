@@ -32,24 +32,12 @@ class App extends Component {
   };
 
   render() {
-    let header = <img src={Logo} className="Header"></img>;
+    //alt is the attribute specifies an alternate text for an image, if the img cannot be displayed, alt text will be displayed instead
+    let header = <img src={Logo} className="Header" alt={"LOGO"} />;
     if (this.state.showSidebar) {
       header = (
         <React.Fragment>
-          <Route
-            render={props => (
-              <React.Fragment>
-                <Header bar={this.showbar} />
-              </React.Fragment>
-            )}
-          />
-          <Route
-            render={props => (
-              <React.Fragment>
-                <Sidebar bar={this.showbar} />
-              </React.Fragment>
-            )}
-          />
+          <Route render={props => <Header bar={this.showbar} />} />
         </React.Fragment>
       );
     }

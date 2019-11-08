@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router";
+import { BrowserRouter as Router, Route } from "react-router-dom";
+import PageIcon from "../editor/pageicon.png";
 import "../App.css";
+import { LinkContainer } from "react-router-bootstrap";
 import SideNav, {
   Toggle,
   Nav,
@@ -8,43 +11,70 @@ import SideNav, {
   NavIcon,
   NavText
 } from "@trendmicro/react-sidenav";
-
-// Be sure to include styles at some point, probably during your bootstraping
-import "@trendmicro/react-sidenav/dist/react-sidenav.css";
+import "./Sidebar.css";
 
 class Sidebar extends Component {
   showBar = () => {
     this.props.bar(false);
   };
 
-  render() {
-    return (
-      <SideNav className="Styled">
-        <SideNav.Toggle className="sidenav" />
+  /*
+
+        <SideNav>
+        <SideNav.Toggle />
         <SideNav.Nav defaultSelected="home">
           <NavItem eventKey="home">
             <NavIcon>
-              <i className="fa fa-fw fa-home" style={{ fontSize: "1.75em" }} />
+              <img src={PageIcon} className="icon" />
             </NavIcon>
-            <NavText>Home</NavText>
+            <NavText>Announcements</NavText>
           </NavItem>
           <NavItem eventKey="charts">
             <NavIcon>
-              <i
-                className="fa fa-fw fa-line-chart"
-                style={{ fontSize: "1.75em" }}
-              />
+              <img src={PageIcon} className="icon" />
             </NavIcon>
-            <NavText>Charts</NavText>
-            <NavItem eventKey="charts/linechart">
-              <NavText>Line Chart</NavText>
-            </NavItem>
-            <NavItem eventKey="charts/barchart">
-              <NavText>Bar Chart</NavText>
-            </NavItem>
+            <NavText>Lab</NavText>
           </NavItem>
         </SideNav.Nav>
       </SideNav>
+  */
+  render() {
+    return (
+      <Router>
+        <Route
+          render={({ location, history }) => (
+            <React.Fragment>
+              <SideNav
+                onSelect={selected => {
+                  const to = "/" + selected;
+                  if (location.pathname !== to) {
+                    history.push(to);
+                  }
+                }}
+              >
+                <SideNav.Toggle />
+                <SideNav.Nav defaultSelected="home">
+                  <NavItem eventKey="labspage">
+                    <NavIcon>
+                      <img src={PageIcon} className="icon" />
+                    </NavIcon>
+                    <NavText>Lab</NavText>
+                  </NavItem>
+                  <NavItem eventKey="devices">
+                    <NavIcon>
+                      <i
+                        className="fa fa-fw fa-device"
+                        style={{ fontSize: "1.75em" }}
+                      />
+                    </NavIcon>
+                    <NavText>Devices</NavText>
+                  </NavItem>
+                </SideNav.Nav>
+              </SideNav>
+            </React.Fragment>
+          )}
+        />
+      </Router>
     );
   }
 }

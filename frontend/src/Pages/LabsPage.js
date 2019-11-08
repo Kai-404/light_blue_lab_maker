@@ -10,14 +10,14 @@ class LabsPage extends Component {
   };
 
   makeLab = () => {
-      axios.post("/newlab", {title: "temp_title", author: "temp_author"})
-          .then(this.props.history.push("/makelab"));
+    axios
+      .post("/newlab", { title: "temp_title", author: "temp_author" })
+      .then(this.props.history.push("/makelab"));
   };
 
   render() {
     return (
       <React.Fragment>
-        <br /> <br />
         <CardColumns>
           <Card style={{ width: "18rem" }}>
             <Card.Img variant="top" src="holder.js/100px180" />

@@ -6,7 +6,6 @@ class Discussion extends Component {
   render() {
     return (
       <React.Fragment>
-        <br /> <br />
         <Table striped bordered hover>
           <thead>
             <tr>
