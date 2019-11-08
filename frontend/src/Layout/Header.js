@@ -19,7 +19,7 @@ class Header extends Component {
       <React.Fragment>
         <Navbar bg="dark" variant="dark" expand="lg">
           <Navbar.Brand>
-            <img src={Logo} className="LogoIcon" />
+            <img src={Logo} className="LogoIcon" alt="LOGO" />
             Lab Maker
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -42,13 +42,13 @@ class Header extends Component {
           <ButtonGroup>
             <LinkContainer to="/home">
               <button className="IconButton" onClick={this.showBar}>
-                <img src={UserIcon} className="UserIcon" />
+                <img src={UserIcon} className="UserIcon" alt="User" />
                 {UserName}
               </button>
             </LinkContainer>
             <LinkContainer to="/">
               <button className="IconButton" onClick={this.showBar}>
-                <img src={LogoutIcon} className="UserIcon" />
+                <img src={LogoutIcon} className="UserIcon" alt="Logout" />
               </button>
             </LinkContainer>
           </ButtonGroup>

@@ -1,6 +1,5 @@
 package application.Models;
 
-
 import lombok.Data;
 import lombok.Getter;
 
@@ -18,5 +17,4 @@ public class Stage {
     public Stage(int stageNum) {
         this.stageNum = stageNum;
     }
-
 }

@@ -1,12 +1,11 @@
 package application.Models;
 
 
-//import lombok.Data;
-//import lombok.Getter;
-
+import lombok.Data;
+import lombok.Getter;
 import java.util.HashMap;
 
-//@Getter
+@Getter
 public class Tool {
 
     private String id;
@@ -19,5 +18,10 @@ public class Tool {
     public Tool(String name) {
         this.name = name;
     }
-
+  
+     public Tool(String name, String image_name) {
+        this.name = name;
+        this.imageName = image_name;
+        this.propertyList = new HashMap<>();
+    }
 }

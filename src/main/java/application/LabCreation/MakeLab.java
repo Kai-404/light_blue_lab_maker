@@ -14,7 +14,7 @@ public class MakeLab {
     private Lab lab;
 
     public MakeLab (String title, String author) {
-        this.tools = new ArrayList<>();
+        this.tools = new ArrayList<Tool>();
         this.initTools();
         this.lab = new Lab(title, author);
     }
@@ -23,8 +23,12 @@ public class MakeLab {
         return this.lab;
     }
 
-    private void initTools() {
+    public List<Tool> getTools() {
+        return this.tools;
+    }
 
+    private void initTools() {
+        this.tools.add(new Tool("Test_tool"));
     }
 
     public void addStage() {

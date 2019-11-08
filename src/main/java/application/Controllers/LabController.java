@@ -2,6 +2,7 @@ package application.Controllers;
 
 import application.LabCreation.MakeLab;
 import application.Models.Lab;
+import application.Models.Tool;
 import application.Models.User;
 import application.Models.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-
 @CrossOrigin
 @RestController
 public class LabController {
@@ -21,8 +21,16 @@ public class LabController {
 
     @PostMapping("/newlab")
     @ResponseBody
-    public void newLab(@RequestBody LabDTO labdto) {
+    public MakeLab newLab(@RequestBody LabDTO labdto) {
+        System.out.println("1");
         lab = new MakeLab(labdto.getTitle(), labdto.getAuthor());
+        return lab;
+    }
+
+    @GetMapping("/getlab")
+    @ResponseBody
+    public Lab getLab() {
+        return lab.getLab();
     }
 
     @PostMapping("/addstage")

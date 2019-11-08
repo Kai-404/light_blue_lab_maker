@@ -14,6 +14,7 @@ public class User {
     private String username;
     private String password;
     private String email;
+    private String user_type;
 
     public User() {}
 
@@ -33,5 +34,13 @@ public class User {
         this.username = username;
         this.password = password;
         this.email = email;
+    }
+
+    public User(String id, String username, String password, String email, String user_type) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.user_type = user_type;
     }
 }
