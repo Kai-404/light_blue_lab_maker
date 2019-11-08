@@ -1,13 +1,12 @@
 package application.Controllers;
 
-        import application.Models.User;
-        import application.Models.UserRepository;
-        import org.springframework.beans.factory.annotation.Autowired;
-        import org.springframework.context.annotation.ComponentScan;
-        import org.springframework.web.bind.annotation.*;
+import application.Models.User;
+import application.Models.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@ComponentScan("gameplay")
 public class UserController {
 
     @Autowired

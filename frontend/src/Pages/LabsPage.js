@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { withRouter } from "react-router";
 import { Card, CardColumns, Button } from "react-bootstrap";
 import "../App.css";
+import axios from "axios";
 
 class LabsPage extends Component {
   dolab = () => {
@@ -9,13 +10,13 @@ class LabsPage extends Component {
   };
 
   makeLab = () => {
-    this.props.history.push("/makelab");
+      axios.post("/newlab", {title: "temp_title", author: "temp_author"})
+          .then(res => {this.props.history.push("/makelab")});
   };
 
   render() {
     return (
       <React.Fragment>
-        <br /> <br />
         <CardColumns>
           <Card style={{ width: "18rem" }}>
             <Card.Img variant="top" src="holder.js/100px180" />

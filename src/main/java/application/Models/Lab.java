@@ -8,23 +8,33 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+
 @Data
 @Getter
 @Document
+import java.util.List;
+
 public class Lab {
     @Id
     private String id;
     private String title;
     private String author;
-    private boolean is_published;
-    private HashMap<String, Integer> lab_progress;
-    private ArrayList<Stage> stage_list;
+    private boolean isPublished;
+    private List<Stage> stageList;
+    private HashMap<String,Integer> labProgress;
+
+    public Lab() {}
 
     public Lab(String title, String author) {
         this.title = title;
         this.author = author;
-        this.is_published = false;
-        this.lab_progress = new HashMap<>();
-        this.stage_list = new ArrayList<>();
+        this.isPublished = false;
+        this.stageList = new ArrayList<Stage>();
+        this.labProgress = new HashMap<String,Integer>();
+    }
+
+
+    public void addStage() {
+        this.stageList.add(new Stage(this.stageList.size()));
     }
 }
