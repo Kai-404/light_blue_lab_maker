@@ -3,7 +3,6 @@ import Popup from "reactjs-popup";
 import { Button } from "react-bootstrap";
 import "../App.css";
 import {ListGroup} from "react-bootstrap";
-import { Button} from 'react-bootstrap';
 import axios from "axios";
 
 class Addtool extends Component {
