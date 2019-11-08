@@ -17,7 +17,6 @@ class LabsPage extends Component {
   render() {
     return (
       <React.Fragment>
-        <br /> <br />
         <CardColumns>
           <Card style={{ width: "18rem" }}>
             <Card.Img variant="top" src="holder.js/100px180" />

@@ -1,6 +1,11 @@
 import React, { Component } from "react";
 import Popup from "reactjs-popup";
 import { withRouter } from "react-router";
+import { BrowserRouter as Router, Route } from "react-router-dom";
+import Sidebar from "../Layout/Sidebar";
+import Beaker from "../Image/beaker.png";
+import Burner from "../Image/burner.png";
+import pH from "../Image/ph.png";
 import {
   Nav,
   Button,
@@ -16,44 +21,16 @@ import "../App.css";
 import axios from "axios";
 
 class Makelab extends Component {
-    state = {
-        stageList: []
-    };
-  /*
-<Nav className="justify-content-end" activeKey="/home">
-          <Nav.Item>
-            <Nav.Link eventKey="link-0">Tool 0</Nav.Link>
-          </Nav.Item>
-          <Nav.Item>
-            <Nav.Link eventKey="link-1">Tool 1</Nav.Link>
-          </Nav.Item>
-          <Nav.Item>
-            <Nav.Link eventKey="link-2">Tool 2</Nav.Link>
-          </Nav.Item>
-          <Nav.Item>
-            <Nav.Link eventKey="link-3">Tool 3</Nav.Link>
-          </Nav.Item>
-          <Dropdown>
-            <Dropdown.Toggle variant="Secondary">More Tools</Dropdown.Toggle>
-
-            <Dropdown.Menu>
-              <Dropdown.Item href="#/action-1">Tool 4</Dropdown.Item>
-              <Dropdown.Item href="#/action-2">Tool 5</Dropdown.Item>
-              <Dropdown.Item href="#/action-3">Tool 6</Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown>
-
-          <Button> Add Tool</Button>
-        </Nav>
-*/
-
-  addStage() {
-    axios.post("/addstage")
-        .then(res => {
-            console.log(res.data);
-            this.setState({ stageList: res.data.stageList });
-        })
+  state = {
+    lab: {
+      stageList: []
+    }
   };
+  addStage() {
+    axios.post("/addstage").then(res => {
+      this.setState({ lab: res.data });
+    });
+  }
 
   back = () => {
     this.props.history.push("/labspage");
@@ -70,42 +47,60 @@ class Makelab extends Component {
     render() {
     return (
       <React.Fragment>
-        <br /> <br />
         <ButtonGroup>
+          <Button className="toolButton">
+            <img src={Beaker} className="UserIcon" alt="Beaker" />
+          </Button>
+          <Button className="toolButton">
+            <img src={Burner} className="UserIcon" alt="Burner" />
+          </Button>
+          <Button className="toolButton">
+            <img src={pH} className="UserIcon" alt="pH paper" />
+          </Button>
+          <Dropdown className="toolButton" as={ButtonGroup}>
+            <Dropdown.Toggle variant="Secondary">More</Dropdown.Toggle>
+            <Dropdown.Menu>
+              <Dropdown.Item>Tool 1</Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+          <Addtool />
         </ButtonGroup>
-        <Addtool />
         <br />
         <CardDeck>
           <Card className="col-md-8">
             <Card.Body>
               <Card.Title as="h1">Lab Name</Card.Title>
               <Card.Text>Professor will make lab here</Card.Text>
-              <br />
-              <br />
-              <br />
-              <br />
-              <br />
-              <br />
             </Card.Body>
           </Card>
-          <Card border="secondary" className="col-md-3">
+          <Card border="secondary" className="col-md-2">
             <Card.Body>
               <Card.Title>Lab Stages</Card.Title>
               <ListGroup>
-                  {this.state.stageList.map((stage, i) => <ListGroup.Item>{stage.stageNum}</ListGroup.Item>)}
+
+                {this.state.lab.stageList.map((stage, i) => (
+                  <ListGroup.Item>{stage.stageNum}</ListGroup.Item>
+                ))}
                 <ListGroup.Item>
-                  <Button onClick={()=>this.addStage()} className="addtoolButton">Add Stage</Button>
+                  <Button
+                    onClick={() => this.addStage()}
+                    className="addtoolButton"
+                  >
+                    New
+                  </Button>
                 </ListGroup.Item>
               </ListGroup>
             </Card.Body>
           </Card>
         </CardDeck>
         <br />
-        <Button className="submitButton">Save</Button>
-        <Button className="submitButton">Submit</Button>
-        <Button className="submitButton" onClick={this.back}>
-          Cancel
-        </Button>
+        <ButtonGroup>
+          <Button className="submitButton">Save</Button>
+          <Button className="submitButton">Submit</Button>
+          <Button className="submitButton" onClick={this.back}>
+            Cancel
+          </Button>
+        </ButtonGroup>
       </React.Fragment>
     );
   }

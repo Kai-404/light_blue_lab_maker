@@ -6,23 +6,27 @@
 
 .Home {
   position: absolute;
-  left: 20%;
-  right: 20%;
+  left: 10%;
+  right: 5%;
   line-height: 30px;
   font-size: 16px;
   border-width: 1px;
   background-color: transparent;
 }
 
-.sidebar {
-  width: 130px;
-  position: fixed;
-  z-index: 1;
-  top: 100px;
-  left: 10px;
-  background: lightsteelblue;
-  overflow-x: hidden;
-  padding: 8px 0;
+.sidenav {
+  position: absolute;
+  top: 76px;
+  bottom: 0;
+  left: 0;
+  z-index: 1006;
+  min-width: 50px;
+  background: #f7f8f9;
+  -webkit-transition: min-width 0.2s;
+  -moz-transition: min-width 0.2s;
+  -o-transition: min-width 0.2s;
+  -ms-transition: min-width 0.2s;
+  transition: min-width 0.2s;
 }
 
 .link {
@@ -99,13 +103,14 @@ link:active {
 .toolButton {
   background-color: white;
   color: black;
-  padding: 12px 20px;
+  padding: 0px 10px;
   border: none;
   cursor: pointer;
 }
 .toolButton:hover {
-  background-color: white;
+  background-color: lightblue;
   color: #469d93;
+  border: none;
 }
 .addtoolButton {
   background: lightblue;
