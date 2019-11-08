@@ -1,6 +1,5 @@
 package application.Models;
 
-
 import lombok.Data;
 import lombok.Getter;
 
@@ -19,5 +18,10 @@ public class Tool {
     public Tool(String name) {
         this.name = name;
     }
-
+  
+     public Tool(String name, String image_name) {
+        this.name = name;
+        this.imageName = image_name;
+        this.propertyList = new HashMap<>();
+    }
 }
