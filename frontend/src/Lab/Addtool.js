@@ -1,12 +1,13 @@
 import React, { Component } from "react";
 import Popup from "reactjs-popup";
+import { Button } from "react-bootstrap";
 import "../App.css";
 
 class Addtool extends Component {
   render() {
     return (
       <Popup
-        trigger={<button className="addtoolButton">Add Tool</button>}
+        trigger={<Button className="addtoolButton">Add Tool</Button>}
         position="center"
       >
         {close => (

@@ -21,34 +21,6 @@ class Makelab extends Component {
       stageList: []
     }
   };
-  /*
-<Nav className="justify-content-end" activeKey="/home">
-          <Nav.Item>
-            <Nav.Link eventKey="link-0">Tool 0</Nav.Link>
-          </Nav.Item>
-          <Nav.Item>
-            <Nav.Link eventKey="link-1">Tool 1</Nav.Link>
-          </Nav.Item>
-          <Nav.Item>
-            <Nav.Link eventKey="link-2">Tool 2</Nav.Link>
-          </Nav.Item>
-          <Nav.Item>
-            <Nav.Link eventKey="link-3">Tool 3</Nav.Link>
-          </Nav.Item>
-          <Dropdown>
-            <Dropdown.Toggle variant="Secondary">More Tools</Dropdown.Toggle>
-
-            <Dropdown.Menu>
-              <Dropdown.Item href="#/action-1">Tool 4</Dropdown.Item>
-              <Dropdown.Item href="#/action-2">Tool 5</Dropdown.Item>
-              <Dropdown.Item href="#/action-3">Tool 6</Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown>
-
-          <Button> Add Tool</Button>
-        </Nav>
-*/
-
   addStage() {
     axios.post("/addstage").then(res => {
       this.setState({ lab: res.data });
@@ -112,11 +84,13 @@ class Makelab extends Component {
           </Card>
         </CardDeck>
         <br />
-        <Button className="submitButton">Save</Button>
-        <Button className="submitButton">Submit</Button>
-        <Button className="submitButton" onClick={this.back}>
-          Cancel
-        </Button>
+        <ButtonGroup>
+          <Button className="submitButton">Save</Button>
+          <Button className="submitButton">Submit</Button>
+          <Button className="submitButton" onClick={this.back}>
+            Cancel
+          </Button>
+        </ButtonGroup>
       </React.Fragment>
     );
   }
