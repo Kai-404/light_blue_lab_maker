@@ -14,30 +14,6 @@ import SideNav, {
 import "./Sidebar.css";
 
 class Sidebar extends Component {
-  showBar = () => {
-    this.props.bar(false);
-  };
-
-  /*
-
-        <SideNav>
-        <SideNav.Toggle />
-        <SideNav.Nav defaultSelected="home">
-          <NavItem eventKey="home">
-            <NavIcon>
-              <img src={PageIcon} className="icon" />
-            </NavIcon>
-            <NavText>Announcements</NavText>
-          </NavItem>
-          <NavItem eventKey="charts">
-            <NavIcon>
-              <img src={PageIcon} className="icon" />
-            </NavIcon>
-            <NavText>Lab</NavText>
-          </NavItem>
-        </SideNav.Nav>
-      </SideNav>
-  */
   render() {
     return (
       <Router>

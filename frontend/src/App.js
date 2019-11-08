@@ -20,7 +20,7 @@ import ResetPassword from "./Pages/ResetPassword";
 class App extends Component {
   state = {
     user: null,
-    showSidebar: true
+    showTopbar: true
   };
 
   login = user => {
@@ -28,17 +28,16 @@ class App extends Component {
   };
 
   showbar = val => {
-    this.setState({ showSidebar: val });
+    this.setState({ showTopbar: val });
   };
 
   render() {
     //alt is the attribute specifies an alternate text for an image, if the img cannot be displayed, alt text will be displayed instead
     let header = <img src={Logo} className="Header" alt={"LB"} />;
-    if (this.state.showSidebar) {
+    if (this.state.showTopbar) {
       header = (
         <React.Fragment>
           <Route render={props => <Header bar={this.showbar} />} />
-          <Route render={props => <Sidebar bar={this.showbar} />} />
         </React.Fragment>
       );
     }

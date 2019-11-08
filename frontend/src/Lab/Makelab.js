@@ -1,6 +1,11 @@
 import React, { Component } from "react";
 import Popup from "reactjs-popup";
 import { withRouter } from "react-router";
+import { BrowserRouter as Router, Route } from "react-router-dom";
+import Sidebar from "../Layout/Sidebar";
+import Beaker from "../Image/beaker.png";
+import Burner from "../Image/burner.png";
+import pH from "../Image/ph.png";
 import {
   Nav,
   Button,
@@ -35,36 +40,32 @@ class Makelab extends Component {
     return (
       <React.Fragment>
         <ButtonGroup>
-          <Button className="toolButton">Tool 1</Button>
-          <Button className="toolButton">Tool 2</Button>
-          <Button className="toolButton">Tool 3</Button>
-          <Button className="toolButton">Tool 4</Button>
+          <Button className="toolButton">
+            <img src={Beaker} className="UserIcon" alt="Beaker" />
+          </Button>
+          <Button className="toolButton">
+            <img src={Burner} className="UserIcon" alt="Burner" />
+          </Button>
+          <Button className="toolButton">
+            <img src={pH} className="UserIcon" alt="pH paper" />
+          </Button>
           <Dropdown className="toolButton" as={ButtonGroup}>
-            <Dropdown.Toggle variant="Secondary">More Tools</Dropdown.Toggle>
-
+            <Dropdown.Toggle variant="Secondary">More</Dropdown.Toggle>
             <Dropdown.Menu>
-              <Dropdown.Item href="#/action-1">Tool 4</Dropdown.Item>
-              <Dropdown.Item href="#/action-2">Tool 5</Dropdown.Item>
-              <Dropdown.Item href="#/action-3">Tool 6</Dropdown.Item>
+              <Dropdown.Item>Tool 1</Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
+          <Addtool />
         </ButtonGroup>
-        <Addtool />
         <br />
         <CardDeck>
           <Card className="col-md-8">
             <Card.Body>
               <Card.Title as="h1">Lab Name</Card.Title>
               <Card.Text>Professor will make lab here</Card.Text>
-              <br />
-              <br />
-              <br />
-              <br />
-              <br />
-              <br />
             </Card.Body>
           </Card>
-          <Card border="secondary" className="col-md-3">
+          <Card border="secondary" className="col-md-2">
             <Card.Body>
               <Card.Title>Lab Stages</Card.Title>
               <ListGroup>
@@ -76,7 +77,7 @@ class Makelab extends Component {
                     onClick={() => this.addStage()}
                     className="addtoolButton"
                   >
-                    Add Stage
+                    New
                   </Button>
                 </ListGroup.Item>
               </ListGroup>
