@@ -14,7 +14,10 @@ import {
   DropdownButton,
   Card,
   CardDeck,
-  ListGroup
+  ListGroup,
+  Container,
+  Row,
+  Modal
 } from "react-bootstrap";
 import Addtool from "./Addtool";
 import LabStage from "./LabStage";
@@ -75,7 +78,6 @@ class Makelab extends Component {
 
   componentDidMount() {
     axios.get("/getlab").then(res => {
-      console.log(res.data);
       this.setState({ stageList: res.data.stageList });
     });
   }
@@ -102,45 +104,52 @@ class Makelab extends Component {
           <Addtool addLabTool={this.addLabTool} />
         </ButtonGroup>
         <br />
-
-        <CardDeck>
+        <Row>
           <LabStage />
           <Card border="secondary" className="col-md-2">
             <Card.Body>
               <Card.Title>Lab Stages</Card.Title>
-              <ListGroup>
-                {this.state.lab.stageList.map((stage, i) => (
-                  <ListGroup.Item
-                    action
-                    onClick={() => {
-                      this.setCurrentStage(i);
-                    }}
-                    active={i === this.state.currentStage}
-                  >
-                    {stage.stageNum}
+              <Modal.Body
+                style={{
+                  "max-height": "calc(100vh - 310px)",
+                  "overflow-y": "auto"
+                }}
+              >
+                <ListGroup>
+                  {this.state.lab.stageList.map((stage, i) => (
+                    <ListGroup.Item
+                      action
+                      onClick={() => {
+                        this.setCurrentStage(i);
+                      }}
+                      active={i === this.state.currentStage}
+                    >
+                      {stage.stageNum}
+                    </ListGroup.Item>
+                  ))}
+                  <ListGroup.Item>
+                    <ButtonGroup vertical>
+                      <Button
+                        onClick={() => this.addStage()}
+                        className="addtoolButton"
+                      >
+                        New
+                      </Button>
+                      <Button
+                        className="addtoolButton"
+                        onClick={() => this.deleteStage()}
+                        disabled={this.state.currentStage === -1}
+                      >
+                        Delete
+                      </Button>
+                    </ButtonGroup>
                   </ListGroup.Item>
-                ))}
-                <ListGroup.Item>
-                  <ButtonGroup vertical>
-                    <Button
-                      onClick={() => this.addStage()}
-                      className="addtoolButton"
-                    >
-                      New
-                    </Button>
-                    <Button
-                      className="addtoolButton"
-                      onClick={() => this.deleteStage()}
-                      disabled={this.state.currentStage === -1}
-                    >
-                      Delete
-                    </Button>
-                  </ButtonGroup>
-                </ListGroup.Item>
-              </ListGroup>
+                </ListGroup>
+              </Modal.Body>
             </Card.Body>
           </Card>
-        </CardDeck>
+        </Row>
+
         <br />
         <ButtonGroup>
           <Button className="submitButton">Save</Button>

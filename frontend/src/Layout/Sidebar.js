@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router";
 import { BrowserRouter as Router, Route } from "react-router-dom";
-import PageIcon from "../editor/pageicon.png";
 import "../App.css";
 import { LinkContainer } from "react-router-bootstrap";
 import SideNav, {
@@ -31,9 +30,7 @@ class Sidebar extends Component {
                 <SideNav.Toggle />
                 <SideNav.Nav defaultSelected="home">
                   <NavItem eventKey="labspage">
-                    <NavIcon>
-                      <img src={PageIcon} className="icon" />
-                    </NavIcon>
+                    <NavIcon></NavIcon>
                     <NavText>Lab</NavText>
                   </NavItem>
                   <NavItem eventKey="devices">

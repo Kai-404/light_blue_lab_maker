@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Form } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
@@ -13,6 +14,7 @@ class Register extends Component {
     email: "",
     password: "",
     password2: "",
+    UserType: "",
     errmsg: ""
   };
 
@@ -24,16 +26,23 @@ class Register extends Component {
   onChange = e => this.setState({ [e.target.name]: e.target.value });
 
   /* adds user info to database */
-  register = (username, email, password) => {
+  register = (username, email, password, UserType) => {
+    console.log(password.length);
     let data = JSON.stringify({
       username,
       email,
-      password
+      password,
+      UserType
     });
     axios
       .post("/register", data, {
         headers: { "Content-Type": "application/json;charset=UTF-8" },
-        params: { username: username, email: email, password: password }
+        params: {
+          username: username,
+          email: email,
+          password: password,
+          UserType: UserType
+        }
       })
       .then(res => {
         if (res.data === 0) {
@@ -53,7 +62,8 @@ class Register extends Component {
             username: "",
             email: "",
             password: "",
-            password2: ""
+            password2: "",
+            UserType: ""
           });
           this.props.history.push("/");
         }
@@ -67,8 +77,14 @@ class Register extends Component {
   /* Does error checking, if everything is ok call register function */
   onSubmit = e => {
     e.preventDefault();
-    const { username, email, password, password2 } = this.state;
-    if (username === "" || email == "" || password === "" || password2 === "") {
+    const { username, email, password, password2, UserType } = this.state;
+    if (
+      username === "" ||
+      email == "" ||
+      password === "" ||
+      password2 === "" ||
+      UserType === ""
+    ) {
       this.setState({ errmsg: "fill in all fields" });
     } else if (/\S+@\S+\.\S+/.test(email) == false) {
       this.setState({ errmsg: "invalid email" });
@@ -81,7 +97,7 @@ class Register extends Component {
         errmsg: "password needs to be at least 8 characters long"
       });
     }
-    this.register(username, email, password);
+    this.register(username, email, password, UserType);
   };
 
   render() {
@@ -89,6 +105,24 @@ class Register extends Component {
       <div>
         <p className="errmsg">{this.state.errmsg}</p>
         <form className="form" onSubmit={this.onSubmit}>
+          <Form.Check
+            custom
+            type="radio"
+            label="Student"
+            name="UserType"
+            id="Stu"
+            value="Student"
+            onChange={this.onChange}
+          />
+          <Form.Check
+            custom
+            type="radio"
+            label="Professor"
+            name="UserType"
+            id="Prof"
+            value="Professor"
+            onChange={this.onChange}
+          />
           User Name:
           <input
             className="input"

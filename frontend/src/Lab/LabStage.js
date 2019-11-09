@@ -1,14 +1,9 @@
 import React, { Component } from "react";
 import Konva from "konva";
 import { Stage, Layer, Star, Text, Image } from "react-konva";
-import Beaker from "../Image/beaker.png";
+import Beaker from "../Image/beakerTool.png";
 import useImage from "use-image";
 import "../App.css";
-
-const ToolImg = Img => {
-  const [image] = useImage(Object.values(Img)[0]);
-  return <Image image={image} draggable />;
-};
 
 class LabStage extends Component {
   handleDragStart = e => {
@@ -23,20 +18,35 @@ class LabStage extends Component {
   };
   handleDragEnd = e => {
     e.target.to({
-      duration: 0.5,
+      duration: 1.0,
       easing: Konva.Easings.ElasticEaseOut,
       scaleX: 1,
       scaleY: 1,
-      shadowOffsetX: 5,
-      shadowOffsetY: 5
+      shadowOffsetX: 0,
+      shadowOffsetY: 0
     });
   };
 
   render() {
-    let w = window.innerWidth - 500;
-    let h = window.innerHeight - 200;
+    let ToolImg = Img => {
+      const [tool] = useImage(Object.values(Img)[0]);
+      return (
+        <Image
+          width={100}
+          height={100}
+          image={tool}
+          draggable
+          onDragStart={this.handleDragStart}
+          onDragEnd={this.handleDragEnd}
+        />
+      );
+    };
     return (
-      <Stage width={w} height={h} className="stage">
+      <Stage
+        width={window.innerWidth - window.innerWidth * 0.3}
+        height={window.innerHeight - 200}
+        className="stage"
+      >
         <Layer>
           <ToolImg Img={Beaker} />
         </Layer>
