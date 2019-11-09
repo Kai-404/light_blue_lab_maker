@@ -17,7 +17,7 @@ class Header extends Component {
 
     return (
       <React.Fragment>
-        <Navbar bg="dark" variant="dark" expand="lg">
+        <Navbar bg="dark" variant="dark">
           <Navbar.Brand>
             <img src={Logo} className="LogoIcon" alt="LOGO" />
             Lab Maker
