@@ -79,17 +79,20 @@ public class Lab {
         return toolWarehouseList;
     }
 
-//    public void updateToolWareHouse(JSONArray toolWarehouseList){
-//
-//        HashMap<String,Boolean> newWreHouse = new HashMap<>();
-//
-//        toolWarehouseList.forEach( e->{
-//
-//
-//        } );
-//
-//
-//    }
+    public void updateToolWareHouse(JSONArray toolWarehouseList){
+
+        HashMap<String,Boolean> newWareHouse = new HashMap<>();
+
+        toolWarehouseList.forEach( e->{
+
+            JSONObject tool = (JSONObject) e;
+            newWareHouse.put( (String)tool.get( "Name" ), tool.get( "Display" ).equals( "true" ) );
+
+        } );
+
+        this.toolWarehouse = newWareHouse;
+
+    }
 
 
 

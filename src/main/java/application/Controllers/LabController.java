@@ -56,20 +56,33 @@ public class LabController {
 
     }
 
-    //adds a tool to the whole lab
-    @PostMapping("/addlabtool")
+//    @GetMapping("/test")
+//    @ResponseBody
+//    public void test(){
+//        getAllTools();
+//        lab.updateToolWareHouse( lab.getToolWarehouse() );
+//    }
+
+    @RequestMapping("/updatetoollist")
     @ResponseBody
-    public Lab addLabTool(@RequestBody String tool) {
-        lab.addLabTool(tool);
-        return lab;
+    public void updateToolList(@RequestParam JSONArray toolList){
+        lab.updateToolWareHouse(toolList);
     }
 
-    //adds a tool to one stage
-    @PostMapping("/addstagetool")
-    @ResponseBody
-    public Lab addStageTool(@RequestBody String tool, @RequestBody Integer currentStage) {
-        lab.addStageTool(tool, currentStage);
-        return lab;
-    }
+//    //adds a tool to the whole lab
+//    @PostMapping("/addlabtool")
+//    @ResponseBody
+//    public Lab addLabTool(@RequestBody String tool) {
+//        lab.addLabTool(tool);
+//        return lab;
+//    }
+//
+//    //adds a tool to one stage
+//    @PostMapping("/addstagetool")
+//    @ResponseBody
+//    public Lab addStageTool(@RequestBody String tool, @RequestBody Integer currentStage) {
+//        lab.addStageTool(tool, currentStage);
+//        return lab;
+//    }
 
 }
