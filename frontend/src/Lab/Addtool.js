@@ -12,7 +12,7 @@ class Addtool extends Component {
   };
 
   componentDidMount() {
-    axios.get("/gettools")
+    axios.get("/getalltools")
         .then(res => {this.setState({tools: res.data})});
   };
 
@@ -24,7 +24,7 @@ class Addtool extends Component {
       >
         {close => (
           <div>
-            {this.state.tools.map((tool) => <Button>{tool.name}</Button>)}
+            {this.state.tools.map((tool) => <Button onClick={() => {this.props.addLabTool(tool)}}>{tool}</Button>)}
             <a className="close" onClick={close}>
               &times;
             </a>

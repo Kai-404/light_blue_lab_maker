@@ -22,15 +22,39 @@ import axios from "axios";
 
 class Makelab extends Component {
   state = {
+    currentStage: -1,
     lab: {
-      stageList: []
+      stageList: [],
+      labTools: []
     }
   };
+
   addStage() {
     axios.post("/addstage").then(res => {
       this.setState({ lab: res.data });
     });
   }
+
+  deleteStage() {
+    axios.post("/deletestage", {currentStage: this.state.currentStage})
+        .then(res => {this.setState({lab: res.data, currentStage: -1})})
+  }
+
+  setCurrentStage(i) {
+    this.setState({currentStage: i})
+  };
+
+  //add tool to whole lab
+  addLabTool = (tool) => {
+    axios.post("/addlabtool", {tool: tool})
+        .then(res => {this.setState({lab: res.data})})
+  };
+
+  //add tool to a stage
+  addStageTool = (tool) => {
+    axios.post("/addstagetool", {tool: tool, currentStage: this.state.currentStage})
+        .then(res => {this.setState({lab: res.data})})
+  };
 
   back = () => {
     this.props.history.push("/labspage");
@@ -63,7 +87,7 @@ class Makelab extends Component {
               <Dropdown.Item>Tool 1</Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
-          <Addtool />
+          <Addtool addLabTool={this.addLabTool}/>
         </ButtonGroup>
         <br />
         <CardDeck>
@@ -77,16 +101,19 @@ class Makelab extends Component {
             <Card.Body>
               <Card.Title>Lab Stages</Card.Title>
               <ListGroup>
-
-                {this.state.lab.stageList.map((stage, i) => (
-                  <ListGroup.Item>{stage.stageNum}</ListGroup.Item>
-                ))}
+                {this.state.lab.stageList.map((stage, i) => (<ListGroup.Item action onClick={() => {this.setCurrentStage(i)}} active={i===this.state.currentStage}>{stage.stageNum}</ListGroup.Item>))}
                 <ListGroup.Item>
                   <Button
                     onClick={() => this.addStage()}
                     className="addtoolButton"
                   >
                     New
+                  </Button>
+                  <Button
+                  onClick={() => this.deleteStage()}
+                  disabled={this.state.currentStage===-1}
+                  >
+                    Delete
                   </Button>
                 </ListGroup.Item>
               </ListGroup>

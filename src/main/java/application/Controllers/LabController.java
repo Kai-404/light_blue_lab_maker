@@ -1,12 +1,7 @@
 package application.Controllers;
 
-import application.LabCreation.MakeLab;
 import application.Models.Lab;
-import application.Models.Tool;
-import application.Models.User;
-import application.Models.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.ComponentScan;
+import application.Models.Stage;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,35 +10,61 @@ import java.util.List;
 @RestController
 public class LabController {
 
-    MakeLab lab;
+    //Lab object that gets modified when creating a lab
+    Lab lab;
 
+    //sets lab to a new lab object
     @PostMapping("/newlab")
     @ResponseBody
-    public MakeLab newLab(@RequestBody LabDTO labdto) {
-        System.out.println("1");
-        lab = new MakeLab(labdto.getTitle(), labdto.getAuthor());
+    public Lab newLab(@RequestBody Lab newLab) {
+        lab = new Lab(newLab.getTitle(), newLab.getAuthor());
         return lab;
     }
 
+    //returns lab object
     @GetMapping("/getlab")
     @ResponseBody
     public Lab getLab() {
-        return lab.getLab();
+        return lab;
     }
 
+    //adds a stage to the lab and returns updated lab
     @PostMapping("/addstage")
     @ResponseBody
     public Lab addStage() {
         lab.addStage();
-        return lab.getLab();
+        return lab;
     }
 
-    @GetMapping("/gettools")
+    //deletes stage currentStage
+    @PostMapping("/deletestage")
     @ResponseBody
-    public List<Tool> getTools() {
-        System.out.println("2");
-        return lab.getTools();
+    public Lab deleteStage(@RequestBody Stage currentStage) {
+        lab.deleteStage(currentStage.getStageNum());
+        return lab;
     }
 
+    //returns list of all tools
+    @GetMapping("/getalltools")
+    @ResponseBody
+    public List<String> getAllTools() {
+        return lab.getToolWarehouse();
+    }
+
+    //adds a tool to the whole lab
+    @PostMapping("/addlabtool")
+    @ResponseBody
+    public Lab addLabTool(@RequestBody String tool) {
+        lab.addLabTool(tool);
+        return lab;
+    }
+
+    //adds a tool to one stage
+    @PostMapping("/addstagetool")
+    @ResponseBody
+    public Lab addStageTool(@RequestBody String tool, @RequestBody Integer currentStage) {
+        lab.addStageTool(tool, currentStage);
+        return lab;
+    }
 
 }
