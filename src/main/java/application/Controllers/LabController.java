@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @CrossOrigin
@@ -18,6 +19,7 @@ import java.util.List;
 public class LabController {
 
     MakeLab lab;
+    Lab aLab = new Lab();
 
     @PostMapping("/newlab")
     @ResponseBody
@@ -42,20 +44,10 @@ public class LabController {
 
     @RequestMapping("/gettoollist")
     @ResponseBody
-    public List<String> toolList(){
-        List<String> results = new ArrayList<String>();
+    public HashMap<String,Boolean> toolList(){
+        aLab.initToolList();
 
-
-        File[] files = new File("./src/main/java/application/Tools").listFiles();
-
-        for (File file : files) {
-            if (file.isFile()) {
-                results.add(file.getName());
-            }
-
-        }
-
-        return results;
+        return aLab.getToolList();
     }
 
 }
