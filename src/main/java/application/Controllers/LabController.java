@@ -65,8 +65,8 @@ public class LabController {
 
     @RequestMapping("/updatetoollist")
     @ResponseBody
-    public void updateToolList(@RequestParam JSONArray toolList){
-        lab.updateToolWareHouse(toolList);
+    public boolean updateToolList(@RequestParam JSONArray toolList){
+        return lab.updateToolWareHouse(toolList);
     }
 
 //    //adds a tool to the whole lab

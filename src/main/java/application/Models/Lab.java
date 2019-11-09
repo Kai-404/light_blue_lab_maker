@@ -79,7 +79,7 @@ public class Lab {
         return toolWarehouseList;
     }
 
-    public void updateToolWareHouse(JSONArray toolWarehouseList){
+    public boolean updateToolWareHouse(JSONArray toolWarehouseList){
 
         HashMap<String,Boolean> newWareHouse = new HashMap<>();
 
@@ -91,6 +91,8 @@ public class Lab {
         } );
 
         this.toolWarehouse = newWareHouse;
+
+        return true;
 
     }
 
@@ -104,15 +106,15 @@ public class Lab {
     //deletes a stage
     public void deleteStage(int currentStage) { this.stageList.remove(currentStage); }
 
-    //adds a tool to the whole lab
-    public void addLabTool(String tool) {
-        this.labTools.add(new Tool(tool));
-    }
-
-    //adds a tool to stage currentStage
-    public void addStageTool(String tool, int currentStage) {
-        this.stageList.get(currentStage).getToolList().add(new Tool(tool));
-    }
+//    //adds a tool to the whole lab
+//    public void addLabTool(String tool) {
+//        this.labTools.add(new Tool(tool));
+//    }
+//
+//    //adds a tool to stage currentStage
+//    public void addStageTool(String tool, int currentStage) {
+//        this.stageList.get(currentStage).getToolList().add(new Tool(tool));
+//    }
 
 
 }
