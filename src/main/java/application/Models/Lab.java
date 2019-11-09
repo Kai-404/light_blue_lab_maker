@@ -1,10 +1,14 @@
 package application.Models;
 
+import com.mongodb.util.JSON;
 import lombok.Data;
 import lombok.Getter;
+import net.minidev.json.JSONArray;
+import net.minidev.json.JSONObject;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,7 +24,10 @@ public class Lab {
     private String author;
     private boolean isPublished;
     private List<Stage> stageList;
-    private List<String> toolWarehouse;
+
+    // <tool name, if added to the lab>
+    private HashMap<String,Boolean> toolWarehouse;
+
     private List<Tool> labTools;
     private HashMap<String,Integer> labProgress;
 
@@ -31,17 +38,60 @@ public class Lab {
         this.author = author;
         this.isPublished = false;
         this.stageList = new ArrayList<Stage>();
-        this.toolWarehouse = new ArrayList<String>();
+        this.toolWarehouse = new HashMap<String,Boolean>();
         this.initToolWarehouse();
         this.labTools = new ArrayList<Tool>();
         this.labProgress = new HashMap<String,Integer>();
     }
 
-    //add tool to  warehouse here
+    //add tool to warehouse here
     private void initToolWarehouse() {
-        this.toolWarehouse.add("tool1");
-        this.toolWarehouse.add("tool2");
+        File[] files = new File("./src/main/java/application/Tools").listFiles();
+
+        for (File file : files) {
+            if (file.isFile()) {
+                System.out.println( file.getName() );
+
+                this.toolWarehouse.put(file.getName().replace( ".java",""), false);
+            }
+
+        }
     }
+
+//    public HashMap<String,Boolean> getToolWarehouse(){
+//        return toolWarehouse;
+//    }
+
+    public JSONArray getToolWarehouse(){
+
+        JSONArray toolWarehouseList = new JSONArray();
+
+        this.toolWarehouse.forEach( (name,display)->{
+            JSONObject tool = new JSONObject();
+            tool.put("Name", name);
+            tool.put("Display", display);
+
+            toolWarehouseList.add(tool);
+
+        } );
+
+
+        return toolWarehouseList;
+    }
+
+//    public void updateToolWareHouse(JSONArray toolWarehouseList){
+//
+//        HashMap<String,Boolean> newWreHouse = new HashMap<>();
+//
+//        toolWarehouseList.forEach( e->{
+//
+//
+//        } );
+//
+//
+//    }
+
+
 
     //add a new stage
     public void addStage() {

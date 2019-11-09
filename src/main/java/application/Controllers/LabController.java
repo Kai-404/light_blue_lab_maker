@@ -2,8 +2,11 @@ package application.Controllers;
 
 import application.Models.Lab;
 import application.Models.Stage;
+import com.google.gson.Gson;
+import net.minidev.json.JSONArray;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 
 @CrossOrigin
@@ -47,8 +50,10 @@ public class LabController {
     //returns list of all tools
     @GetMapping("/getalltools")
     @ResponseBody
-    public List<String> getAllTools() {
+    public JSONArray getAllTools() {
+        lab = new Lab("Kai's test lab","Kai");
         return lab.getToolWarehouse();
+
     }
 
     //adds a tool to the whole lab
