@@ -6,7 +6,9 @@ import axios from "axios";
 class Addtool extends Component {
   state = {
     tools: [{ Name: "Beaker", Display: false, Img: "tran_logo_sq.png" }],
-    show: false
+    newTools: [],
+    show: false,
+    kaiShit: null
   };
 
   componentDidMount() {
@@ -17,21 +19,24 @@ class Addtool extends Component {
 
   //change the display of tools bar for the current lab
   onChange = e => {
-    this.state.tools.map(tool => {
+    //JSON.parse(JSON.stringify(object)) to do deep copy of object
+    let newT = JSON.parse(JSON.stringify(this.state.tools));
+    newT.map(tool => {
       if (tool.Name === e.target.id) {
         tool.Display = !tool.Display;
       }
     });
+    this.setState({ newTools: newT });
+    console.log(newT);
   };
 
   onSave = () => {
     this.setShow();
-    this.props.addLabTool(this.state.tools);
-    axios
-      .post("http://localhost:8080/updatetoollist", {
-        tool: this.state.tools
-      })
-      ;
+    this.setState({ tools: this.state.newTools });
+    this.props.addLabTool(this.state.newTools);
+    axios.post("http://localhost:8080/updatetoollist", {
+      tool: this.state.newTools
+    });
   };
 
   setShow = () => {

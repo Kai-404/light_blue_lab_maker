@@ -9,8 +9,8 @@ class LabStage extends Component {
   handleDragStart = e => {
     e.target.setAttrs({
       shadowOffset: {
-        x: 15,
-        y: 15
+        x: 2,
+        y: 2
       },
       scaleX: 1.1,
       scaleY: 1.1
@@ -28,12 +28,16 @@ class LabStage extends Component {
   };
 
   render() {
+    let stageW = window.innerWidth - window.innerWidth * 0.3;
+    let stageH = window.innerHeight - 200;
     let ToolImg = Img => {
       const [tool] = useImage(Object.values(Img)[0]);
       return (
         <Image
           width={100}
           height={100}
+          x={stageW / 2}
+          y={stageH / 2}
           image={tool}
           draggable
           onDragStart={this.handleDragStart}
@@ -42,12 +46,9 @@ class LabStage extends Component {
       );
     };
     return (
-      <Stage
-        width={window.innerWidth - window.innerWidth * 0.3}
-        height={window.innerHeight - 200}
-        className="stage"
-      >
+      <Stage width={stageW} height={stageH} className="stage">
         <Layer>
+          <ToolImg Img={Beaker} />
           <ToolImg Img={Beaker} />
         </Layer>
       </Stage>
