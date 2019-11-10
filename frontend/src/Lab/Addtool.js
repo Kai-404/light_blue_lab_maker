@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import Popup from "reactjs-popup";
 import { Button, Form, Modal } from "react-bootstrap";
 import "../App.css";
 import axios from "axios";
@@ -27,11 +26,12 @@ class Addtool extends Component {
 
   onSave = () => {
     this.setShow();
-    axios.post("http://localhost:8080/updatetoollist", {
-      tool: JSON.stringify(this.state.tools)
-    });
-
-    console.log(JSON.stringify(this.state.tools));
+    this.props.addLabTool(this.state.tools);
+    axios
+      .post("http://localhost:8080/updatetoollist", {
+        tool: JSON.stringify(this.state.tools)
+      })
+      .then(res => this.setState({ tools: res.data }));
   };
 
   setShow = () => {
@@ -63,6 +63,7 @@ class Addtool extends Component {
                 type="switch"
                 id={tool.Name}
                 label={tool.Name}
+                defaultChecked={tool.Display}
                 onClick={this.onChange}
               />
             ))}

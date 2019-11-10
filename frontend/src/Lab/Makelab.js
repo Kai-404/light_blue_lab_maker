@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import Popup from "reactjs-popup";
 import { withRouter } from "react-router";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import Sidebar from "../Layout/Sidebar";
@@ -7,7 +6,6 @@ import Beaker from "../Image/beaker.png";
 import Burner from "../Image/burner.png";
 import pH from "../Image/ph.png";
 import {
-  Nav,
   Button,
   ButtonGroup,
   Dropdown,
@@ -30,7 +28,8 @@ class Makelab extends Component {
     lab: {
       stageList: [],
       labTools: []
-    }
+    },
+    rerender: false
   };
 
   addStage() {
@@ -55,9 +54,13 @@ class Makelab extends Component {
 
   //add tool to whole lab
   addLabTool = tool => {
-    axios.post("http://localhost:8080/addlabtool", { tool: tool }).then(res => {
-      this.setState({ lab: res.data });
+    let allTool = tool.filter(t => {
+      if (t.Display) {
+        return t;
+      }
     });
+    this.state.lab.labTools = allTool;
+    this.setState({ rerender: !this.state.rerender });
   };
 
   //add tool to a stage
@@ -82,11 +85,8 @@ class Makelab extends Component {
     });
   }
 
-  render() {
-    return (
-      <React.Fragment>
-        <ButtonGroup>
-          <Button className="toolButton">
+  /*
+  <Button className="toolButton">
             <img src={Beaker} className="UserIcon" alt="Beaker" />
           </Button>
           <Button className="toolButton">
@@ -95,6 +95,35 @@ class Makelab extends Component {
           <Button className="toolButton">
             <img src={pH} className="UserIcon" alt="pH paper" />
           </Button>
+          */
+
+  render() {
+    let toolBar;
+    if (this.state.rerender) {
+      toolBar = (
+        <React.Fragment>
+          {this.state.lab.labTools.map(tool => (
+            <Button className="toolButton">
+              <img src={tool.Img} className="UserIcon" alt={tool.Name} />
+            </Button>
+          ))}
+        </React.Fragment>
+      );
+    } else {
+      toolBar = (
+        <React.Fragment>
+          {this.state.lab.labTools.map(tool => (
+            <Button className="toolButton">
+              <img src={Beaker} className="UserIcon" alt={tool.Name} />
+            </Button>
+          ))}
+        </React.Fragment>
+      );
+    }
+    return (
+      <React.Fragment>
+        <ButtonGroup>
+          {toolBar}
           <Dropdown className="toolButton" as={ButtonGroup}>
             <Dropdown.Toggle variant="Secondary">More</Dropdown.Toggle>
             <Dropdown.Menu>
