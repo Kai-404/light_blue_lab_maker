@@ -31,6 +31,7 @@ class Addtool extends Component {
       .post("http://localhost:8080/updatetoollist", {
         tool: this.state.tools
       })
+        .then(res => this.setState({tools: res.data}))
       ;
   };
 
