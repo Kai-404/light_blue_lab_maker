@@ -1,53 +1,88 @@
 package application.Controllers;
 
-import application.LabCreation.MakeLab;
 import application.Models.Lab;
-import application.Models.Tool;
-import application.Models.User;
-import application.Models.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.ComponentScan;
+import application.Models.Stage;
+// Not the real JSON Library!!!
+//import net.minidev.json.JSONArray;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.web.bind.annotation.*;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 @CrossOrigin
 @RestController
 public class LabController {
 
-    MakeLab lab;
-    Lab aLab = new Lab();
+    //Lab object that gets modified when creating a lab
+    Lab lab;
 
+    //sets lab to a new lab object
     @PostMapping("/newlab")
     @ResponseBody
-    public MakeLab newLab(@RequestBody LabDTO labdto) {
-        System.out.println("1");
-        lab = new MakeLab(labdto.getTitle(), labdto.getAuthor());
+    public Lab newLab(@RequestBody Lab newLab) {
+        lab = new Lab(newLab.getTitle(), newLab.getAuthor());
         return lab;
     }
 
+    //returns lab object
     @GetMapping("/getlab")
     @ResponseBody
     public Lab getLab() {
-        return lab.getLab();
+        return lab;
     }
 
+    //adds a stage to the lab and returns updated lab
     @PostMapping("/addstage")
     @ResponseBody
     public Lab addStage() {
         lab.addStage();
-        return lab.getLab();
+        return lab;
     }
 
-    @RequestMapping("/gettoollist")
+    //deletes stage currentStage
+    @PostMapping("/deletestage")
     @ResponseBody
-    public HashMap<String,Boolean> toolList(){
-        aLab.initToolList();
-
-        return aLab.getToolList();
+    public Lab deleteStage(@RequestBody Stage currentStage) {
+        lab.deleteStage(currentStage.getStageNum());
+        return lab;
     }
+
+    //returns list of all tools
+    @GetMapping("/getalltools")
+    @ResponseBody
+    public String getAllTools() {
+        lab = new Lab("Kai's test lab","Kai");
+        return  lab.getToolWarehouse().toString();
+
+    }
+
+//    @GetMapping("/test")
+//    @ResponseBody
+//    public void test(){
+//        getAllTools();
+//        lab.updateToolWareHouse( lab.getToolWarehouse() );
+//    }
+
+    @PostMapping("/updatetoollist")
+    @ResponseBody
+    public String updateToolList(@RequestBody String toolList){
+        lab.updateToolWareHouse(toolList);
+        return  lab.getToolWarehouse().toString();
+    }
+
+//    //adds a tool to the whole lab
+//    @PostMapping("/addlabtool")
+//    @ResponseBody
+//    public Lab addLabTool(@RequestBody String tool) {
+//        lab.addLabTool(tool);
+//        return lab;
+//    }
+//
+//    //adds a tool to one stage
+//    @PostMapping("/addstagetool")
+//    @ResponseBody
+//    public Lab addStageTool(@RequestBody String tool, @RequestBody Integer currentStage) {
+//        lab.addStageTool(tool, currentStage);
+//        return lab;
+//    }
 
 }

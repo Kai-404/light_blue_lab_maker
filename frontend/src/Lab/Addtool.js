@@ -1,36 +1,89 @@
 import React, { Component } from "react";
-import Popup from "reactjs-popup";
-import { Button } from "react-bootstrap";
+import { Button, Form, Modal } from "react-bootstrap";
 import "../App.css";
-import {ListGroup} from "react-bootstrap";
 import axios from "axios";
 
 class Addtool extends Component {
-
   state = {
-    tools: []
+    tools: [{ Name: "Beaker", Display: false, Img: "tran_logo_sq.png" }],
+    show: false
   };
 
   componentDidMount() {
-    axios.get("/gettools")
-        .then(res => {this.setState({tools: res.data})});
+    axios.get("http://localhost:8080/getalltools").then(res => {
+      this.setState({ tools: res.data });
+    });
+  }
+
+  //change the display of tools bar for the current lab
+  onChange = e => {
+    this.state.tools.map(tool => {
+      if (tool.Name === e.target.id) {
+        tool.Display = !tool.Display;
+      }
+    });
+  };
+
+  onSave = () => {
+    this.setShow();
+    this.props.addLabTool(this.state.tools);
+    axios
+      .post("http://localhost:8080/updatetoollist", {
+        tool: this.state.tools
+      })
+        .then(res => this.setState({tools: res.data}))
+      ;
+  };
+
+  setShow = () => {
+    this.setState({ show: !this.state.show });
   };
 
   render() {
     return (
-      <Popup
-        trigger={<Button className="addtoolButton">Add Tool</Button>}
-        position="center"
-      >
-        {close => (
-          <div>
-            {this.state.tools.map((tool) => <Button>{tool.name}</Button>)}
-            <a className="close" onClick={close}>
-              &times;
-            </a>
-          </div>
-        )}
-      </Popup>
+      <React.Fragment>
+        <Button className="addtoolButton" onClick={this.setShow}>
+          Add Tool
+        </Button>
+
+        <Modal
+          show={this.state.show}
+          onHide={this.setShow}
+          dialogClassName="modal-90w"
+          aria-labelledby="example-custom-modal-styling-title"
+        >
+          <Modal.Header>
+            <Modal.Title id="example-custom-modal-styling-title">
+              Tool List
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body
+            style={{
+              "max-height": "calc(100vh - 310px)",
+              "overflow-y": "auto"
+            }}
+          >
+            <p>Select all the tools you want to use for this lab.</p>
+            {this.state.tools.map(tool => (
+              <Form.Check
+                type="switch"
+                id={tool.Name}
+                label={tool.Name}
+                defaultChecked={tool.Display}
+                onClick={this.onChange}
+              />
+            ))}
+          </Modal.Body>
+          <Modal.Footer>
+            <Button onClick={this.setShow} className="addtoolButton">
+              Close
+            </Button>
+            <Button className="addtoolButton" onClick={this.onSave}>
+              Save
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      </React.Fragment>
     );
   }
 }
