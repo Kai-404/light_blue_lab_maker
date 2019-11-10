@@ -64,9 +64,9 @@ public class LabController {
 
     @PostMapping("/updatetoollist")
     @ResponseBody
-    public void updateToolList(@RequestBody String toolList){
-        System.out.println( toolList );
+    public String updateToolList(@RequestBody String toolList){
         lab.updateToolWareHouse(toolList);
+        return  lab.getToolWarehouse().toString();
     }
 
 //    //adds a tool to the whole lab

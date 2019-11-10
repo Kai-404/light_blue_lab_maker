@@ -9,6 +9,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.File;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -88,7 +89,7 @@ public class Lab {
 
         jsonArray.forEach( e->{
             JSONObject tool = (JSONObject) e;
-            newWareHouse.put( (String)tool.get( "Name" ), tool.get( "Display" ).equals( "true" ) );
+            newWareHouse.put( (String)tool.get( "Name" ), (Boolean) tool.get( "Display" ) );
 
         } );
         this.toolWarehouse = newWareHouse;
