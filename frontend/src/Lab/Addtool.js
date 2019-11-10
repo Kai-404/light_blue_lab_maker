@@ -24,9 +24,11 @@ class Addtool extends Component {
       }
     });
     this.props.addLabTool(this.state.tools);
-    axios.post("http://localhost:8080/updatetoollist", {
-      tool: this.state.tools
-    });
+    axios
+      .post("http://localhost:8080/updatetoollist", {
+        tool: this.state.tools
+      })
+      .then(res => this.setState({ tools: res.data }));
   };
 
   setShow = () => {
