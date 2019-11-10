@@ -8,13 +8,13 @@ class Addtool extends Component {
     tools: [{ Name: "Beaker", Display: false, Img: "tran_logo_sq.png" }],
     show: false
   };
-
+  /*
   componentDidMount() {
     axios.get("http://localhost:8080/getalltools").then(res => {
       this.setState({ tools: res.data });
     });
   }
-
+*/
   //change the display of tools bar for the current lab
   onChange = e => {
     this.state.tools.map(tool => {
@@ -29,7 +29,7 @@ class Addtool extends Component {
     this.props.addLabTool(this.state.tools);
     axios
       .post("http://localhost:8080/updatetoollist", {
-        tool: JSON.stringify(this.state.tools)
+        tool: this.state.tools
       })
       .then(res => this.setState({ tools: res.data }));
   };
