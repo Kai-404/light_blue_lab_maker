@@ -3,8 +3,6 @@ import { withRouter } from "react-router";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import Sidebar from "../Layout/Sidebar";
 import Beaker from "../Image/beaker.png";
-import Burner from "../Image/burner.png";
-import pH from "../Image/ph.png";
 import {
   Button,
   ButtonGroup,
@@ -61,6 +59,7 @@ class Makelab extends Component {
     });
     this.state.lab.labTools = allTool;
     this.setState({ rerender: !this.state.rerender });
+    console.log(this.state.lab.labTools);
   };
 
   //add tool to a stage
@@ -104,7 +103,11 @@ class Makelab extends Component {
         <React.Fragment>
           {this.state.lab.labTools.map(tool => (
             <Button className="toolButton">
-              <img src={tool.Img} className="UserIcon" alt={tool.Name} />
+              <img
+                src={process.env.PUBLIC_URL + tool.Img}
+                className="UserIcon"
+                alt={tool.Name}
+              />
             </Button>
           ))}
         </React.Fragment>

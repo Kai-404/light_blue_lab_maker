@@ -5,7 +5,7 @@ import axios from "axios";
 
 class Addtool extends Component {
   state = {
-    tools: [],
+    tools: [{ Name: "Beaker", Display: false, Img: "tran_logo_sq.png" }],
     show: false
   };
 
@@ -56,7 +56,12 @@ class Addtool extends Component {
               Tool List
             </Modal.Title>
           </Modal.Header>
-          <Modal.Body>
+          <Modal.Body
+            style={{
+              "max-height": "calc(100vh - 310px)",
+              "overflow-y": "auto"
+            }}
+          >
             <p>Select all the tools you want to use for this lab.</p>
             {this.state.tools.map(tool => (
               <Form.Check
