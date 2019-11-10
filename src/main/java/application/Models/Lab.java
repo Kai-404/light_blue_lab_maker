@@ -10,6 +10,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.File;
 import java.io.PrintStream;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -67,10 +70,25 @@ public class Lab {
 
         JSONArray toolWarehouseList = new JSONArray();
 
+        ClassLoader classLoader = Lab.class.getClassLoader();
+
         this.toolWarehouse.forEach( (name,display)->{
             JSONObject tool = new JSONObject();
             tool.put("Name", name);
             tool.put("Display", display);
+            String className = "application.Tools."+name;
+            String imageName = "";
+            try {
+                Class aClass = classLoader.loadClass( className );
+                Constructor constructor = aClass.getConstructor();
+                Object object = constructor.newInstance();
+                Method method = aClass.getMethod( "getImageName" );
+                imageName= (String) method.invoke(object);
+
+            } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                e.printStackTrace();
+            }
+            tool.put( "Img", imageName);
             toolWarehouseList.put(tool);
 
         } );

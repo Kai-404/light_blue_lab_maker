@@ -51,6 +51,7 @@ public class LabController {
     @ResponseBody
     public String getAllTools() {
         lab = new Lab("Kai's test lab","Kai");
+        System.out.println( lab.getToolWarehouse().toString() );
         return  lab.getToolWarehouse().toString();
 
     }

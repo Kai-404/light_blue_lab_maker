@@ -2,11 +2,11 @@ package application.Tools;
 
 import application.Models.Tool;
 
-public class AlcoholBurner extends Tool {
+public class PHPaper extends Tool {
 
-    final String imageName = "burner.png";
+    final String imageName = "ph.png";
 
-    public AlcoholBurner(){
+    public PHPaper(){
 
     }
 
@@ -14,4 +14,5 @@ public class AlcoholBurner extends Tool {
     public String getImageName() {
         return imageName;
     }
+
 }
