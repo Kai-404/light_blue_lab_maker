@@ -3,8 +3,8 @@ package application.Models;
 import com.mongodb.util.JSON;
 import lombok.Data;
 import lombok.Getter;
-import net.minidev.json.JSONArray;
-import net.minidev.json.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -50,7 +50,7 @@ public class Lab {
 
         for (File file : files) {
             if (file.isFile()) {
-                System.out.println( file.getName() );
+                //System.out.println( file.getName() );
 
                 this.toolWarehouse.put(file.getName().replace( ".java",""), false);
             }
@@ -70,29 +70,29 @@ public class Lab {
             JSONObject tool = new JSONObject();
             tool.put("Name", name);
             tool.put("Display", display);
-
-            toolWarehouseList.add(tool);
+            toolWarehouseList.put(tool);
 
         } );
 
-
+        System.out.println( toolWarehouseList);
         return toolWarehouseList;
     }
 
-    public boolean updateToolWareHouse(JSONArray toolWarehouseList){
+    public void updateToolWareHouse(String toolWarehouseList){
+
+        JSONObject jsonObject = new JSONObject(toolWarehouseList);
+
+        JSONArray jsonArray = jsonObject.getJSONArray("tool");
 
         HashMap<String,Boolean> newWareHouse = new HashMap<>();
 
-        toolWarehouseList.forEach( e->{
-
+        jsonArray.forEach( e->{
             JSONObject tool = (JSONObject) e;
             newWareHouse.put( (String)tool.get( "Name" ), tool.get( "Display" ).equals( "true" ) );
 
         } );
-
         this.toolWarehouse = newWareHouse;
 
-        return true;
 
     }
 

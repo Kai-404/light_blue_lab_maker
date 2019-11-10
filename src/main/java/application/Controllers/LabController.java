@@ -2,12 +2,11 @@ package application.Controllers;
 
 import application.Models.Lab;
 import application.Models.Stage;
-import com.google.gson.Gson;
-import net.minidev.json.JSONArray;
+// Not the real JSON Library!!!
+//import net.minidev.json.JSONArray;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.HashMap;
-import java.util.List;
 
 @CrossOrigin
 @RestController
@@ -50,9 +49,9 @@ public class LabController {
     //returns list of all tools
     @GetMapping("/getalltools")
     @ResponseBody
-    public JSONArray getAllTools() {
+    public String getAllTools() {
         lab = new Lab("Kai's test lab","Kai");
-        return lab.getToolWarehouse();
+        return  lab.getToolWarehouse().toString();
 
     }
 
@@ -63,10 +62,11 @@ public class LabController {
 //        lab.updateToolWareHouse( lab.getToolWarehouse() );
 //    }
 
-    @RequestMapping("/updatetoollist")
+    @PostMapping("/updatetoollist")
     @ResponseBody
-    public boolean updateToolList(@RequestParam JSONArray toolList){
-        return lab.updateToolWareHouse(toolList);
+    public void updateToolList(@RequestBody String toolList){
+        System.out.println( toolList );
+        lab.updateToolWareHouse(toolList);
     }
 
 //    //adds a tool to the whole lab
