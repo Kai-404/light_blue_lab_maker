@@ -20,7 +20,7 @@ public class UserController {
                           @RequestParam(name = "password") String password, @RequestParam(name = "UserType") String userType) {
         if (userRepository.findByEmail(email) != null) { return 1; }
         if (userRepository.findByUsername(username) != null) { return 2; }
-        User newUser = new User(username, email, password);
+        User newUser = new User(username, email, password, userType);
         userRepository.save(newUser);
         if (userType.equals("Professor")) {
             Professor professor = new Professor(newUser.getId());
