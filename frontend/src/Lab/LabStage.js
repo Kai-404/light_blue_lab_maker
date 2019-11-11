@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import Konva from "konva";
-import { Stage, Layer, Star, Text, Image } from "react-konva";
-import Beaker from "../Image/beakerTool.png";
+import { Stage, Layer, Image } from "react-konva";
 import useImage from "use-image";
+import Beaker from "../Image/beakerTool.png";
 import "../App.css";
 
 class LabStage extends Component {
