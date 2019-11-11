@@ -118,12 +118,16 @@ public class Lab {
 
 
     //add a new stage
-    public void addStage() {
-        this.stageList.add(new Stage(this.stageList.size()));
+    public void addStage(int currentStage) {
+        this.stageList.add(currentStage, new Stage(currentStage));
+        this.updateStageList();
     }
 
     //deletes a stage
-    public void deleteStage(int currentStage) { this.stageList.remove(currentStage); }
+    public void deleteStage(int currentStage) {
+        this.stageList.remove(currentStage);
+        this.updateStageList();
+    }
 
 //    //adds a tool to the whole lab
 //    public void addLabTool(String tool) {
@@ -135,5 +139,10 @@ public class Lab {
 //        this.stageList.get(currentStage).getToolList().add(new Tool(tool));
 //    }
 
+    private void updateStageList() {
+        for (int i=0; i<this.stageList.size(); i++) {
+            this.stageList.get(i).setStageNum(i);
+        }
+    }
 
 }
