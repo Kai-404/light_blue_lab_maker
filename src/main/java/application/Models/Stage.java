@@ -3,11 +3,14 @@ package application.Models;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 @Setter
+@Document
 public class Stage {
 
     private String instructions;
