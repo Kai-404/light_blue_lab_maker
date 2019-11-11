@@ -32,13 +32,14 @@ public class LabController {
         return lab;
     }
 
-    //TODO: adds a stage to the lab and returns updated lab
-//    @PostMapping("/addstage")
-//    @ResponseBody
-//    public Lab addStage() {
-//        lab.addStage();
-//        return lab;
-//    }
+    //adds a stage to the lab and returns updated lab
+    @PostMapping("/addstage")
+    @ResponseBody
+    public Lab addStage(@RequestBody Stage currentStage) {
+        lab.addStage(currentStage.getStageNum());
+        return lab;
+    }
+
 
     //TODO: deletes stage currentStage
 //    @PostMapping("/deletestage")

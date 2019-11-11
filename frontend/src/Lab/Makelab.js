@@ -51,8 +51,11 @@ class Makelab extends Component {
   };
 
   addStage() {
-    axios.post("http://localhost:8080/addstage").then(res => {
-      this.setState({ lab: res.data });
+    axios.post("http://localhost:8080/addstage", {stage: this.state.currentStage+1}).then(res => {
+      this.setState({
+        lab: res.data,
+        currentStage: this.state.currentStage+1
+      });
     });
   }
 
@@ -62,7 +65,7 @@ class Makelab extends Component {
         currentStage: this.state.currentStage
       })
       .then(res => {
-        this.setState({ lab: res.data, currentStage: -1 });
+        this.setState({ lab: res.data, currentStage: this.state.currentStage-1 });
       });
   }
 
@@ -273,13 +276,13 @@ class Makelab extends Component {
                 }}
               >
                 <ListGroup>
-                  {this.state.lab.stageList.map((stage, i) => (
+                  {this.state.lab.stageList.map((stage) => (
                     <ListGroup.Item
                       action
                       onClick={() => {
-                        this.setCurrentStage(i);
+                        this.setCurrentStage(stage.stageNum);
                       }}
-                      active={i === this.state.currentStage}
+                      active={stage.stageNum === this.state.currentStage}
                     >
                       {stage.stageNum}
                     </ListGroup.Item>
