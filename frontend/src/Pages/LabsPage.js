@@ -8,13 +8,20 @@ class LabsPage extends Component {
   dolab = () => {
     this.props.history.push("/dolab");
   };
-
+  //TODO: Zoey will do it!!! just a placeholder
   makeLab = () => {
+    let index1 = "kai_lab";
+    let index2 = "kai";
+    let data = JSON.stringify({
+      index1,
+      index2
+    });
     axios
-      .post("http://localhost:8080/newlab", {
-        title: "temp_title",
-        author: "temp_author"
-      })
+      .post("http://localhost:8080/newlab", data, {
+        headers: { "Content-Type": "application/json;charset=UTF-8" },
+        params: { title: index1, author: index2 }
+      }
+      )
       .then(res => {
         this.props.history.push("/makelab");
       });
