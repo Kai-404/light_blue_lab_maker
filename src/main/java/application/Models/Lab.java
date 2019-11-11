@@ -9,7 +9,6 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.File;
-import java.io.PrintStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -27,12 +26,13 @@ public class Lab {
     private String title;
     private String author;
     private boolean isPublished;
-    private List<Stage> stageList;
 
+    public int currentStageNum;
+
+    private ArrayList<Stage> stageList;
     // <tool name, if added to the lab>
     private HashMap<String,Boolean> toolWarehouse;
-
-    private List<Tool> labTools;
+   // private List<Tool> labTools;
     private HashMap<String,Integer> labProgress;
 
     public Lab() {}
@@ -42,9 +42,14 @@ public class Lab {
         this.author = author;
         this.isPublished = false;
         this.stageList = new ArrayList<Stage>();
+
+        Stage firstStage = new Stage( 0 );
+        stageList.add( firstStage );
+        currentStageNum = 0;
+
         this.toolWarehouse = new HashMap<String,Boolean>();
         this.initToolWarehouse();
-        this.labTools = new ArrayList<Tool>();
+        //this.labTools = new ArrayList<Tool>();
         this.labProgress = new HashMap<String,Integer>();
     }
 
@@ -115,6 +120,13 @@ public class Lab {
 
     }
 
+    public Stage getStage(int stageNum){
+        return stageList.get( stageNum );
+    }
+
+    public Stage getCurrentStage(){
+        return stageList.get( currentStageNum );
+    }
 
 
     //add a new stage
@@ -128,6 +140,11 @@ public class Lab {
         this.stageList.remove(currentStage);
         this.updateStageList();
     }
+
+    public int getCurrentStageNum(){
+        return currentStageNum;
+    }
+
 
 //    //adds a tool to the whole lab
 //    public void addLabTool(String tool) {

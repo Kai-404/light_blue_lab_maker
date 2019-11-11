@@ -4,6 +4,7 @@ import application.Models.Lab;
 import application.Models.Stage;
 // Not the real JSON Library!!!
 //import net.minidev.json.JSONArray;
+import application.Tools.Beaker;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.web.bind.annotation.*;
@@ -18,8 +19,9 @@ public class LabController {
     //sets lab to a new lab object
     @PostMapping("/newlab")
     @ResponseBody
-    public Lab newLab(@RequestBody Lab newLab) {
-        lab = new Lab(newLab.getTitle(), newLab.getAuthor());
+    public Lab newLab(@RequestParam String title, @RequestParam String author) {
+        //System.out.println( "a:"+title+"\n"+"b:"+author );
+        lab = new Lab(title, author);
         return lab;
     }
 
@@ -38,20 +40,24 @@ public class LabController {
         return lab;
     }
 
-    //deletes stage currentStage
-    @PostMapping("/deletestage")
-    @ResponseBody
-    public Lab deleteStage(@RequestBody Stage currentStage) {
-        lab.deleteStage(currentStage.getStageNum());
-        return lab;
-    }
+
+    //TODO: deletes stage currentStage
+//    @PostMapping("/deletestage")
+//    @ResponseBody
+//    public Lab deleteStage(@RequestBody Stage currentStage) {
+//        lab.deleteStage(currentStage.getStageNum());
+//        return lab;
+//    }
 
     //returns list of all tools
     @GetMapping("/getalltools")
     @ResponseBody
     public String getAllTools() {
-        lab = new Lab("Kai's test lab","Kai");
+        //lab = new Lab("Kai's test lab","Kai");
         System.out.println( lab.getToolWarehouse().toString() );
+
+        Beaker b = new Beaker();
+        System.out.println(b.getToolAsJSON().toString());
         return  lab.getToolWarehouse().toString();
 
     }

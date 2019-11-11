@@ -9,8 +9,9 @@ import { LinkContainer } from "react-router-bootstrap";
 import {
   Button,
   ButtonGroup,
-  Dropdown,
   Card,
+  Dropdown,
+  Form,
   ListGroup,
   Row,
   Modal
@@ -19,10 +20,29 @@ import Addtool from "./Addtool";
 import LabStage from "./LabStage";
 import "../App.css";
 
+const stageW = window.innerWidth - window.innerWidth * 0.3;
+const stageH = window.innerHeight - 200;
+var idNum = 1;
+var toolName = "Default";
+
 class Makelab extends Component {
   state = {
     labTools: [], //all the tools will be used for this lab
-    stageTool: [], //tool for the current stage
+    stageTool: [
+      {
+        id: "1",
+        Name: "Beaker",
+        Img: "beakerTool.png",
+        x: 0,
+        y: 0,
+        Prop: [
+          { Name: "Size", Value: "100", Editable: true },
+          { Name: "Color", Value: "Green", Editable: true }
+        ],
+        Interaction: ["Pour"]
+      }
+    ], //tool for the current stage
+    showPop: false, //show popup
     currentStage: -1,
     lab: {
       stageList: [],
@@ -95,7 +115,13 @@ class Makelab extends Component {
   };
   //drag tool end animation
   handleDragEnd = e => {
-    console.log(e.target.attrs.x);
+    this.state.stageTool.map(tool => {
+      // e.target.attrs.name is the id of img
+      if (tool.id === e.target.attrs.name) {
+        tool.x = e.target.attrs.x;
+        tool.y = e.target.attrs.y;
+      }
+    });
     e.target.to({
       duration: 1.0,
       easing: Konva.Easings.ElasticEaseOut,
@@ -105,11 +131,53 @@ class Makelab extends Component {
       shadowOffsetY: 0
     });
   };
+  setShow = () => {
+    this.setState({ showPop: !this.state.showPop });
+  };
+  handleClickTool = e => {
+    this.setShow();
+    console.log(this.state.showPop);
+    console.log(e.target);
+  };
+
+  handleSubmit = event => {
+    const form = event.currentTarget;
+    console.log(form);
+    if (form.checkValidity() === false) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+  };
 
   // pop a tool to the center of the stage with defalut
   popTool = e => {
+    /* 
+    //request a tool with toolName, get back a default tool
+    axios
+      .post("http://localhost:8080/addstagetool", {
+        tool: e.target.alt, //name of tool
+        currentStage: this.state.currentStage
+      })
+      .then(res => {
+        let tools = [...this.state.stageTool];
+        tools.push(res.data);
+        this.setState({ stageTool: tools });
+      });
+    */
     let tools = [...this.state.stageTool];
-    tools.push(e.target.src);
+    idNum++;
+    tools.push({
+      id: JSON.stringify(idNum),
+      Name: "Beaker",
+      Img: e.target.src,
+      x: 0,
+      y: 0,
+      Prop: [
+        { Name: "Size", Value: "100", Editable: true },
+        { Name: "Color", Value: "Green", Editable: true }
+      ],
+      Interaction: ["Pour"]
+    });
     this.setState({ stageTool: tools });
   };
 
@@ -127,18 +195,18 @@ class Makelab extends Component {
         ))}
       </React.Fragment>
     );
-    const stageW = window.innerWidth - window.innerWidth * 0.3;
-    const stageH = window.innerHeight - 200;
     let ToolImg = Img => {
       let [tool] = useImage(Object.values(Img)[0]);
       let img = (
         <Image
-          width={100}
-          height={100}
-          x={stageW / 2}
-          y={stageH / 2}
+          name={Img.id}
+          width={stageW * 0.05}
+          height={stageH * 0.1}
+          x={Img.xVal}
+          y={Img.yVal}
           image={tool}
           draggable
+          onClick={this.handleClickTool}
           onDragStart={this.handleDragStart}
           onDragEnd={this.handleDragEnd}
         />
@@ -147,6 +215,31 @@ class Makelab extends Component {
     };
     return (
       <React.Fragment>
+        <Modal
+          show={this.state.showPop}
+          onHide={this.setShow}
+          dialogClassName="modal-90w"
+          aria-labelledby="example-custom-modal-styling-title"
+        >
+          <Modal.Header>
+            <Modal.Title id="example-custom-modal-styling-title">
+              {toolName}
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Form>
+              <Form.Group>
+                <Form.Label>Size</Form.Label>
+                <Form.Control placeholder="100ml" />
+                <Form.Text className="text-muted">---------------</Form.Text>
+              </Form.Group>
+              <Button variant="primary" type="submit">
+                Submit
+              </Button>
+            </Form>
+          </Modal.Body>
+        </Modal>
+
         <ButtonGroup>
           {toolBar}
           <Dropdown className="toolButton" as={ButtonGroup}>
@@ -163,7 +256,12 @@ class Makelab extends Component {
           <Stage width={stageW} height={stageH} className="stage">
             <Layer>
               {this.state.stageTool.map(toolImg => (
-                <ToolImg Img={toolImg} />
+                <ToolImg
+                  Img={toolImg.Img}
+                  xVal={toolImg.x}
+                  yVal={toolImg.y}
+                  id={toolImg.id}
+                />
               ))}
             </Layer>
           </Stage>

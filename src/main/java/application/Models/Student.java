@@ -10,12 +10,12 @@ import java.util.ArrayList;
 @Getter
 @Document
 public class Student {
-    private String userid;
+    private String userId;
     private ArrayList<String> course_list;
     private ArrayList<String> lab_list;
 
-    public Student(String userid) {
-        this.userid = userid;
+    public Student(String userId) {
+        this.userId = userId;
         this.course_list = new ArrayList<>();
         this.lab_list = new ArrayList<>();
     }
