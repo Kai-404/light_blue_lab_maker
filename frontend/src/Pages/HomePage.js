@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { withRouter } from "react-router";
 import { Card, ListGroup, Button } from "react-bootstrap";
 import "../App.css";
+import AddCourse from "./AddCourse";
 
 class HomePage extends Component {
   showBar = () => {
@@ -34,7 +35,7 @@ class HomePage extends Component {
           </Card.Body>
         </Card>
         <br></br>
-        <Button variant="primary">Add course</Button>
+        <AddCourse />
       </ListGroup>
     );
   }

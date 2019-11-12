@@ -15,6 +15,7 @@ public class Course {
     private String id;
     private String title;
     private String professor;
+    private String term;
     private ArrayList<String> student_list;
     private ArrayList<String> lab_list;
 
