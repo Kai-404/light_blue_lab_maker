@@ -6,8 +6,7 @@ import axios from "axios";
 class Addtool extends Component {
   state = {
     tools: [{ Name: "Beaker", Display: false, Img: "tran_logo_sq.png" }],
-    show: false,
-    kaiShit: null
+    show: false
   };
 
   componentDidMount() {
