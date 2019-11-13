@@ -59,8 +59,9 @@ class Addtool extends Component {
             }}
           >
             <p>Select all the tools you want to use for this lab.</p>
-            {this.state.tools.map(tool => (
+            {this.state.tools.map((tool, key) => (
               <Form.Check
+                key={key}
                 type="switch"
                 id={tool.Name}
                 label={tool.Name}

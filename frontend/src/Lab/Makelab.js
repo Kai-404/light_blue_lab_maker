@@ -10,6 +10,7 @@ import {
   Button,
   ButtonGroup,
   Card,
+  Col,
   Dropdown,
   Form,
   ListGroup,
@@ -17,17 +18,19 @@ import {
   Modal
 } from "react-bootstrap";
 import Addtool from "./Addtool";
-import LabStage from "./LabStage";
 import "../App.css";
 
 const stageW = window.innerWidth - window.innerWidth * 0.3;
 const stageH = window.innerHeight - 200;
 var idNum = 1;
-var toolName = "Default";
 
 class Makelab extends Component {
   state = {
+    errMsg: "",
     labTools: [], //all the tools will be used for this lab
+    //currentStage, //element of stage list
+    //numStages,
+    currentTool: null, //the tool prof want to change property with.
     stageTool: [
       {
         id: "1",
@@ -70,6 +73,27 @@ class Makelab extends Component {
     }
   };
 
+  componentDidMount() {
+    axios.get("/getlab").then(res => {
+      this.setState({ stageList: res.data.stageList });
+    });
+    this.setCurrentStage(1);
+  }
+
+  setCurrentStage(i) {
+    console.log("currentstage is: ", i, " stageTool: ", this.state.stageTool);
+    this.setState({ currentStage: i });
+    let currentStage = [];
+    //based on the currentStage/i change the content of stage
+    this.state.lab.stageList.map((stage, index) => {
+      if (index + 1 == i) {
+        currentStage = stage.stageTool;
+      }
+    });
+    this.setState({ stageTool: currentStage });
+    console.log("newStage tool: ", currentStage);
+  }
+
   addStage() {
     /*
     axios.post("http://localhost:8080/addstage", {stage: this.state.currentStage+1}).then(res => {
@@ -102,23 +126,10 @@ class Makelab extends Component {
       */
     let newLab = JSON.parse(JSON.stringify(this.state.lab));
     newLab.stageList.splice(this.state.currentStage, 1);
-    newLab.stageList.map((stage, i) => (stage.stageNum = i + 1));
+    newLab.stageList.map((stage, i) => (stage.stageNum = i));
     this.setState({ lab: newLab });
     //once the stage is being deleted, current stage will now be the one before
     this.setCurrentStage(this.state.currentStage - 1);
-  }
-
-  setCurrentStage(i) {
-    console.log("currentstage is: ", i);
-    this.setState({ currentStage: i });
-    let currentStage = [];
-    //based on the currentStage/i change the content of stage
-    this.state.lab.stageList.map((stage, index) => {
-      if (index === i) {
-        currentStage = stage.stageTool;
-      }
-    });
-    this.setState({ stageTool: currentStage });
   }
 
   //add tool to whole lab
@@ -132,11 +143,45 @@ class Makelab extends Component {
     this.setState({ rerender: !this.state.rerender });
   };
 
-  componentDidMount() {
-    axios.get("/getlab").then(res => {
-      this.setState({ stageList: res.data.stageList });
+  // pop a tool to the center of the stage with defalut
+  popTool = e => {
+    /* 
+      //request a tool with , get back a default tool
+      axios
+        .post("http://localhost:8080/addstagetool", {
+          tool: e.target.alt, //name of tool
+          currentStage: this.state.currentStage
+        })
+        .then(res => {
+          let tools = [...this.state.stageTool];
+          tools.push(res.data);
+          this.setState({ stageTool: tools });
+        });
+      */
+    console.log("try to pop, stage is: ", this.state.currentStage);
+    let newLab = JSON.parse(JSON.stringify(this.state.lab));
+    let newStage = this.state.stageTool;
+    idNum++;
+    newLab.stageList.map(stage => {
+      if (stage.stageNum == this.state.currentStage) {
+        stage.stageTool.push({
+          id: JSON.stringify(idNum),
+          Name: e.target.alt, //name of the tool
+          Img: e.target.src, //img src of the tool
+          x: 0, //tool popped at the left upper corner of the stage
+          y: 0,
+          Prop: [
+            { Name: "Size", Value: "100", Editable: true },
+            { Name: "Color", Value: "Green", Editable: true }
+          ],
+          Interaction: ["Pour"]
+        });
+        newStage = stage.stageTool;
+      }
     });
-  }
+    console.log(newStage);
+    this.setState({ lab: newLab, stageTool: newStage });
+  };
 
   //draging a tool animation
   handleDragStart = e => {
@@ -167,64 +212,114 @@ class Makelab extends Component {
       shadowOffsetY: 0
     });
   };
+
   setShow = () => {
     this.setState({ showPop: !this.state.showPop });
   };
+
   handleClickTool = e => {
+    console.log("id of the tool:", e.target.attrs.name);
+    /*
+    axios.get("/gettool", { toolIndex: e.target.attrs.name }).then(res => {
+      this.setState({ currentTool: res.data });
+    });
+    */
+    //placeholder
+    let tool = {
+      id: "1",
+      Name: "Beaker",
+      Img: "beakerTool.png",
+      x: 0,
+      y: 0,
+      Prop: [
+        { Name: "Size", Value: "100", Editable: true },
+        { Name: "Color", Value: "Green", Editable: true }
+      ],
+      Interaction: ["Pour"]
+    };
+    this.setState({ currentTool: tool });
     this.setShow();
-    console.log(this.state.showPop);
-    console.log(e.target);
   };
 
   handleSubmit = event => {
     const form = event.currentTarget;
-    console.log(form);
     if (form.checkValidity() === false) {
       event.preventDefault();
       event.stopPropagation();
     }
   };
 
-  // pop a tool to the center of the stage with defalut
-  popTool = e => {
-    /* 
-    //request a tool with toolName, get back a default tool
-    axios
-      .post("http://localhost:8080/addstagetool", {
-        tool: e.target.alt, //name of tool
-        currentStage: this.state.currentStage
-      })
-      .then(res => {
-        let tools = [...this.state.stageTool];
-        tools.push(res.data);
-        this.setState({ stageTool: tools });
-      });
-    */
-    let newLab = JSON.parse(JSON.stringify(this.state.lab));
-    let newStage = this.state.stageTool;
-    idNum++;
-    newLab.stageList.map(stage => {
-      if (stage.stageNum == this.state.currentStage + 1) {
-        stage.stageTool.push({
-          id: JSON.stringify(idNum),
-          Name: e.target.alt, //name of the tool
-          Img: e.target.src, //img src of the tool
-          x: 0, //tool popped at the left upper corner of the stage
-          y: 0,
-          Prop: [
-            { Name: "Size", Value: "100", Editable: true },
-            { Name: "Color", Value: "Green", Editable: true }
-          ],
-          Interaction: ["Pour"]
-        });
-        newStage = stage.stageTool;
-      }
-    });
-
-    this.setState({ lab: newLab, stageTool: newStage });
-  };
-
   render() {
+    let ModalTool = () => {
+      let tool = this.state.currentTool;
+      let name, modalBody;
+      try {
+        name = tool.Name;
+        modalBody = (
+          <Form>
+            <Form.Group>
+              Properties:
+              <br />
+              {tool.Prop.map((prop, key) => {
+                let control = (
+                  <Form.Control
+                    required
+                    type={prop.Name}
+                    defaultValue={prop.Value}
+                  />
+                );
+                if (!prop.Editable) {
+                  control = (
+                    <Form.Control
+                      required
+                      type={prop.Name}
+                      value={prop.Value}
+                    />
+                  );
+                }
+                return (
+                  <React.Fragment>
+                    <Form.Group as={Row}>
+                      <Form.Label column sm={2}>
+                        {prop.Name}
+                      </Form.Label>
+                      <Col sm={10}>{control}</Col>
+                    </Form.Group>
+                  </React.Fragment>
+                );
+              })}
+            </Form.Group>
+            <Form.Group>
+              Interaction: <br />
+            </Form.Group>
+            <Button variant="primary" type="submit" onClick={this.handleSubmit}>
+              Submit
+            </Button>
+          </Form>
+        );
+      } catch (err) {
+        name = "Error, no such tool";
+        modalBody = (
+          <>
+            <Button onClick={this.setShow} className="addtoolButton">
+              Ok
+            </Button>
+          </>
+        );
+      }
+      let pop = (
+        <React.Fragment>
+          <Modal.Header>
+            <Modal.Title id="example-custom-modal-styling-title">
+              {name}
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>{modalBody}</Modal.Body>
+        </React.Fragment>
+      );
+      return pop;
+    };
+
     let toolBar = (
       <React.Fragment>
         {this.state.labTools.map(tool => (
@@ -258,31 +353,15 @@ class Makelab extends Component {
     };
     return (
       <React.Fragment>
+        <p className="errmsg">{this.state.errMsg}</p>
         <Modal
           show={this.state.showPop}
           onHide={this.setShow}
           dialogClassName="modal-90w"
           aria-labelledby="example-custom-modal-styling-title"
         >
-          <Modal.Header>
-            <Modal.Title id="example-custom-modal-styling-title">
-              {toolName}
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <Form>
-              <Form.Group>
-                <Form.Label>Size</Form.Label>
-                <Form.Control placeholder="100ml" />
-                <Form.Text className="text-muted">---------------</Form.Text>
-              </Form.Group>
-              <Button variant="primary" type="submit">
-                Submit
-              </Button>
-            </Form>
-          </Modal.Body>
+          <ModalTool />
         </Modal>
-
         <ButtonGroup>
           {toolBar}
           <Dropdown className="toolButton" as={ButtonGroup}>
@@ -298,8 +377,9 @@ class Makelab extends Component {
           {/* append tools to the stageTool and rerender */}
           <Stage width={stageW} height={stageH} className="stage">
             <Layer>
-              {this.state.stageTool.map(toolImg => (
+              {this.state.stageTool.map((toolImg, key) => (
                 <ToolImg
+                  key={key}
                   Img={toolImg.Img}
                   xVal={toolImg.x}
                   yVal={toolImg.y}
@@ -319,8 +399,9 @@ class Makelab extends Component {
                 }}
               >
                 <ListGroup>
-                  {this.state.lab.stageList.map(stage => (
+                  {this.state.lab.stageList.map((stage, key) => (
                     <ListGroup.Item
+                      key={key}
                       action
                       onClick={() => {
                         this.setCurrentStage(stage.stageNum);
