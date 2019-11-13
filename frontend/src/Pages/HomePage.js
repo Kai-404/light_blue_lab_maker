@@ -2,40 +2,48 @@ import React, { Component } from "react";
 import { withRouter } from "react-router";
 import { Card, ListGroup, Button } from "react-bootstrap";
 import "../App.css";
+import axios from "axios";
 import AddCourse from "./AddCourse";
 
 class HomePage extends Component {
-  showBar = () => {
+    state = {
+        courseList: []
+    };
+
+    getCourseList = () => {
+        axios.get("http://localhost:8080/getcourselist",{
+            headers: { "Content-Type": "application/json;charset=UTF-8" },
+            params: { professor: this.props.user.username }
+        }).then(res => this.setState({courseList: res.data}))
+    };
+
+    componentDidMount() {
+        this.getCourseList();
+    };
+
+    showBar = () => {
     this.props.bar(true);
     this.props.history.push("/announcements");
   };
 
+    updatePage() { this.forceUpdate(); }
+
   render() {
     return (
       <ListGroup>
-        <Card>
-          <Card.Header>CSE 308 - Fall 2019</Card.Header>
-          <Card.Body>
-            <Card.Title>Software Engineering</Card.Title>
-            <Card.Text>Richard McKenna</Card.Text>
-            <Button variant="primary" onClick={this.showBar}>
-              Go to the course
-            </Button>
-          </Card.Body>
-        </Card>
-        <br></br>
-        <Card>
-          <Card.Header>Course Name- Term</Card.Header>
-          <Card.Body>
-            <Card.Title>Course Title</Card.Title>
-            <Card.Text>Instructor Name</Card.Text>
-            <Button variant="primary" onClick={this.showBar}>
-              Go to the course
-            </Button>
-          </Card.Body>
-        </Card>
-        <br></br>
-        <AddCourse />
+          {this.state.courseList.map(course => (
+              <Card>
+                  <Card.Header>{course.title + "-" + course.term}</Card.Header>
+                  <Card.Body>
+                      <Card.Title>{course.title}</Card.Title>
+                      <Card.Text>{course.professor}</Card.Text>
+                      <Button variant="primary" onClick={this.showBar}>
+                          Go to the course
+                      </Button>
+                  </Card.Body>
+              </Card>
+          ))}
+        <AddCourse user={this.props.user} getCourseList={this.getCourseList}/>
       </ListGroup>
     );
   }

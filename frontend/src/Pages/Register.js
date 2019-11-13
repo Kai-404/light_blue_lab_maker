@@ -28,21 +28,12 @@ class Register extends Component {
   /* adds user info to database */
   register = (username, email, password, UserType) => {
     console.log(password.length);
-    let data = JSON.stringify({
-      username,
-      email,
-      password,
-      UserType
-    });
     axios
-      .post("/register", data, {
-        headers: { "Content-Type": "application/json;charset=UTF-8" },
-        params: {
-          username: username,
-          email: email,
-          password: password,
-          UserType: UserType
-        }
+      .post("http://localhost:8080/register", {
+        username: this.state.username,
+        password: this.state.password,
+        email: this.state.email,
+        userType: this.state.UserType
       })
       .then(res => {
         if (res.data === 0) {

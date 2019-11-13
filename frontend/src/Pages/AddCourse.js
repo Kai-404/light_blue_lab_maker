@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router";
 import { Button, Modal } from "react-bootstrap";
+import axios from "axios";
 import "../App.css";
 
 class AddCourse extends Component {
@@ -20,6 +21,9 @@ class AddCourse extends Component {
     };
 
     addCourse() {
+        axios.post("http://localhost:8080/addcourse", {title: this.state.courseName, term: this.state.term, professor: this.props.user.username})
+            .then(res => {this.props.getCourseList();})
+            .catch((err => {console.log("error")}));
         this.setState({
             showAddCourse: false,
             courseName: '',

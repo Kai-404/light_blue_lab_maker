@@ -19,8 +19,9 @@ public class Course {
     private ArrayList<String> student_list;
     private ArrayList<String> lab_list;
 
-    public Course(String title, String professor) {
+    public Course(String title, String term, String professor) {
         this.title = title;
+        this.term = term;
         this.professor = professor;
         this.student_list = new ArrayList<>();
         this.lab_list = new ArrayList<>();
