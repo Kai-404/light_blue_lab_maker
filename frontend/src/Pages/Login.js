@@ -69,6 +69,7 @@ class Login extends Component {
       <div>
         <p className="errmsg">{this.state.errmsg}</p>
         <form className="form" onSubmit={this.onSubmit}>
+          <p className="header">Login</p>
           Username or Email:
           <input
             className="input"
@@ -107,14 +108,6 @@ class Login extends Component {
             onClick={this.routeResetPassword}
           >
             Reset Password
-          </button>
-          {"  "}
-          <button
-            type="button"
-            className="submitButton"
-            onClick={this.routeHome}
-          >
-            Cancel
           </button>
         </form>
       </div>

@@ -6,6 +6,10 @@ import axios from "axios";
 import AddCourse from "./AddCourse";
 
 class HomePage extends Component {
+
+  showBar = () => {
+    this.props.underCourse(true);
+
     state = {
         courseList: []
     };
@@ -23,6 +27,7 @@ class HomePage extends Component {
 
     showBar = () => {
     this.props.bar(true);
+
     this.props.history.push("/announcements");
   };
 

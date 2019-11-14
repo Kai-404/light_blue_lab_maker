@@ -37,7 +37,7 @@ class Addtool extends Component {
   render() {
     return (
       <React.Fragment>
-        <Button className="addtoolButton" onClick={this.setShow}>
+        <Button className="toolButton" onClick={this.setShow}>
           Add Tool
         </Button>
 
