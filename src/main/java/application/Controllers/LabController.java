@@ -117,4 +117,8 @@ public class LabController {
     public void deleteLab() {
         labRepository.delete(lab);
     }
+
+    public void pulbishLab() {
+        lab.setPublished(true);
+    }
 }
