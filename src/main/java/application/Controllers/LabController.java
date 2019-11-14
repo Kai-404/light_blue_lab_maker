@@ -35,8 +35,8 @@ public class LabController {
     //adds a stage to the lab and returns updated lab
     @PostMapping("/addstage")
     @ResponseBody
-    public Lab addStage(@RequestBody Stage currentStage) {
-        lab.addStage(currentStage.getStageNum());
+    public Lab addStage(@RequestParam int stageNum) {
+        lab.addStage(stageNum);
         return lab;
     }
 
@@ -56,18 +56,11 @@ public class LabController {
         //lab = new Lab("Kai's test lab","Kai");
         System.out.println( lab.getToolWarehouse().toString() );
 
-        Beaker b = new Beaker();
-        System.out.println(b.getToolAsJSON().toString());
+//        Beaker b = new Beaker();
+//        System.out.println(b.getToolAsJSON().toString());
         return  lab.getToolWarehouse().toString();
 
     }
-
-//    @GetMapping("/test")
-//    @ResponseBody
-//    public void test(){
-//        getAllTools();
-//        lab.updateToolWareHouse( lab.getToolWarehouse() );
-//    }
 
     @PostMapping("/updatetoollist")
     @ResponseBody
@@ -76,13 +69,29 @@ public class LabController {
         return  lab.getToolWarehouse().toString();
     }
 
-//    //adds a tool to the whole lab
-//    @PostMapping("/addlabtool")
-//    @ResponseBody
-//    public Lab addLabTool(@RequestBody String tool) {
-//        lab.addLabTool(tool);
-//        return lab;
-//    }
+
+    @PostMapping("/stageaddtool")
+    @ResponseBody
+    public void stageAddTool(@RequestParam int stageNum, @RequestParam String toolName, @RequestParam String ID ){
+        lab.getStage( stageNum ).addTool(toolName,ID);
+    }
+
+
+    @PostMapping("/getstage")
+    @ResponseBody
+    public String getStage(@RequestParam int stageNum){
+        return lab.getStage( stageNum ).getStageAsJSON().toString();
+    }
+
+    @PostMapping("/gettool")
+    @ResponseBody
+    public String getTool(@RequestParam int stageNum, @RequestParam String ID){
+        return lab.getStage( stageNum ).getTool( ID ).toString();
+    }
+
+
+
+
 //
 //    //adds a tool to one stage
 //    @PostMapping("/addstagetool")

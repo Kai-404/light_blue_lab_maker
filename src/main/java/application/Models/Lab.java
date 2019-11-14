@@ -27,8 +27,6 @@ public class Lab {
     private String author;
     private boolean isPublished;
 
-    public int currentStageNum;
-
     private ArrayList<Stage> stageList;
     // <tool name, if added to the lab>
     private HashMap<String,Boolean> toolWarehouse;
@@ -45,7 +43,6 @@ public class Lab {
 
         Stage firstStage = new Stage( 0 );
         stageList.add( firstStage );
-        currentStageNum = 0;
 
         this.toolWarehouse = new HashMap<String,Boolean>();
         this.initToolWarehouse();
@@ -120,41 +117,27 @@ public class Lab {
 
     }
 
+    public JSONObject getStageJSON(int stageNum){
+        return stageList.get( stageNum ).getStageAsJSON();
+    }
+
     public Stage getStage(int stageNum){
         return stageList.get( stageNum );
     }
 
-    public Stage getCurrentStage(){
-        return stageList.get( currentStageNum );
-    }
-
 
     //add a new stage
-    public void addStage(int currentStage) {
-        this.stageList.add(currentStage, new Stage(currentStage));
+    public void addStage(int stageNum) {
+        this.stageList.add(stageNum+1, new Stage(stageNum+1));
         this.updateStageList();
     }
 
     //deletes a stage
-    public void deleteStage(int currentStage) {
-        this.stageList.remove(currentStage);
+    public void deleteStage(int stageNum) {
+        this.stageList.remove(stageNum);
         this.updateStageList();
     }
 
-    public int getCurrentStageNum(){
-        return currentStageNum;
-    }
-
-
-//    //adds a tool to the whole lab
-//    public void addLabTool(String tool) {
-//        this.labTools.add(new Tool(tool));
-//    }
-//
-//    //adds a tool to stage currentStage
-//    public void addStageTool(String tool, int currentStage) {
-//        this.stageList.get(currentStage).getToolList().add(new Tool(tool));
-//    }
 
     private void updateStageList() {
         for (int i=0; i<this.stageList.size(); i++) {
