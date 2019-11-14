@@ -8,8 +8,8 @@ public class Beaker extends Tool {
 
     String name = "Beaker";
     final String imageName = "beaker.png";
-    int x = 0;
-    int y = 0;
+    float x = 0;
+    float y = 0;
     int size = 100;
     String color = "green";
 
@@ -47,6 +47,7 @@ public class Beaker extends Tool {
     public JSONObject getToolAsJSON(){
 
         JSONObject toolJSONObject = new JSONObject();
+        toolJSONObject.put( "id",this.id );
         toolJSONObject.put( "Name",this.name );
         toolJSONObject.put( "Img",this.imageName );
         toolJSONObject.put( "x",this.x );
