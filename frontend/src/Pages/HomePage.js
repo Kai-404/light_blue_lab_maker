@@ -33,7 +33,7 @@ class HomePage extends Component {
       <ListGroup>
           {this.state.courseList.map(course => (
               <Card>
-                  <Card.Header>{course.title + "-" + course.term}</Card.Header>
+                  <Card.Header>{course.term}</Card.Header>
                   <Card.Body>
                       <Card.Title>{course.title}</Card.Title>
                       <Card.Text>{course.professor}</Card.Text>
