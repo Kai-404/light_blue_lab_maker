@@ -1,18 +1,21 @@
 package application.Controllers;
 
 import application.Models.Lab;
+import application.Models.LabRepository;
 import application.Models.Stage;
 // Not the real JSON Library!!!
 //import net.minidev.json.JSONArray;
 import application.Tools.Beaker;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin
 @RestController
 public class LabController {
-
+    @Autowired
+            private LabRepository labRepository;
     //Lab object that gets modified when creating a lab
     Lab lab;
 
@@ -107,5 +110,11 @@ public class LabController {
 //        lab.addStageTool(tool, currentStage);
 //        return lab;
 //    }
+    public void saveLab() {
+        labRepository.save(lab);
+    }
 
+    public void deleteLab() {
+        labRepository.delete(lab);
+    }
 }

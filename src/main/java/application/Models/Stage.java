@@ -4,16 +4,22 @@ import com.mongodb.util.JSON;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+
+import org.springframework.data.mongodb.core.mapping.Document;
+
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 @Setter
+@Document
 public class Stage {
 
     private String instructions;

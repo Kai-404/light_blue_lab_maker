@@ -5,10 +5,12 @@ import lombok.Getter;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.HashMap;
 
 @Getter
+@Document
 public class Tool {
 
     public String id;
