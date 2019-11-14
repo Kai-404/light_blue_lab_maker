@@ -3,6 +3,7 @@ package application.Models;
 import com.mongodb.util.JSON;
 import lombok.Data;
 import lombok.Getter;
+import lombok.Setter;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.data.annotation.Id;
@@ -19,6 +20,7 @@ import java.util.List;
 
 @Data
 @Getter
+@Setter
 @Document
 public class Lab {
     @Id

@@ -10,6 +10,8 @@ import java.util.ArrayList;
 @Getter
 @Document
 public class Student {
+
+    private final String userType = "student";
     private String userId;
     private ArrayList<String> course_list;
     private ArrayList<String> lab_list;

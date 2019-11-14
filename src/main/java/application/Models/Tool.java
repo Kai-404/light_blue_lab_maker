@@ -5,10 +5,12 @@ import lombok.Getter;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.HashMap;
 
 @Getter
+@Document
 public class Tool {
 
     public String id;
@@ -16,6 +18,8 @@ public class Tool {
     public float x;
 
     public float y;
+
+    public String name;
 
     public String imageName;
 
@@ -29,6 +33,10 @@ public class Tool {
         return this.imageName;
     }
 
+    public String getName(){
+        return this.name;
+    }
+
     public void setId(String id){
         this.id = id;
     }
@@ -39,6 +47,7 @@ public class Tool {
     public void setY(float y){
         this.y = y;
     }
+
 
     public JSONObject getToolAsJSON(){
 
