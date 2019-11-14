@@ -6,8 +6,7 @@ import axios from "axios";
 class Addtool extends Component {
   state = {
     tools: [{ Name: "Beaker", Display: false, Img: "tran_logo_sq.png" }],
-    show: false,
-    kaiShit: null
+    show: false
   };
 
   componentDidMount() {
@@ -60,8 +59,9 @@ class Addtool extends Component {
             }}
           >
             <p>Select all the tools you want to use for this lab.</p>
-            {this.state.tools.map(tool => (
+            {this.state.tools.map((tool, key) => (
               <Form.Check
+                key={key}
                 type="switch"
                 id={tool.Name}
                 label={tool.Name}
