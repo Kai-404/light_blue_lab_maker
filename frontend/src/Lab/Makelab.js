@@ -68,21 +68,17 @@ class Makelab extends Component {
   }
 
   addStage() {
-    axios.post("http://localhost:8080/addstage").then(res => {
-      this.getTotalStage();
-    });
-
-    /*
-    let newLab = JSON.parse(JSON.stringify(this.state.lab));
-    let numStage = newLab.stageList.length;
-    console.log(numStage);
-    newLab.stageList.push({
-      stageNum: numStage + 1,
-      Instruct: "",
-      stageTool: []
-    });
-    this.setState({ lab: newLab });
-    */
+    axios
+      .post(
+        "http://localhost:8080/addstage",
+        JSON.stringify(this.state.currentStage.stageNum),
+        {
+          headers: { "Content-Type": "application/json;charset=UTF-8" }
+        }
+      )
+      .then(res => {
+        this.getTotalStage();
+      });
   }
 
   deleteStage() {
@@ -405,8 +401,7 @@ class Makelab extends Component {
 
         <br />
         <ButtonGroup>
-          <Button className="submitButton">Save</Button>
-          <Button className="submitButton">Submit</Button>
+          <Button className="submitButton">Publish</Button>
           <LinkContainer to="/labspage">
             <Button className="submitButton">Cancel</Button>
           </LinkContainer>
