@@ -87,7 +87,7 @@ class App extends Component {
               path="/home"
               render={props => (
                 <React.Fragment>
-                  <HomePage bar={this.showbar} />
+                  <HomePage bar={this.showbar} user={this.state.user} />
                 </React.Fragment>
               )}
             />
