@@ -17,6 +17,7 @@ import {
   Row,
   Modal
 } from "react-bootstrap";
+import uuid from "uuid";
 import Addtool from "./Addtool";
 import "../App.css";
 
@@ -29,69 +30,41 @@ class Makelab extends Component {
     errMsg: "",
     labTools: [], //all the tools will be used for this lab
     //currentStage, //element of stage list
-    //numStages,
-    currentTool: null, //the tool prof want to change property with.
-    stageTool: [
-      {
-        id: "1",
-        Name: "Beaker",
-        Img: "beakerTool.png",
-        x: 0,
-        y: 0,
-        Prop: [
-          { Name: "Size", Value: "100", Editable: true },
-          { Name: "Color", Value: "Green", Editable: true }
-        ],
-        Interaction: ["Pour"]
-      }
-    ], //tool for the current stage
-    showPop: false, //show popup
-    currentStage: -1,
-    lab: {
-      stageList: [
-        {
-          stageNum: "1",
-          instruct: "",
-          initStage: [],
-          finalStage: [],
-          stageTool: [
-            {
-              id: "1",
-              Name: "Beaker",
-              Img: "beakerTool.png",
-              x: 0,
-              y: 0,
-              Prop: [
-                { Name: "Size", Value: "100", Editable: true },
-                { Name: "Color", Value: "Green", Editable: true }
-              ],
-              Interaction: ["Pour"]
-            }
-          ]
-        }
-      ]
-    }
+    getTotalStage: 1,
+    currentStage: {
+      stageNum: 0,
+      stageTool: []
+    }, //all stage start at stage 0
+    currentTool: [], //the tool prof want to change property with.
+    showPop: false //show popup
   };
 
   componentDidMount() {
-    axios.get("/getlab").then(res => {
+    /*axios.get("/getlab").then(res => {
       this.setState({ stageList: res.data.stageList });
+    }); */
+    this.getTotalStage();
+    this.setCurrentStage(0);
+  }
+
+  getTotalStage() {
+    axios.get("http://localhost:8080/gettotalstage").then(res => {
+      this.setState({ getTotalStage: res.data });
     });
-    this.setCurrentStage(1);
   }
 
   setCurrentStage(i) {
-    console.log("currentstage is: ", i, " stageTool: ", this.state.stageTool);
-    this.setState({ currentStage: i });
-    let currentStage = [];
-    //based on the currentStage/i change the content of stage
-    this.state.lab.stageList.map((stage, index) => {
-      if (index + 1 == i) {
-        currentStage = stage.stageTool;
-      }
-    });
-    this.setState({ stageTool: currentStage });
-    console.log("newStage tool: ", currentStage);
+    console.log("currentstage is: ", i);
+    let data = JSON.stringify(i);
+    axios
+      .post("http://localhost:8080/getstage", data, {
+        headers: { "Content-Type": "application/json;charset=UTF-8" },
+        params: { stageNum: i }
+      })
+      .then(res => {
+        this.setState({ currentStage: res.data });
+      });
+    console.log(this.state.currentStage);
   }
 
   addStage() {
@@ -145,20 +118,31 @@ class Makelab extends Component {
 
   // pop a tool to the center of the stage with defalut
   popTool = e => {
-    /* 
-      //request a tool with , get back a default tool
-      axios
-        .post("http://localhost:8080/addstagetool", {
-          tool: e.target.alt, //name of tool
-          currentStage: this.state.currentStage
-        })
-        .then(res => {
-          let tools = [...this.state.stageTool];
-          tools.push(res.data);
-          this.setState({ stageTool: tools });
-        });
-      */
-    console.log("try to pop, stage is: ", this.state.currentStage);
+    const uuidv4 = require("uuid/v4");
+    let id = uuidv4();
+    let name = e.target.alt;
+    let stageNum = this.state.currentStage.stageNum;
+    let data = JSON.stringify({
+      id,
+      name,
+      stageNum
+    });
+    //request a tool with , get back a default tool
+    axios
+      .post("http://localhost:8080/stageaddtool", data, {
+        headers: { "Content-Type": "application/json;charset=UTF-8" },
+        params: {
+          stageNum: stageNum,
+          toolName: name, //name of tool
+          ID: id
+        }
+      })
+      .then(res => {
+        if (res.data) {
+          this.setCurrentStage(stageNum);
+        }
+      });
+    /*
     let newLab = JSON.parse(JSON.stringify(this.state.lab));
     let newStage = this.state.stageTool;
     idNum++;
@@ -181,6 +165,7 @@ class Makelab extends Component {
     });
     console.log(newStage);
     this.setState({ lab: newLab, stageTool: newStage });
+    */
   };
 
   //draging a tool animation
@@ -196,7 +181,7 @@ class Makelab extends Component {
   };
   //drag tool end animation
   handleDragEnd = e => {
-    this.state.stageTool.map(tool => {
+    this.state.currentStage.stageTool.map(tool => {
       // e.target.attrs.name is the id of img
       if (tool.id === e.target.attrs.name) {
         tool.x = e.target.attrs.x;
@@ -219,25 +204,24 @@ class Makelab extends Component {
 
   handleClickTool = e => {
     console.log("id of the tool:", e.target.attrs.name);
-    /*
-    axios.get("/gettool", { toolIndex: e.target.attrs.name }).then(res => {
-      this.setState({ currentTool: res.data });
+    let stageNum = this.state.currentStage.stageNum;
+    let id = e.target.attrs.name;
+    let data = JSON.stringify({
+      stageNum,
+      id
     });
-    */
-    //placeholder
-    let tool = {
-      id: "1",
-      Name: "Beaker",
-      Img: "beakerTool.png",
-      x: 0,
-      y: 0,
-      Prop: [
-        { Name: "Size", Value: "100", Editable: true },
-        { Name: "Color", Value: "Green", Editable: true }
-      ],
-      Interaction: ["Pour"]
-    };
-    this.setState({ currentTool: tool });
+    axios
+      .post("http://localhost:8080/gettool", data, {
+        headers: { "Content-Type": "application/json;charset=UTF-8" },
+        params: {
+          stageNum: stageNum,
+          ID: id
+        }
+      })
+      .then(res => {
+        this.setState({ currentTool: res.data });
+        console.log(res.data);
+      });
     this.setShow();
   };
 
@@ -250,6 +234,24 @@ class Makelab extends Component {
   };
 
   render() {
+    let Stages = () => {
+      let list = [];
+      for (let i = 0; i < this.state.getTotalStage; i++) {
+        list.push(
+          <ListGroup.Item
+            action
+            onClick={() => {
+              this.setCurrentStage(i);
+            }}
+            active={i === this.state.currentStage}
+          >
+            {i}
+          </ListGroup.Item>
+        );
+      }
+      return list;
+    };
+
     let ModalTool = () => {
       let tool = this.state.currentTool;
       let name, modalBody;
@@ -377,7 +379,7 @@ class Makelab extends Component {
           {/* append tools to the stageTool and rerender */}
           <Stage width={stageW} height={stageH} className="stage">
             <Layer>
-              {this.state.stageTool.map((toolImg, key) => (
+              {this.state.currentStage.stageTool.map((toolImg, key) => (
                 <ToolImg
                   key={key}
                   Img={toolImg.Img}
@@ -399,18 +401,7 @@ class Makelab extends Component {
                 }}
               >
                 <ListGroup>
-                  {this.state.lab.stageList.map((stage, key) => (
-                    <ListGroup.Item
-                      key={key}
-                      action
-                      onClick={() => {
-                        this.setCurrentStage(stage.stageNum);
-                      }}
-                      active={stage.stageNum === this.state.currentStage}
-                    >
-                      {stage.stageNum}
-                    </ListGroup.Item>
-                  ))}
+                  <Stages />
                   <ListGroup.Item>
                     <ButtonGroup vertical>
                       <Button

@@ -145,4 +145,7 @@ public class Lab {
         }
     }
 
+    public int getTotalStage(){
+        return stageList.size();
+    }
 }

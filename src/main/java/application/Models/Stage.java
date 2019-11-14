@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import sun.tools.jconsole.inspector.XObject;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -38,7 +37,7 @@ public class Stage {
         this.instructions = instruction;
     }
 
-    public Tool addTool(String toolName, String ID){
+    public boolean addTool(String toolName, String ID){
         Tool tool = null;
 
         ClassLoader classLoader = Stage.class.getClassLoader();
@@ -55,7 +54,7 @@ public class Stage {
         tool.setId( ID );
 
         stageToolList.add( tool );
-        return tool;
+        return true;
     }
 
     public JSONObject getTool(String ID){
