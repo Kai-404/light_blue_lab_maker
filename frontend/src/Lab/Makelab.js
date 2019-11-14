@@ -68,14 +68,11 @@ class Makelab extends Component {
   }
 
   addStage() {
-    /*
-    axios.post("http://localhost:8080/addstage", {stage: this.state.currentStage+1}).then(res => {
-      this.setState({
-        lab: res.data,
-        currentStage: this.state.currentStage+1
-      });
+    axios.post("http://localhost:8080/addstage").then(res => {
+      this.getTotalStage();
     });
-    */
+
+    /*
     let newLab = JSON.parse(JSON.stringify(this.state.lab));
     let numStage = newLab.stageList.length;
     console.log(numStage);
@@ -85,6 +82,7 @@ class Makelab extends Component {
       stageTool: []
     });
     this.setState({ lab: newLab });
+    */
   }
 
   deleteStage() {
@@ -142,30 +140,6 @@ class Makelab extends Component {
           this.setCurrentStage(stageNum);
         }
       });
-    /*
-    let newLab = JSON.parse(JSON.stringify(this.state.lab));
-    let newStage = this.state.stageTool;
-    idNum++;
-    newLab.stageList.map(stage => {
-      if (stage.stageNum == this.state.currentStage) {
-        stage.stageTool.push({
-          id: JSON.stringify(idNum),
-          Name: e.target.alt, //name of the tool
-          Img: e.target.src, //img src of the tool
-          x: 0, //tool popped at the left upper corner of the stage
-          y: 0,
-          Prop: [
-            { Name: "Size", Value: "100", Editable: true },
-            { Name: "Color", Value: "Green", Editable: true }
-          ],
-          Interaction: ["Pour"]
-        });
-        newStage = stage.stageTool;
-      }
-    });
-    console.log(newStage);
-    this.setState({ lab: newLab, stageTool: newStage });
-    */
   };
 
   //draging a tool animation
@@ -226,6 +200,10 @@ class Makelab extends Component {
   };
 
   handleSubmit = event => {
+    //update tool
+    /*
+    axios.post()
+    */
     const form = event.currentTarget;
     if (form.checkValidity() === false) {
       event.preventDefault();

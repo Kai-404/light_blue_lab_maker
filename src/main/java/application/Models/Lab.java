@@ -127,8 +127,8 @@ public class Lab {
 
 
     //add a new stage
-    public void addStage(int stageNum) {
-        this.stageList.add(stageNum+1, new Stage(stageNum+1));
+    public void addStage() {
+        this.stageList.add(stageList.size(), new Stage(stageList.size()));
         this.updateStageList();
     }
 

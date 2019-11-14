@@ -35,8 +35,8 @@ public class LabController {
     //adds a stage to the lab and returns updated lab
     @PostMapping("/addstage")
     @ResponseBody
-    public void addStage(@RequestParam int stageNum) {
-        lab.addStage(stageNum);
+    public void addStage() {
+        lab.addStage();
     }
 
 
