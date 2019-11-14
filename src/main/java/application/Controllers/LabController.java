@@ -95,6 +95,11 @@ public class LabController {
         return lab.getTotalStage();
     }
 
+    @PostMapping("/updatetoolprop")
+    @ResponseBody
+    public String updateStageToolProp(@RequestParam int stageNum, @RequestParam String ID, @RequestParam String toolProps){
+        return lab.getStage( stageNum ).updateToolProp( ID, toolProps ).toString();
+    }
 
 
 

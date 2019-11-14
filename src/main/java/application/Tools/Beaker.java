@@ -18,6 +18,7 @@ public class Beaker extends Tool {
 
     }
 
+
     @Override
     public String getImageName() {
         return imageName;
@@ -76,6 +77,26 @@ public class Beaker extends Tool {
         toolJSONObject.put( "Interactions",interactions );
 
         return  toolJSONObject;
+
+    }
+
+    public void updateProp(String toolProps){
+
+        JSONObject jsonObject = new JSONObject(toolProps);
+
+        this.x = (float)jsonObject.get( "x" );
+        this.y = (float)jsonObject.get( "y" );
+
+        JSONArray propArray = jsonObject.getJSONArray( "Prop" );
+
+        propArray.forEach( e->{
+            JSONObject prop = (JSONObject) e;
+            if ( ((String)prop.get("Name")).equals( "Size" ) ){
+                this.size= (int) prop.get( "Value" );
+            }else if (((String)prop.get("Name")).equals( "Color" )){
+                this.color=(String) prop.get( "Value" );
+            }
+        } );
 
     }
 

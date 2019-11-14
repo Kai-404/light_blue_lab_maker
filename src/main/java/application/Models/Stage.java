@@ -1,5 +1,8 @@
 package application.Models;
 
+import application.Tools.AlcoholBurner;
+import application.Tools.Beaker;
+import application.Tools.PHPaper;
 import com.mongodb.util.JSON;
 import lombok.Data;
 import lombok.Getter;
@@ -84,5 +87,33 @@ public class Stage {
 
 
         return  stageJSONObject;
+    }
+
+    public JSONObject updateToolProp(String toolID, String toolProps){
+
+        JSONObject toReturn = null;
+        for (Tool tool : stageToolList) {
+            if (tool.getId().equals( toolID )) {
+                int index = stageToolList.indexOf( tool );
+                if (tool.getName().equals( "Beaker" )){
+                    Beaker beaker = (Beaker) tool;
+                    beaker.updateProp( toolProps );
+                    toReturn = beaker.getToolAsJSON();
+                    stageToolList.set( index,beaker );
+                }else if (tool.getName().equals( "PHPaper" )){
+                    PHPaper phpaper = (PHPaper) tool;
+                    phpaper.updateProp( toolProps );
+                    toReturn = phpaper.getToolAsJSON();
+                    stageToolList.set( index,phpaper );
+                }else if (tool.getName().equals( "AlcoholBurner" )){
+                    AlcoholBurner alcoholBurner = (AlcoholBurner) tool;
+                    alcoholBurner.updateProp( toolProps );
+                    toReturn = alcoholBurner.getToolAsJSON();
+                    stageToolList.set( index,alcoholBurner );
+                }
+            }
+        }
+        return toReturn;
+
     }
 }
