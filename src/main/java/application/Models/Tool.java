@@ -19,6 +19,8 @@ public class Tool {
 
     public float y;
 
+    public String name;
+
     public String imageName;
 
     private HashMap<String,String> propertyList;
@@ -31,6 +33,10 @@ public class Tool {
         return this.imageName;
     }
 
+    public String getName(){
+        return this.name;
+    }
+
     public void setId(String id){
         this.id = id;
     }
@@ -41,6 +47,7 @@ public class Tool {
     public void setY(float y){
         this.y = y;
     }
+
 
     public JSONObject getToolAsJSON(){
 

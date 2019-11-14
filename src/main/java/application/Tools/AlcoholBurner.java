@@ -41,4 +41,13 @@ public class AlcoholBurner extends Tool {
         return  toolJSONObject;
 
     }
+
+    public void updateProp(String toolProps){
+
+        JSONObject jsonObject = new JSONObject(toolProps);
+
+        this.x = (float)jsonObject.get( "x" );
+        this.y = (float)jsonObject.get( "y" );
+
+    }
 }
