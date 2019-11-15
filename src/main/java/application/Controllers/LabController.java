@@ -109,6 +109,8 @@ public class LabController {
 ////        return lab.getStage( stageNum ).getStageAsJSON().toString();
 //    }
 
+    @GetMapping("/savelab")
+    @ResponseBody
     public void saveLab() {
         labRepository.save(lab);
     }
