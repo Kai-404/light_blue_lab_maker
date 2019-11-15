@@ -1,21 +1,18 @@
 package application.Controllers;
 
 import application.Models.Lab;
-import application.Models.LabRepository;
 import application.Models.Stage;
 // Not the real JSON Library!!!
 //import net.minidev.json.JSONArray;
 import application.Tools.Beaker;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin
 @RestController
 public class LabController {
-    @Autowired
-            private LabRepository labRepository;
+
     //Lab object that gets modified when creating a lab
     Lab lab;
 
@@ -39,18 +36,16 @@ public class LabController {
     @PostMapping("/addstage")
     @ResponseBody
     public void addStage(@RequestBody int stageNum) {
-        System.out.println("try to add after: " + stageNum);
         lab.addStage(stageNum);
     }
 
 
     //TODO: deletes stage currentStage
-//    @PostMapping("/deletestage")
-//    @ResponseBody
-//    public Lab deleteStage(@RequestBody Stage currentStage) {
-//        lab.deleteStage(currentStage.getStageNum());
-//        return lab;
-//    }
+    @PostMapping("/deletestage")
+    @ResponseBody
+    public void deleteStage(@RequestBody int stageNum) {
+        lab.deleteStage(stageNum);
+    }
 
     //returns list of all tools
     @GetMapping("/getalltools")
@@ -83,7 +78,6 @@ public class LabController {
     @PostMapping("/getstage")
     @ResponseBody
     public String getStage(@RequestBody int stageNum){
-        System.out.println("getting post rrequest: " + stageNum);
         return lab.getStage( stageNum ).getStageAsJSON().toString();
     }
 
@@ -95,36 +89,24 @@ public class LabController {
 
     @GetMapping("/gettotalstage")
     @ResponseBody
-    public int getTool(){
+    public int getTotalStage(){
         return lab.getTotalStage();
     }
 
     @PostMapping("/updatetoolprop")
     @ResponseBody
-    public String updateStageToolProp(@RequestParam int stageNum, @RequestParam String ID, @RequestParam String toolProps){
-        return lab.getStage( stageNum ).updateToolProp( ID, toolProps ).toString();
+    public String updateStageToolProp(@RequestBody String toolProps, @RequestParam int stageNum, @RequestParam String ID){
+        System.out.println( "Stage Num: "+stageNum+"\nTool ID: "+ ID+"\n prop: "+toolProps);
+        lab.getStage( stageNum ).updateToolProp( ID, toolProps );
+        return lab.getStage( stageNum ).getStageAsJSON().toString();
     }
-
-
-
-
-//
-//    //adds a tool to one stage
-//    @PostMapping("/addstagetool")
-//    @ResponseBody
-//    public Lab addStageTool(@RequestBody String tool, @RequestBody Integer currentStage) {
-//        lab.addStageTool(tool, currentStage);
-//        return lab;
+//    public void updateStageToolProp(@RequestParam int stageNum, @RequestParam String ID, @RequestBody String toolProps){
+//        System.out.println( "Stage Num: "+stageNum+"Tool ID: "+ ID+" prop: "+toolProps);
+////        lab.getStage( stageNum ).updateToolProp( ID, toolProps );
+////        return lab.getStage( stageNum ).getStageAsJSON().toString();
 //    }
-    public void saveLab() {
-        labRepository.save(lab);
-    }
 
-    public void deleteLab() {
-        labRepository.delete(lab);
-    }
 
-    public void pulbishLab() {
-        lab.setPublished(true);
-    }
+
+
 }

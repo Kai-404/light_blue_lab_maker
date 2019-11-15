@@ -23,7 +23,6 @@ import "../App.css";
 
 const stageW = window.innerWidth - window.innerWidth * 0.3;
 const stageH = window.innerHeight - 200;
-var idNum = 1;
 
 class Makelab extends Component {
   state = {
@@ -82,21 +81,19 @@ class Makelab extends Component {
   }
 
   deleteStage() {
-    /*
+    let stageNum = this.state.currentStage.stageNum;
     axios
-      .post("http://localhost:8080/deletestage", {
-        currentStage: this.state.currentStage
-      })
+      .post(
+        "http://localhost:8080/deletestage",
+        JSON.stringify(stageNum),
+        {
+          headers: { "Content-Type": "application/json;charset=UTF-8" }
+        }
+      )
       .then(res => {
-        this.setState({ lab: res.data, currentStage: this.state.currentStage-1 });
+        this.getTotalStage();
+        this.setCurrentStage(stageNum);
       });
-      */
-    let newLab = JSON.parse(JSON.stringify(this.state.lab));
-    newLab.stageList.splice(this.state.currentStage, 1);
-    newLab.stageList.map((stage, i) => (stage.stageNum = i));
-    this.setState({ lab: newLab });
-    //once the stage is being deleted, current stage will now be the one before
-    this.setCurrentStage(this.state.currentStage - 1);
   }
 
   //add tool to whole lab
@@ -151,11 +148,14 @@ class Makelab extends Component {
   };
   //drag tool end animation
   handleDragEnd = e => {
+    let stageNum = this.state.currentStage.stageNum;
+    let id = e.target.attrs.name;
     this.state.currentStage.stageTool.map(tool => {
       // e.target.attrs.name is the id of img
-      if (tool.id === e.target.attrs.name) {
+      if (tool.id === id) {
         tool.x = e.target.attrs.x;
         tool.y = e.target.attrs.y;
+        this.setState({ currentTool: tool });
       }
     });
     e.target.to({
@@ -166,6 +166,27 @@ class Makelab extends Component {
       shadowOffsetX: 0,
       shadowOffsetY: 0
     });
+    let ctool = this.state.currentTool;
+    let data = JSON.stringify({
+      stageNum,
+      id,
+      ctool
+    });
+
+    console.log(data);
+    console.log("handle drag: ", ctool);
+    axios
+      .post("http://localhost:8080/updatetoolprop", data, {
+        headers: { "Content-Type": "application/json;charset=UTF-8" },
+        params: {
+          stageNum: stageNum,
+          ID: id,
+        },toolProps: ctool
+      })
+      .then(res => {
+        console.log("drag end: ", res.data);
+        this.setCurrentStage(stageNum);
+      });
   };
 
   setShow = () => {
@@ -195,16 +216,32 @@ class Makelab extends Component {
     this.setShow();
   };
 
-  handleSubmit = event => {
+  handleSubmit = () => {
     //update tool
-    /*
-    axios.post()
-    */
-    const form = event.currentTarget;
-    if (form.checkValidity() === false) {
-      event.preventDefault();
-      event.stopPropagation();
-    }
+    let stageNum = this.state.currentStage.stageNum;
+    let ctool = this.state.currentTool;
+    let id = ctool.id;
+    let data = JSON.stringify({
+      stageNum,
+      id,
+      ctool
+    });
+    axios
+      .post("http://localhost:8080/updatetoolprop", data, {
+        headers: { "Content-Type": "application/json;charset=UTF-8" },
+        params: {
+          stageNum: stageNum,
+          ID: id,
+
+        },toolProps: ctool
+      })
+      .then(res => {
+        //get back the whole stage
+        this.setCurrentStage(stageNum);
+        console.log(res.data);
+        this.setShow();
+      });
+
   };
 
   render() {
@@ -268,7 +305,7 @@ class Makelab extends Component {
             <Form.Group>
               Interaction: <br />
             </Form.Group>
-            <Button variant="primary" type="submit" onClick={this.handleSubmit}>
+            <Button variant="primary" type="button" onClick={this.handleSubmit}>
               Submit
             </Button>
           </Form>

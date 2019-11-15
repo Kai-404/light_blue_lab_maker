@@ -32,7 +32,6 @@ class App extends Component {
   };
 
   showCourseContent = val => {
-    console.log("appjs under course: ", val);
     this.setState({ underCourse: val });
   };
 
@@ -91,7 +90,10 @@ class App extends Component {
               path="/home"
               render={props => (
                 <React.Fragment>
-                  <HomePage user={this.state.user} underCourse={this.showCourseContent} />
+                  <HomePage
+                    user={this.state.user}
+                    underCourse={this.showCourseContent}
+                  />
                 </React.Fragment>
               )}
             />

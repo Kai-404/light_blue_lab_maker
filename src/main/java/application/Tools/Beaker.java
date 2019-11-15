@@ -8,14 +8,17 @@ public class Beaker extends Tool {
 
     String name = "Beaker";
     final String imageName = "beaker.png";
-    float x = 0;
-    float y = 0;
+    int x = 0;
+    int y = 0;
     int size = 100;
     String color = "green";
 
     boolean canBeBurned = true;
     public Beaker(){
 
+    }
+    public String getName(){
+        return this.name;
     }
 
 
@@ -71,8 +74,8 @@ public class Beaker extends Tool {
 
         toolJSONObject.put( "Prop",properties );
 
-        JSONArray interactions = new JSONArray();
-        interactions.put("Pour");
+        JSONObject interactions = new JSONObject();
+        interactions.put("Name", "Pour");
 
         toolJSONObject.put( "Interactions",interactions );
 
@@ -84,10 +87,11 @@ public class Beaker extends Tool {
 
         JSONObject jsonObject = new JSONObject(toolProps);
 
-        this.x = (float)jsonObject.get( "x" );
-        this.y = (float)jsonObject.get( "y" );
+        JSONObject cTool = jsonObject.getJSONObject( "ctool" );
+        this.x = (int)cTool.get( "x" );
+        this.y = (int)cTool.get( "y" );
 
-        JSONArray propArray = jsonObject.getJSONArray( "Prop" );
+        JSONArray propArray = cTool.getJSONArray( "Prop" );
 
         propArray.forEach( e->{
             JSONObject prop = (JSONObject) e;

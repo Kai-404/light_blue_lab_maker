@@ -63,6 +63,8 @@ public class Stage {
         tool.setId( ID );
 
         stageToolList.add( tool );
+//        System.out.println( tool.getName() );
+//        System.out.println( stageToolList.toString() );
         return true;
     }
 
@@ -122,4 +124,6 @@ public class Stage {
         return toReturn;
 
     }
+
+
 }
