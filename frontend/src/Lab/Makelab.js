@@ -81,16 +81,18 @@ class Makelab extends Component {
   }
 
   deleteStage() {
+    let stageNum = this.state.currentStage.stageNum;
     axios
       .post(
         "http://localhost:8080/deletestage",
-        JSON.stringify(this.state.currentStage.stageNum),
+        JSON.stringify(stageNum),
         {
           headers: { "Content-Type": "application/json;charset=UTF-8" }
         }
       )
       .then(res => {
         this.getTotalStage();
+        this.setCurrentStage(stageNum);
       });
   }
 
@@ -171,6 +173,7 @@ class Makelab extends Component {
       ctool
     });
 
+    console.log(data);
     console.log("handle drag: ", ctool);
     axios
       .post("http://localhost:8080/updatetoolprop", data, {
@@ -178,11 +181,11 @@ class Makelab extends Component {
         params: {
           stageNum: stageNum,
           ID: id,
-          toolProps: ctool
-        }
+        },toolProps: ctool
       })
       .then(res => {
         console.log("drag end: ", res.data);
+        this.setCurrentStage(stageNum);
       });
   };
 
@@ -213,15 +216,15 @@ class Makelab extends Component {
     this.setShow();
   };
 
-  handleSubmit = e => {
+  handleSubmit = () => {
     //update tool
     let stageNum = this.state.currentStage.stageNum;
-    let id = e.target.attrs.name;
-    let tool = this.state.currentTool;
+    let ctool = this.state.currentTool;
+    let id = ctool.id;
     let data = JSON.stringify({
       stageNum,
       id,
-      tool
+      ctool
     });
     axios
       .post("http://localhost:8080/updatetoolprop", data, {
@@ -229,20 +232,16 @@ class Makelab extends Component {
         params: {
           stageNum: stageNum,
           ID: id,
-          toolProps: tool
-        }
+
+        },toolProps: ctool
       })
       .then(res => {
         //get back the whole stage
-        this.setState({ currentStage: res.data });
+        this.setCurrentStage(stageNum);
         console.log(res.data);
+        this.setShow();
       });
 
-    const form = e.currentTarget;
-    if (form.checkValidity() === false) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
   };
 
   render() {
@@ -306,7 +305,7 @@ class Makelab extends Component {
             <Form.Group>
               Interaction: <br />
             </Form.Group>
-            <Button variant="primary" type="submit" onClick={this.handleSubmit}>
+            <Button variant="primary" type="button" onClick={this.handleSubmit}>
               Submit
             </Button>
           </Form>

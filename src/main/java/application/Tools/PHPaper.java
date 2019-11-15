@@ -8,12 +8,16 @@ public class PHPaper extends Tool {
 
     String name = "PHPaper";
     final String imageName = "ph.png";
-    float x = 0;
-    float y = 0;
+    int x = 0;
+    int y = 0;
     String color = "green";
 
     public PHPaper(){
 
+    }
+
+    public String getName(){
+        return this.name;
     }
 
 
@@ -55,11 +59,11 @@ public class PHPaper extends Tool {
     public void updateProp(String toolProps){
 
         JSONObject jsonObject = new JSONObject(toolProps);
+        JSONObject cTool = jsonObject.getJSONObject( "ctool" );
+        this.x = (int)cTool.get( "x" );
+        this.y = (int)cTool.get( "y" );
 
-        this.x = (float)jsonObject.get( "x" );
-        this.y = (float)jsonObject.get( "y" );
-
-        JSONArray propArray = jsonObject.getJSONArray( "Prop" );
+        JSONArray propArray = cTool.getJSONArray( "Prop" );
 
         propArray.forEach( e->{
             JSONObject prop = (JSONObject) e;

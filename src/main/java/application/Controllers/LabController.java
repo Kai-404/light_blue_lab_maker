@@ -35,8 +35,8 @@ public class LabController {
     //adds a stage to the lab and returns updated lab
     @PostMapping("/addstage")
     @ResponseBody
-    public void addStage() {
-        lab.addStage();
+    public void addStage(@RequestBody int stageNum) {
+        lab.addStage(stageNum);
     }
 
 
@@ -78,7 +78,6 @@ public class LabController {
     @PostMapping("/getstage")
     @ResponseBody
     public String getStage(@RequestBody int stageNum){
-        System.out.println("getting post rrequest: " + stageNum);
         return lab.getStage( stageNum ).getStageAsJSON().toString();
     }
 
@@ -96,10 +95,16 @@ public class LabController {
 
     @PostMapping("/updatetoolprop")
     @ResponseBody
-    public String updateStageToolProp(@RequestParam int stageNum, @RequestParam String ID, @RequestParam String toolProps){
+    public String updateStageToolProp(@RequestBody String toolProps, @RequestParam int stageNum, @RequestParam String ID){
+        System.out.println( "Stage Num: "+stageNum+"\nTool ID: "+ ID+"\n prop: "+toolProps);
         lab.getStage( stageNum ).updateToolProp( ID, toolProps );
         return lab.getStage( stageNum ).getStageAsJSON().toString();
     }
+//    public void updateStageToolProp(@RequestParam int stageNum, @RequestParam String ID, @RequestBody String toolProps){
+//        System.out.println( "Stage Num: "+stageNum+"Tool ID: "+ ID+" prop: "+toolProps);
+////        lab.getStage( stageNum ).updateToolProp( ID, toolProps );
+////        return lab.getStage( stageNum ).getStageAsJSON().toString();
+//    }
 
 
 

@@ -15,9 +15,9 @@ public class Tool {
 
     public String id;
 
-    public float x;
+    public int x;
 
-    public float y;
+    public int y;
 
     public String name;
 
@@ -41,10 +41,10 @@ public class Tool {
         this.id = id;
     }
 
-    public void setX(float x){
+    public void setX(int x){
         this.x = x;
     }
-    public void setY(float y){
+    public void setY(int y){
         this.y = y;
     }
 

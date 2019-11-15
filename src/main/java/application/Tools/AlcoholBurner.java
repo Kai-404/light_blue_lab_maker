@@ -8,11 +8,14 @@ public class AlcoholBurner extends Tool {
 
     String name = "AlcoholBurner";
     final String imageName = "burner.png";
-    float x = 0;
-    float y = 0;
+    int x = 0;
+    int y = 0;
 
     public AlcoholBurner(){
 
+    }
+    public String getName(){
+        return this.name;
     }
 
     @Override
@@ -46,8 +49,11 @@ public class AlcoholBurner extends Tool {
 
         JSONObject jsonObject = new JSONObject(toolProps);
 
-        this.x = (float)jsonObject.get( "x" );
-        this.y = (float)jsonObject.get( "y" );
+        JSONObject cTool = jsonObject.getJSONObject( "ctool" );
+        this.x = (int)cTool.get( "x" );
+        this.y = (int)cTool.get( "y" );
+
+        JSONArray propArray = cTool.getJSONArray( "Prop" );
 
     }
 }
