@@ -91,7 +91,7 @@ class App extends Component {
               path="/home"
               render={props => (
                 <React.Fragment>
-                  <HomePage underCourse={this.showCourseContent} />
+                  <HomePage user={this.state.user} underCourse={this.showCourseContent} />
                 </React.Fragment>
               )}
             />
