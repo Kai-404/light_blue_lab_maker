@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import { Button, Col, Form } from "react-bootstrap";
-import { LinkContainer } from "react-router-bootstrap";
+import { Form } from "react-bootstrap";
+import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import axios from "axios";
@@ -90,54 +90,82 @@ class Register extends Component {
     }
     this.register(username, email, password, UserType);
   };
+
   render() {
     return (
       <div>
-        <Form className="form">
-          <p className="header">Register</p>
-          <p className="errmsg">{this.state.errmsg}</p>
-          <Form.Group controlId="formGridState">
-            <Form.Label>Role</Form.Label>
-            <Form.Control as="select">
-              <option>Choose...</option>
-              <option>Student</option>
-              <option>Professor</option>
-            </Form.Control>
-          </Form.Group>
-          <Form.Row>
-            <Form.Group as={Col} controlId="formGridEmail">
-              <Form.Label>Username</Form.Label>
-              <Form.Control type="email" placeholder="Enter username" />
-            </Form.Group>
-            <Form.Group as={Col} controlId="formGridEmail">
-              <Form.Label>Email</Form.Label>
-              <Form.Control type="email" placeholder="Enter email" />
-            </Form.Group>
-          </Form.Row>
-          <Form.Row>
-            <Form.Group as={Col} controlId="formGridPassword">
-              <Form.Label>Password</Form.Label>
-              <Form.Control type="password" placeholder="Password" />
-            </Form.Group>
-            <Form.Group as={Col} controlId="formGridPassword">
-              <Form.Label>Re-Password</Form.Label>
-              <Form.Control
-                type="password"
-                placeholder="Password"
-                onChange={this.onChange}
-              />
-            </Form.Group>
-          </Form.Row>
+        <p className="errmsg">{this.state.errmsg}</p>
+        <form className="form" onSubmit={this.onSubmit}>
+          <Form.Check
+            custom
+            type="radio"
+            label="Student"
+            name="UserType"
+            id="Stu"
+            value="Student"
+            onChange={this.onChange}
+          />
+          <Form.Check
+            custom
+            type="radio"
+            label="Professor"
+            name="UserType"
+            id="Prof"
+            value="Professor"
+            onChange={this.onChange}
+          />
+          User Name:
+          <input
+            className="input"
+            value={this.state.username}
+            type="text"
+            name="username"
+            onChange={this.onChange}
+          />
+          <br />
+          <br />
+          Email:
+          <input
+            className="input"
+            value={this.state.email}
+            type="text"
+            name="email"
+            onChange={this.onChange}
+          />
+          <br />
+          <br />
+          Password:
+          <input
+            className="input"
+            value={this.state.password}
+            type="password"
+            name="password"
+            onChange={this.onChange}
+          />
+          <br />
+          <br />
+          Reenter Password:
+          <input
+            className="input"
+            value={this.state.password2}
+            type="password"
+            name="password2"
+            onChange={this.onChange}
+          />
+          <br />
+          <br />
           <button type="submit" className="submitButton">
             Submit
           </button>
           {"  "}
-          <LinkContainer to="/">
-            <button className="submitButton" type="button">
-              Cancel
-            </button>
-          </LinkContainer>
-        </Form>
+          <button
+            type="button"
+            className="submitButton"
+            onClick={this.routeChange}
+          >
+            Cancel
+          </button>
+        </form>
       </div>
     );
   }
