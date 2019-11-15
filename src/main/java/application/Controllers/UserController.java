@@ -6,6 +6,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@CrossOrigin
 public class UserController {
 
     @Autowired
@@ -16,17 +17,15 @@ public class UserController {
     private StudentRepository studentRepository;
 
     @PostMapping("/register")
-    public int createUser(@RequestParam(name = "username") String username, @RequestParam(name = "email") String email,
-                          @RequestParam(name = "password") String password, @RequestParam(name = "UserType") String userType) {
-        if (userRepository.findByEmail(email) != null) { return 1; }
-        if (userRepository.findByUsername(username) != null) { return 2; }
-        User newUser = new User(username, email, password, userType);
-        userRepository.save(newUser);
-        if (userType.equals("Professor")) {
-            Professor professor = new Professor(newUser.getId());
+    public int createUser(@RequestBody User user) {
+        if (userRepository.findByEmail(user.getEmail()) != null) { return 1; }
+        if (userRepository.findByUsername(user.getUsername()) != null) { return 2; }
+        userRepository.save(user);
+        if (user.getUserType().equals("Professor")) {
+            Professor professor = new Professor(user.getId());
             professorRepository.save(professor);
         } else {
-            Student student = new Student(newUser.getId());
+            Student student = new Student(user.getId());
             studentRepository.save(student);
         }
         return 3;
