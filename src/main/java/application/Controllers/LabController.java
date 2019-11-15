@@ -41,12 +41,11 @@ public class LabController {
 
 
     //TODO: deletes stage currentStage
-//    @PostMapping("/deletestage")
-//    @ResponseBody
-//    public Lab deleteStage(@RequestBody Stage currentStage) {
-//        lab.deleteStage(currentStage.getStageNum());
-//        return lab;
-//    }
+    @PostMapping("/deletestage")
+    @ResponseBody
+    public void deleteStage(@RequestBody int stageNum) {
+        lab.deleteStage(stageNum);
+    }
 
     //returns list of all tools
     @GetMapping("/getalltools")
@@ -91,26 +90,18 @@ public class LabController {
 
     @GetMapping("/gettotalstage")
     @ResponseBody
-    public int getTool(){
+    public int getTotalStage(){
         return lab.getTotalStage();
     }
 
     @PostMapping("/updatetoolprop")
     @ResponseBody
     public String updateStageToolProp(@RequestParam int stageNum, @RequestParam String ID, @RequestParam String toolProps){
-        return lab.getStage( stageNum ).updateToolProp( ID, toolProps ).toString();
+        lab.getStage( stageNum ).updateToolProp( ID, toolProps );
+        return lab.getStage( stageNum ).getStageAsJSON().toString();
     }
 
 
 
-
-//
-//    //adds a tool to one stage
-//    @PostMapping("/addstagetool")
-//    @ResponseBody
-//    public Lab addStageTool(@RequestBody String tool, @RequestBody Integer currentStage) {
-//        lab.addStageTool(tool, currentStage);
-//        return lab;
-//    }
 
 }

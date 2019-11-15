@@ -71,8 +71,8 @@ public class Beaker extends Tool {
 
         toolJSONObject.put( "Prop",properties );
 
-        JSONArray interactions = new JSONArray();
-        interactions.put("Pour");
+        JSONObject interactions = new JSONObject();
+        interactions.put("Name", "Pour");
 
         toolJSONObject.put( "Interactions",interactions );
 

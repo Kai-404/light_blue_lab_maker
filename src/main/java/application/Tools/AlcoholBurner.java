@@ -33,8 +33,8 @@ public class AlcoholBurner extends Tool {
 
         toolJSONObject.put( "Prop","No property for this tool!" );
 
-        JSONArray interactions = new JSONArray();
-        interactions.put("Burn");
+        JSONObject interactions = new JSONObject();
+        interactions.put("Name", "Burn");
 
         toolJSONObject.put( "Interactions",interactions );
 

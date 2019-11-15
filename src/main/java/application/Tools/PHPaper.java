@@ -43,8 +43,8 @@ public class PHPaper extends Tool {
 
         toolJSONObject.put( "Prop",properties );
 
-        JSONArray interactions = new JSONArray();
-        interactions.put("Measure");
+        JSONObject interactions = new JSONObject();
+        interactions.put("Name", "Measure");
 
         toolJSONObject.put( "Interactions",interactions );
 
