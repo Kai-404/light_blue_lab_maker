@@ -185,7 +185,11 @@ class Makelab extends Component {
         this.setCurrentStage(stageNum);
       });
   };
-
+  saveLab = () =>{
+    axios.get("http://localhost:8080/savelab").then(res=>{
+      console.log("saved to database");
+    });
+  }
   setShow = () => {
     this.setState({ showPop: !this.state.showPop });
   };
@@ -455,6 +459,7 @@ class Makelab extends Component {
 
         <br />
         <ButtonGroup>
+          <Button className="submitButton" onClick={this.saveLab}>Save</Button>
           <Button className="submitButton">Publish</Button>
           <LinkContainer to="/labspage">
             <Button className="submitButton">Cancel</Button>
