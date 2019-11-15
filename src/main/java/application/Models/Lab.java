@@ -3,6 +3,7 @@ package application.Models;
 import com.mongodb.util.JSON;
 import lombok.Data;
 import lombok.Getter;
+import lombok.Setter;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.data.annotation.Id;
@@ -19,6 +20,7 @@ import java.util.List;
 
 @Data
 @Getter
+@Setter
 @Document
 public class Lab {
     @Id
@@ -127,8 +129,8 @@ public class Lab {
 
 
     //add a new stage
-    public void addStage() {
-        this.stageList.add(stageList.size(), new Stage(stageList.size()));
+    public void addStage(int stageNum) {
+        this.stageList.add(stageNum+1, new Stage(stageNum+1));
         this.updateStageList();
     }
 

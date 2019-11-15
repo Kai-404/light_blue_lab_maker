@@ -10,7 +10,6 @@ class Addtool extends Component {
 
   setShow = () => {
     this.setState({ show: !this.state.show });
-    console.log(this.props.show);
     this.props.show = this.state.show;
   };
 

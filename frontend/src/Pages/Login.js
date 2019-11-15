@@ -22,7 +22,7 @@ class Login extends Component {
 
   /* Change page to homepage */
   routeHome = () => {
-    this.props.history.push("/");
+    this.props.history.push("/home");
   };
 
   routeResetPassword = () => {
@@ -33,15 +33,14 @@ class Login extends Component {
 
   /* When login button is clicked, retrieve user info from database */
   onSubmit = e => {
-    this.props.history.push("/home");
-    /*
+
     e.preventDefault();
     const { email, password } = this.state;
     if (email === "" || password === "") {
       this.setState({ errmsg: "fill in all blanks" });
     } else {
       axios
-        .get("/login", {
+        .get("http://localhost:8080/login", {
           headers: { "Content-Type": "application/json;charset=UTF-8" },
           params: { email: email, password: password }
         })
@@ -62,7 +61,7 @@ class Login extends Component {
           console.log(err);
         });
         
-    }*/
+    }
   };
 
   render() {
@@ -70,6 +69,7 @@ class Login extends Component {
       <div>
         <p className="errmsg">{this.state.errmsg}</p>
         <form className="form" onSubmit={this.onSubmit}>
+          <p className="header">Login</p>
           Username or Email:
           <input
             className="input"
@@ -108,14 +108,6 @@ class Login extends Component {
             onClick={this.routeResetPassword}
           >
             Reset Password
-          </button>
-          {"  "}
-          <button
-            type="button"
-            className="submitButton"
-            onClick={this.routeHome}
-          >
-            Cancel
           </button>
         </form>
       </div>
