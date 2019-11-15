@@ -45,13 +45,13 @@ class Header extends Component {
           <LinkContainer to="/">
             <button className="IconButton">
               <img src={UserIcon} className="UserIcon" alt="User" />
-              Click to Login
+              Login
             </button>
           </LinkContainer>
           <LinkContainer to="/register">
             <button className="IconButton">
               <img src={RegisterIcon} className="UserIcon" alt="Re" />
-              Click to Register
+              Register
             </button>
           </LinkContainer>
         </React.Fragment>

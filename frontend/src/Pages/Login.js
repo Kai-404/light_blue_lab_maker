@@ -33,7 +33,6 @@ class Login extends Component {
 
   /* When login button is clicked, retrieve user info from database */
   onSubmit = e => {
-
     e.preventDefault();
     const { email, password } = this.state;
     if (email === "" || password === "") {
@@ -47,6 +46,7 @@ class Login extends Component {
         .then(res => {
           if (res.data != "") {
             this.props.login(res.data);
+            this.props.showbar(true);
             this.setState({
               email: "",
               password: "",
@@ -60,7 +60,6 @@ class Login extends Component {
         .catch(err => {
           console.log(err);
         });
-        
     }
   };
 
