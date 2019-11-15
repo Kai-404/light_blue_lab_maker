@@ -23,7 +23,6 @@ import "../App.css";
 
 const stageW = window.innerWidth - window.innerWidth * 0.3;
 const stageH = window.innerHeight - 200;
-var idNum = 1;
 
 class Makelab extends Component {
   state = {
@@ -82,21 +81,17 @@ class Makelab extends Component {
   }
 
   deleteStage() {
-    /*
     axios
-      .post("http://localhost:8080/deletestage", {
-        currentStage: this.state.currentStage
-      })
+      .post(
+        "http://localhost:8080/deletestage",
+        JSON.stringify(this.state.currentStage.stageNum),
+        {
+          headers: { "Content-Type": "application/json;charset=UTF-8" }
+        }
+      )
       .then(res => {
-        this.setState({ lab: res.data, currentStage: this.state.currentStage-1 });
+        this.getTotalStage();
       });
-      */
-    let newLab = JSON.parse(JSON.stringify(this.state.lab));
-    newLab.stageList.splice(this.state.currentStage, 1);
-    newLab.stageList.map((stage, i) => (stage.stageNum = i));
-    this.setState({ lab: newLab });
-    //once the stage is being deleted, current stage will now be the one before
-    this.setCurrentStage(this.state.currentStage - 1);
   }
 
   //add tool to whole lab
@@ -151,11 +146,14 @@ class Makelab extends Component {
   };
   //drag tool end animation
   handleDragEnd = e => {
+    let stageNum = this.state.currentStage.stageNum;
+    let id = e.target.attrs.name;
     this.state.currentStage.stageTool.map(tool => {
       // e.target.attrs.name is the id of img
-      if (tool.id === e.target.attrs.name) {
+      if (tool.id === id) {
         tool.x = e.target.attrs.x;
         tool.y = e.target.attrs.y;
+        this.setState({ currentTool: tool });
       }
     });
     e.target.to({
@@ -166,6 +164,26 @@ class Makelab extends Component {
       shadowOffsetX: 0,
       shadowOffsetY: 0
     });
+    let ctool = this.state.currentTool;
+    let data = JSON.stringify({
+      stageNum,
+      id,
+      ctool
+    });
+
+    console.log("handle drag: ", ctool);
+    axios
+      .post("http://localhost:8080/updatetoolprop", data, {
+        headers: { "Content-Type": "application/json;charset=UTF-8" },
+        params: {
+          stageNum: stageNum,
+          ID: id,
+          toolProps: ctool
+        }
+      })
+      .then(res => {
+        console.log("drag end: ", res.data);
+      });
   };
 
   setShow = () => {
@@ -195,15 +213,35 @@ class Makelab extends Component {
     this.setShow();
   };
 
-  handleSubmit = event => {
+  handleSubmit = e => {
     //update tool
-    /*
-    axios.post()
-    */
-    const form = event.currentTarget;
+    let stageNum = this.state.currentStage.stageNum;
+    let id = e.target.attrs.name;
+    let tool = this.state.currentTool;
+    let data = JSON.stringify({
+      stageNum,
+      id,
+      tool
+    });
+    axios
+      .post("http://localhost:8080/updatetoolprop", data, {
+        headers: { "Content-Type": "application/json;charset=UTF-8" },
+        params: {
+          stageNum: stageNum,
+          ID: id,
+          toolProps: tool
+        }
+      })
+      .then(res => {
+        //get back the whole stage
+        this.setState({ currentStage: res.data });
+        console.log(res.data);
+      });
+
+    const form = e.currentTarget;
     if (form.checkValidity() === false) {
-      event.preventDefault();
-      event.stopPropagation();
+      e.preventDefault();
+      e.stopPropagation();
     }
   };
 

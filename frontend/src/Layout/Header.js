@@ -17,7 +17,6 @@ class Header extends Component {
   render() {
     let UserName = "User Name";
     let BarContent = e => {
-      console.log("under course: ", e.under);
       let res = <Nav className="mr-auto"></Nav>;
       if (e.under) {
         res = (
