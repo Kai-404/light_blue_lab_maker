@@ -6,10 +6,14 @@ import lombok.Getter;
 import lombok.Setter;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -37,7 +41,7 @@ public class Lab {
 
     public Lab() {}
 
-    public Lab(String title, String author) {
+    public Lab(String title, String author) throws IOException {
         this.title = title;
         this.author = author;
         this.isPublished = false;
@@ -53,16 +57,15 @@ public class Lab {
     }
 
     //add tool to warehouse here
-    private void initToolWarehouse() {
-        File[] files = new File("./src/main/java/application/Tools").listFiles();
+    private void initToolWarehouse() throws IOException {
+        ClassPathResource classPathResource = new ClassPathResource("tools.txt");
+        File file = classPathResource.getFile();
 
-        for (File file : files) {
-            if (file.isFile()) {
-                //System.out.println( file.getName() );
+        BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
 
-                this.toolWarehouse.put(file.getName().replace( ".java",""), false);
-            }
-
+        String line;
+        while ((line = bufferedReader.readLine()) != null) {
+            this.toolWarehouse.put(line, false);
         }
     }
 
