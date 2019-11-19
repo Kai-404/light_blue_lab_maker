@@ -370,7 +370,7 @@ class Makelab extends Component {
         let toolBar = (
             <React.Fragment>
                 {this.state.labTools.map(tool => (
-                    <Button className="toolButton" onClick={this.popTool}>
+                    <Button className="toolButton" onClick={this.popTool} disabled={this.state.currentStage.stageNum === -1}>
                         <img
                             src={process.env.PUBLIC_URL + tool.Img}
                             className="UserIcon"
