@@ -385,6 +385,8 @@ class Makelab extends Component {
       <React.Fragment>
         <p className="errmsg">{this.state.errMsg}</p>
         <Modal
+          size="sm"
+          centered
           show={this.state.showPop}
           onHide={this.setShow}
           dialogClassName="modal-90w"
