@@ -83,7 +83,6 @@ public class LabController {
     @PostMapping("/getstage")
     @ResponseBody
     public String getStage(@RequestBody int stageNum){
-        if (stageNum < 0) { return null; }
         return lab.getStage( stageNum ).getStageAsJSON().toString();
     }
 

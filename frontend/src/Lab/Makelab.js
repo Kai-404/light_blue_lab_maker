@@ -42,8 +42,8 @@ class Makelab extends Component {
         /*axios.get("/getlab").then(res => {
           this.setState({ stageList: res.data.stageList });
         }); */
-        this.getTotalStage();
-        this.setCurrentStage(-1);
+        //this.getTotalStage();
+        //this.setCurrentStage(-1);
     }
 
     getTotalStage() {
@@ -55,15 +55,20 @@ class Makelab extends Component {
     setCurrentStage(i) {
         console.log("currentstage is: ", i);
         let data = JSON.stringify(i);
-        axios
-            .post("http://localhost:8080/getstage", data, {
-                headers: {"Content-Type": "application/json;charset=UTF-8"},
-                params: {stageNum: i}
-            })
-            .then(res => {
-                this.setState({currentStage: res.data});
-            });
-        console.log(this.state.currentStage);
+        if (i>-1) {
+            axios
+                .post("http://localhost:8080/getstage", data, {
+                    headers: {"Content-Type": "application/json;charset=UTF-8"},
+                    params: {stageNum: i}
+                })
+                .then(res => {
+                    this.setState({currentStage: res.data});
+                });
+            console.log(this.state.currentStage);
+        }
+        else {
+            this.setState({currentStage: {stageNum: -1, stageTool: []}});
+        }
     }
 
     addStage() {
@@ -83,13 +88,19 @@ class Makelab extends Component {
 
     deleteStage() {
         let stageNum = this.state.currentStage.stageNum;
+
         axios
             .post("http://localhost:8080/deletestage", JSON.stringify(stageNum), {
                 headers: {"Content-Type": "application/json;charset=UTF-8"}
             })
             .then(res => {
                 this.getTotalStage();
-                this.setCurrentStage(stageNum);
+                if (stageNum===this.state.getTotalStage-1) {
+                    this.setCurrentStage(stageNum-1)
+                }
+                else {
+                    this.setCurrentStage(stageNum);
+                }
             });
     }
 
@@ -449,7 +460,7 @@ class Makelab extends Component {
                                             <Button
                                                 className="addtoolButton"
                                                 onClick={() => this.deleteStage()}
-                                                disabled={this.state.currentStage === -1}
+                                                disabled={this.state.currentStage.stageNum === -1}
                                             >
                                                 Delete
                                             </Button>
