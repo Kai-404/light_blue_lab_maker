@@ -106,7 +106,6 @@ public class Beaker extends Tool {
                 }else {
                     this.size= (int)prop.get( "Value" );
                 }
-
             }else if (((String)prop.get("Name")).equals( "Color" )){
                 this.color=(String) prop.get( "Value" );
             }

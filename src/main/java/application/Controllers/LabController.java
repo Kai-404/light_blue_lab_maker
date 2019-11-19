@@ -11,6 +11,8 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+
 @CrossOrigin
 @RestController
 public class LabController {
@@ -22,7 +24,7 @@ public class LabController {
     //sets lab to a new lab object
     @PostMapping("/newlab")
     @ResponseBody
-    public Lab newLab(@RequestParam String title, @RequestParam String author) {
+    public Lab newLab(@RequestParam String title, @RequestParam String author) throws IOException {
         //System.out.println( "a:"+title+"\n"+"b:"+author );
         lab = new Lab(title, author);
         return lab;
