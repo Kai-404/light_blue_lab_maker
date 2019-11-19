@@ -83,13 +83,9 @@ class Makelab extends Component {
   deleteStage() {
     let stageNum = this.state.currentStage.stageNum;
     axios
-      .post(
-        "http://localhost:8080/deletestage",
-        JSON.stringify(stageNum),
-        {
-          headers: { "Content-Type": "application/json;charset=UTF-8" }
-        }
-      )
+      .post("http://localhost:8080/deletestage", JSON.stringify(stageNum), {
+        headers: { "Content-Type": "application/json;charset=UTF-8" }
+      })
       .then(res => {
         this.getTotalStage();
         this.setCurrentStage(stageNum);
@@ -180,8 +176,9 @@ class Makelab extends Component {
         headers: { "Content-Type": "application/json;charset=UTF-8" },
         params: {
           stageNum: stageNum,
-          ID: id,
-        },toolProps: ctool
+          ID: id
+        },
+        toolProps: ctool
       })
       .then(res => {
         console.log("drag end: ", res.data);
@@ -220,6 +217,24 @@ class Makelab extends Component {
     this.setShow();
   };
 
+  onchange = e => {
+    let tool = this.state.currentTool;
+    let type = e.target.name;
+    let value = e.target.value;
+    console.log(e.target);
+    console.log(type, value);
+    //  if (type === "Prop") {
+    tool.Prop.map(prop => {
+      console.log("onchange: ", prop.Name);
+      if (prop.Name == type) {
+        prop.Value = value;
+        this.setState({ currentTool: tool });
+        console.log(tool);
+      }
+    });
+    //  }
+  };
+
   handleSubmit = () => {
     //update tool
     let stageNum = this.state.currentStage.stageNum;
@@ -230,14 +245,15 @@ class Makelab extends Component {
       id,
       ctool
     });
+    console.log("current tool: ", ctool);
     axios
       .post("http://localhost:8080/updatetoolprop", data, {
         headers: { "Content-Type": "application/json;charset=UTF-8" },
         params: {
           stageNum: stageNum,
-          ID: id,
-
-        },toolProps: ctool
+          ID: id
+        },
+        toolProps: ctool
       })
       .then(res => {
         //get back the whole stage
@@ -245,7 +261,6 @@ class Makelab extends Component {
         console.log(res.data);
         this.setShow();
       });
-
   };
 
   render() {
@@ -280,9 +295,11 @@ class Makelab extends Component {
               {tool.Prop.map((prop, key) => {
                 let control = (
                   <Form.Control
+                    name={prop.Name}
                     required
                     type={prop.Name}
                     defaultValue={prop.Value}
+                    onChange={this.onchange}
                   />
                 );
                 if (!prop.Editable) {
@@ -372,6 +389,8 @@ class Makelab extends Component {
       <React.Fragment>
         <p className="errmsg">{this.state.errMsg}</p>
         <Modal
+          size="sm"
+          centered
           show={this.state.showPop}
           onHide={this.setShow}
           dialogClassName="modal-90w"

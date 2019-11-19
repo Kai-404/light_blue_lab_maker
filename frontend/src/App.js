@@ -19,7 +19,7 @@ import ResetPassword from "./Pages/ResetPassword";
 class App extends Component {
   state = {
     user: null,
-    loggedIn: true,
+    loggedIn: false,
     underCourse: false
   };
 
@@ -54,7 +54,7 @@ class App extends Component {
               path="/"
               render={props => (
                 <React.Fragment>
-                  <Login login={this.login} />
+                  <Login login={this.login} showbar={this.showbar} />
                 </React.Fragment>
               )}
             />

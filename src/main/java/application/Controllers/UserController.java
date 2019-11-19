@@ -18,15 +18,17 @@ public class UserController {
 
     @PostMapping("/register")
     public int createUser(@RequestBody User user) {
+        System.out.println(user);
         if (userRepository.findByEmail(user.getEmail()) != null) { return 1; }
         if (userRepository.findByUsername(user.getUsername()) != null) { return 2; }
-        userRepository.save(user);
         if (user.getUserType().equals("Professor")) {
             Professor professor = new Professor(user.getId());
             professorRepository.save(professor);
+            userRepository.save(user);
         } else {
             Student student = new Student(user.getId());
             studentRepository.save(student);
+            userRepository.save(user);
         }
         return 3;
     }
