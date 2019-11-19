@@ -34,6 +34,7 @@ class Makelab extends Component {
       stageNum: 0,
       stageTool: []
     }, //all stage start at stage 0
+    changedTool: [],
     currentTool: [], //the tool prof want to change property with.
     showPop: false //show popup
   };
@@ -64,6 +65,20 @@ class Makelab extends Component {
         this.setState({ currentStage: res.data });
       });
     console.log(this.state.currentStage);
+  }
+
+  duplicateStage() {
+    axios
+      .post(
+        "http://localhost:8080/duplicatestage",
+        JSON.stringify(this.state.currentStage.stageNum),
+        {
+          headers: { "Content-Type": "application/json;charset=UTF-8" }
+        }
+      )
+      .then(res => {
+        this.getTotalStage();
+      });
   }
 
   addStage() {
@@ -168,9 +183,6 @@ class Makelab extends Component {
       id,
       ctool
     });
-
-    console.log(data);
-    console.log("handle drag: ", ctool);
     axios
       .post("http://localhost:8080/updatetoolprop", data, {
         headers: { "Content-Type": "application/json;charset=UTF-8" },
@@ -181,11 +193,14 @@ class Makelab extends Component {
         toolProps: ctool
       })
       .then(res => {
-        console.log("drag end: ", res.data);
         this.setCurrentStage(stageNum);
       });
   };
-
+  saveLab = () => {
+    axios.get("http://localhost:8080/savelab").then(res => {
+      console.log("saved to database");
+    });
+  };
   setShow = () => {
     this.setState({ showPop: !this.state.showPop });
   };
@@ -213,22 +228,17 @@ class Makelab extends Component {
     this.setShow();
   };
 
-  onchange = e => {
-    let tool = this.state.currentTool;
-    let type = e.target.name;
+  handleChangeProps = e => {
+    let tool = JSON.parse(JSON.stringify(this.state.currentTool));
+    let name = e.target.name;
     let value = e.target.value;
-    console.log(e.target);
-    console.log(type, value);
-    //  if (type === "Prop") {
+    console.log(e.target.name, e.target.value);
     tool.Prop.map(prop => {
-      console.log("onchange: ", prop.Name);
-      if (prop.Name == type) {
+      if (prop.Name == name) {
         prop.Value = value;
-        this.setState({ currentTool: tool });
-        console.log(tool);
       }
     });
-    //  }
+    this.setState({ currentTool: tool });
   };
 
   handleSubmit = () => {
@@ -254,7 +264,6 @@ class Makelab extends Component {
       .then(res => {
         //get back the whole stage
         this.setCurrentStage(stageNum);
-        console.log(res.data);
         this.setShow();
       });
   };
@@ -269,7 +278,7 @@ class Makelab extends Component {
             onClick={() => {
               this.setCurrentStage(i);
             }}
-            active={i === this.state.currentStage}
+            active={i === this.state.currentStage.stageNum}
           >
             {i}
           </ListGroup.Item>
@@ -283,59 +292,66 @@ class Makelab extends Component {
       let name, modalBody;
       try {
         name = tool.Name;
-        modalBody = (
-          <Form>
-            <Form.Group>
-              Properties:
-              <br />
-              {tool.Prop.map((prop, key) => {
-                let control = (
-                  <Form.Control
-                    name={prop.Name}
-                    required
-                    type={prop.Name}
-                    defaultValue={prop.Value}
-                    onChange={this.onchange}
-                  />
-                );
-                if (!prop.Editable) {
-                  control = (
+        try {
+          modalBody = (
+            <Form>
+              <Form.Group>
+                Properties:
+                <br />
+                {tool.Prop.map((prop, key) => {
+                  let control = (
                     <Form.Control
+                      name={prop.Name}
                       required
                       type={prop.Name}
-                      value={prop.Value}
+                      defaultValue={prop.Value}
+                      onChange={this.handleChangeProps}
                     />
                   );
-                }
-                return (
-                  <React.Fragment>
-                    <Form.Group as={Row}>
-                      <Form.Label column sm={2}>
-                        {prop.Name}
-                      </Form.Label>
-                      <Col sm={10}>{control}</Col>
-                    </Form.Group>
-                  </React.Fragment>
-                );
-              })}
-            </Form.Group>
-            <Form.Group>
-              Interaction: <br />
-            </Form.Group>
-            <Button variant="primary" type="button" onClick={this.handleSubmit}>
-              Submit
-            </Button>
-          </Form>
-        );
+                  if (!prop.Editable) {
+                    control = (
+                      <Form.Control
+                        name={prop.Name}
+                        required
+                        type={prop.Name}
+                        defaultValue={prop.Value}
+                      />
+                    );
+                  }
+                  return (
+                    <React.Fragment>
+                      <Form.Group as={Row}>
+                        <Form.Label column sm={2}>
+                          {prop.Name}
+                        </Form.Label>
+                        <Col sm={10}>{control}</Col>
+                      </Form.Group>
+                    </React.Fragment>
+                  );
+                })}
+              </Form.Group>
+              <Form.Group>
+                Interaction: <br />
+              </Form.Group>
+              <Button onClick={this.handleSubmit} className="addtoolButton">
+                Submit
+              </Button>
+            </Form>
+          );
+        } catch (err) {
+          modalBody = (
+            <>
+              <Form>
+                <Form.Group>This tool has no property</Form.Group>
+                <Button onClick={this.setShow} className="addtoolButton">
+                  OK
+                </Button>
+              </Form>
+            </>
+          );
+        }
       } catch (err) {
         name = "Error, no such tool";
-        modalBody = (
-          <>
-            <Button onClick={this.setShow} className="addtoolButton">
-              Ok
-            </Button>
-          </>
-        );
       }
       let pop = (
         <React.Fragment>
@@ -397,7 +413,9 @@ class Makelab extends Component {
         <ButtonGroup>
           {toolBar}
           <Dropdown className="toolButton" as={ButtonGroup}>
+            {/*
             <Dropdown.Toggle variant="Secondary">More</Dropdown.Toggle>
+            */}
             <Dropdown.Menu>
               <Dropdown.Item>Tool 1</Dropdown.Item>
             </Dropdown.Menu>
@@ -435,6 +453,12 @@ class Makelab extends Component {
                   <ListGroup.Item>
                     <ButtonGroup vertical>
                       <Button
+                        onClick={() => this.duplicateStage()}
+                        className="addtoolButton"
+                      >
+                        Duplicate
+                      </Button>
+                      <Button
                         onClick={() => this.addStage()}
                         className="addtoolButton"
                       >
@@ -443,7 +467,7 @@ class Makelab extends Component {
                       <Button
                         className="addtoolButton"
                         onClick={() => this.deleteStage()}
-                        disabled={this.state.currentStage === -1}
+                        disabled={this.state.currentStage.stageNum === 0}
                       >
                         Delete
                       </Button>
@@ -454,9 +478,11 @@ class Makelab extends Component {
             </Card.Body>
           </Card>
         </Row>
-
         <br />
         <ButtonGroup>
+          <Button className="submitButton" onClick={this.saveLab}>
+            Save
+          </Button>
           <Button className="submitButton">Publish</Button>
           <LinkContainer to="/labspage">
             <Button className="submitButton">Cancel</Button>
