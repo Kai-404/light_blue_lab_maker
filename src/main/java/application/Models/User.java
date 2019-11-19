@@ -5,6 +5,9 @@ import lombok.Getter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 @Data
 @Getter
 @Document(collection="user")

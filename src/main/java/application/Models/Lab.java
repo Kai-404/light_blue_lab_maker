@@ -6,13 +6,18 @@ import lombok.Getter;
 import lombok.Setter;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.util.FileCopyUtils;
 
-import java.io.File;
+import java.io.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -38,7 +43,7 @@ public class Lab {
     public Lab() {
     }
 
-    public Lab(String title, String author) {
+    public Lab(String title, String author) throws IOException {
         this.title = title;
         this.author = author;
         this.isPublished = false;
@@ -54,16 +59,17 @@ public class Lab {
     }
 
     //add tool to warehouse here
-    private void initToolWarehouse() {
-        File[] files = new File("./src/main/java/application/Tools").listFiles();
+    private void initToolWarehouse() throws IOException {
+        ClassPathResource classPathResource = new ClassPathResource("tools.txt");
+        InputStream inputStream = classPathResource.getInputStream();
 
-        for (File file : files) {
-            if (file.isFile()) {
-                //System.out.println( file.getName() );
+        byte[] bdata = FileCopyUtils.copyToByteArray(inputStream);
+        String data = new String(bdata, StandardCharsets.UTF_8);
+        System.out.println(data);
+        String[] tools = data.split("[\r\n]+");
 
-                this.toolWarehouse.put(file.getName().replace(".java", ""), false);
-            }
-
+        for (String tool : tools) {
+            this.toolWarehouse.put(tool, false);
         }
     }
 
