@@ -96,10 +96,17 @@ public class Beaker extends Tool {
 
         JSONArray propArray = cTool.getJSONArray( "Prop" );
 
+        System.out.println( propArray );
+
         propArray.forEach( e->{
             JSONObject prop = (JSONObject) e;
             if ( ((String)prop.get("Name")).equals( "Size" ) ){
-                this.size= Integer.parseInt((String) prop.get( "Value" ));
+                if (prop.get( "Value" ) instanceof String){
+                    this.size= Integer.parseInt((String) prop.get( "Value" ));
+                }else {
+                    this.size= (int)prop.get( "Value" );
+                }
+
             }else if (((String)prop.get("Name")).equals( "Color" )){
                 this.color=(String) prop.get( "Value" );
             }
