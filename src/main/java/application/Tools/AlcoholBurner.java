@@ -3,12 +3,15 @@ package application.Tools;
 import application.Models.Tool;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 public class AlcoholBurner extends Tool {
 
     String name = "AlcoholBurner";
     final String imageName = "burner.png";
+    @Field("ABx")
     int x = 0;
+    @Field("ABy")
     int y = 0;
 
     public AlcoholBurner(){

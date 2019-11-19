@@ -1,25 +1,30 @@
 package application.Controllers;
 
 import application.Models.Lab;
+import application.Models.LabRepository;
 import application.Models.Stage;
 // Not the real JSON Library!!!
 //import net.minidev.json.JSONArray;
 import application.Tools.Beaker;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 @CrossOrigin
 @RestController
 public class LabController {
-
+    @Autowired
+    private LabRepository labRepository;
     //Lab object that gets modified when creating a lab
     Lab lab;
 
     //sets lab to a new lab object
     @PostMapping("/newlab")
     @ResponseBody
-    public Lab newLab(@RequestParam String title, @RequestParam String author) {
+    public Lab newLab(@RequestParam String title, @RequestParam String author) throws IOException {
         //System.out.println( "a:"+title+"\n"+"b:"+author );
         lab = new Lab(title, author);
         return lab;
@@ -113,7 +118,18 @@ public class LabController {
 ////        return lab.getStage( stageNum ).getStageAsJSON().toString();
 //    }
 
+    @GetMapping("/savelab")
+    @ResponseBody
+    public void saveLab() {
+        labRepository.save(lab);
+    }
 
+    public void publishLab() {
+        lab.setPublished(true);
+    }
 
+    public void deleteLab() {
+        labRepository.delete(lab);
+    }
 
 }

@@ -3,12 +3,15 @@ package application.Tools;
 import application.Models.Tool;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 public class PHPaper extends Tool {
 
     String name = "PHPaper";
     final String imageName = "ph.png";
+    @Field("PHx")
     int x = 0;
+    @Field("PHy")
     int y = 0;
     String color = "green";
 

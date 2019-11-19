@@ -3,12 +3,15 @@ package application.Tools;
 import application.Models.Tool;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 public class Beaker extends Tool {
 
     String name = "Beaker";
     final String imageName = "beaker.png";
+    @Field("BeakerX")
     int x = 0;
+    @Field("BeakerY")
     int y = 0;
     int size = 100;
     String color = "green";
@@ -93,10 +96,16 @@ public class Beaker extends Tool {
 
         JSONArray propArray = cTool.getJSONArray( "Prop" );
 
+        System.out.println( propArray );
+
         propArray.forEach( e->{
             JSONObject prop = (JSONObject) e;
             if ( ((String)prop.get("Name")).equals( "Size" ) ){
-                this.size= (int) prop.get( "Value" );
+                if (prop.get( "Value" ) instanceof String){
+                    this.size= Integer.parseInt((String) prop.get( "Value" ));
+                }else {
+                    this.size= (int)prop.get( "Value" );
+                }
             }else if (((String)prop.get("Name")).equals( "Color" )){
                 this.color=(String) prop.get( "Value" );
             }
