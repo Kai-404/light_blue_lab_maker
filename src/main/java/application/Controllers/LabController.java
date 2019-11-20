@@ -38,13 +38,6 @@ public class LabController {
     }
 
     //adds a stage to the lab and returns updated lab
-    @PostMapping("/duplicatestage")
-    @ResponseBody
-    public void duplicateStage(@RequestBody int stageNum) {
-        lab.duplicateStage(stageNum);
-    }
-
-    //adds a stage to the lab and returns updated lab
     @PostMapping("/addstage")
     @ResponseBody
     public void addStage(@RequestBody int stageNum) {
