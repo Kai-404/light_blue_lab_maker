@@ -122,8 +122,6 @@ public class Lab {
 
         });
         this.toolWarehouse = newWareHouse;
-
-
     }
 
     public JSONObject getStageJSON(int stageNum) {

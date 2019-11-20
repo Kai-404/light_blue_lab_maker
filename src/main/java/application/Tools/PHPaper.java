@@ -6,8 +6,9 @@ import org.json.JSONObject;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 public class PHPaper extends Tool {
-
+    @Field("PHName")
     String name = "PHPaper";
+    @Field("PHImageName")
     final String imageName = "ph.png";
     @Field("PHx")
     int x = 0;

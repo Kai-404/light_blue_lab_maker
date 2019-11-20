@@ -6,8 +6,9 @@ import org.json.JSONObject;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 public class Beaker extends Tool {
-
+    @Field("BeakerName")
     String name = "Beaker";
+    @Field("BeakerImageName")
     final String imageName = "beaker.png";
     @Field("BeakerX")
     int x = 0;

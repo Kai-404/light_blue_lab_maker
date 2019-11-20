@@ -6,8 +6,9 @@ import org.json.JSONObject;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 public class AlcoholBurner extends Tool {
-
+    @Field("ABname")
     String name = "AlcoholBurner";
+    @Field("ABimageName")
     final String imageName = "burner.png";
     @Field("ABx")
     int x = 0;
