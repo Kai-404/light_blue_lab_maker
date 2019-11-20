@@ -19,6 +19,7 @@ import {
 } from "react-bootstrap";
 import uuid from "uuid";
 import Addtool from "./Addtool";
+import ToolModal from "./Toolmodal";
 import "../App.css";
 
 const stageW = window.innerWidth - window.innerWidth * 0.3;
