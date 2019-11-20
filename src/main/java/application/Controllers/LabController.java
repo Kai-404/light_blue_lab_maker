@@ -86,6 +86,13 @@ public class LabController {
         return lab.getStage( stageNum ).addTool(toolName);
     }
 
+    @PostMapping("/stagedeletetool")
+    @ResponseBody
+    public String stagedeleteTool(@RequestParam int stageNum, @RequestParam String ID){
+        lab.getStage( stageNum ).deleteTool( ID );
+        return getStage( stageNum );
+    }
+
 
     @PostMapping("/getstage")
     @ResponseBody

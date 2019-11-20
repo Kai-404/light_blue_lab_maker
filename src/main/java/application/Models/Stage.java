@@ -73,6 +73,17 @@ public class Stage {
         return true;
     }
 
+    public boolean deleteTool(String ID){
+        for (Tool tool : stageToolList) {
+            if (tool.getId().equals( ID )) {
+                stageToolList.remove( tool );
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public JSONObject getTool(String ID){
         JSONObject toReturn = null;
         for (Tool tool : stageToolList) {
