@@ -10,8 +10,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class PHPaper extends Tool {
-
+    @Field("PHName")
     String name = "PHPaper";
+    @Field("PHImageName")
     final String imageName = "ph.png";
     @Field("PHx")
     int x = 0;

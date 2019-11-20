@@ -10,8 +10,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Beaker extends Tool {
-
+    @Field("BeakerName")
     String name = "Beaker";
+    @Field("BeakerImageName")
     final String imageName = "beaker.png";
     @Field("BeakerX")
     int x = 0;

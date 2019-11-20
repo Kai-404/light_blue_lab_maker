@@ -2,6 +2,7 @@ package application.Models;
 
 import lombok.Data;
 import lombok.Getter;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
@@ -10,7 +11,8 @@ import java.util.ArrayList;
 @Getter
 @Document
 public class Student {
-
+    @Id
+    private String id;
     private final String userType = "student";
     private String userId;
     private ArrayList<String> course_list;
