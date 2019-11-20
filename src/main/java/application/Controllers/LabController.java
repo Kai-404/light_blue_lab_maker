@@ -1,8 +1,7 @@
 package application.Controllers;
 
+import application.Models.*;
 import application.Models.Lab;
-import application.Models.LabRepository;
-import application.Models.Stage;
 // Not the real JSON Library!!!
 //import net.minidev.json.JSONArray;
 import application.Tools.Beaker;
@@ -11,6 +10,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 @CrossOrigin
@@ -18,6 +18,10 @@ import java.io.IOException;
 public class LabController {
     @Autowired
     private LabRepository labRepository;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private ProfessorRepository professorRepository;
     //Lab object that gets modified when creating a lab
     Lab lab;
 
@@ -130,8 +134,14 @@ public class LabController {
 
     @GetMapping("/savelab")
     @ResponseBody
-    public void saveLab() {
+    public void saveLab(HttpSession session) {
+        User user = userRepository.findByUsername((String) session.getAttribute("user"));
         labRepository.save(lab);
+        Professor professor = professorRepository.findByUserId(user.getId());
+        if (!professor.getLab_list().contains(lab.getId())) {
+            professor.getLab_list().add(lab.getId());
+            professorRepository.save(professor);
+        }
     }
 
     public void publishLab() {
