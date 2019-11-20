@@ -10,9 +10,7 @@ class Toolmodal extends Component {
    * tool : the tool user want to change
    * showPop : to pop the modal
    */
-  state = {
-    tool: {}
-  };
+
   //change the tool prop
   handleChangeProps = e => {
     let tool = JSON.parse(JSON.stringify(this.props.tool));
@@ -24,13 +22,13 @@ class Toolmodal extends Component {
         prop.Value = value;
       }
     });
-    this.setState({ tool: tool });
+    this.props.setTool(tool);
   };
 
   handleSubmit = () => {
     //update tool
     let stageNum = this.props.stageNum;
-    let ctool = this.state.tool;
+    let ctool = this.props.tool;
     let id = ctool.id;
     let data = JSON.stringify({
       stageNum,
