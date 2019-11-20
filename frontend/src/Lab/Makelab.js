@@ -79,6 +79,7 @@ class Makelab extends Component {
       )
       .then(res => {
         this.getTotalStage();
+        this.setCurrentStage(this.state.currentStage.stageNum+1)
       });
   }
 
@@ -385,6 +386,7 @@ class Makelab extends Component {
                       <Button
                         onClick={() => this.duplicateStage()}
                         className="addtoolButton"
+                        disabled={this.state.currentStage.stageNum === -1}
                       >
                         Duplicate
                       </Button>
