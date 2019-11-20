@@ -52,6 +52,16 @@ public class LabController {
         lab.deleteStage(stageNum);
     }
 
+    @PostMapping("/duplicatestage")
+    @ResponseBody
+    public void duplicateStage(@RequestBody int stageNum) {
+        try {
+            lab.duplicateStage(stageNum);
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+    }
+
     //returns list of all tools
     @GetMapping("/getalltools")
     @ResponseBody
