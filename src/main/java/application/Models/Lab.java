@@ -102,6 +102,15 @@ public class Lab {
             tool.put("Img", imageName);
             toolWarehouseList.put(tool);
 
+            for (Stage stage : this.stageList) {
+                List<Tool> found = new ArrayList<>();
+                for (Tool t : stage.getStageToolList()) {
+                    if (!display && name.equals(t.name)) {
+                        found.add(t);
+                    }
+                }
+                stage.getStageToolList().removeAll(found);
+            }
         });
 
         //System.out.println( toolWarehouseList);
@@ -122,8 +131,6 @@ public class Lab {
 
         });
         this.toolWarehouse = newWareHouse;
-
-
     }
 
     public JSONObject getStageJSON(int stageNum) {
