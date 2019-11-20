@@ -4,7 +4,11 @@ import application.Models.Tool;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.data.mongodb.core.mapping.Field;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class Beaker extends Tool {
 
     String name = "Beaker";
@@ -111,6 +115,13 @@ public class Beaker extends Tool {
             }
         } );
 
+    }
+
+    public Beaker clone() throws CloneNotSupportedException {
+        Beaker clone = (Beaker) super.clone();
+        clone.setSize(this.getSize());
+        clone.setColor(this.getColor());
+        return clone;
     }
 
 }

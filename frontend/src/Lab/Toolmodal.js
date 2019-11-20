@@ -68,7 +68,7 @@ class Toolmodal extends Component {
       id
     });
     axios
-      .post("http://localhost:8080/deletetool", data, {
+      .post("http://localhost:8080/stagedeletetool", data, {
         headers: { "Content-Type": "application/json;charset=UTF-8" },
         params: {
           stageNum: stageNum,
