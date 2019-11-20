@@ -134,7 +134,12 @@ public class Lab {
         return stageList.get(stageNum);
     }
 
-
+    public void duplicateStage(int stageNum){
+        Stage dupl =  new Stage(stageNum);
+        dupl.setStageToolList(getStage(stageNum).getStageToolList());
+        this.stageList.add(stageNum+1, dupl);
+        this.updateStageList();
+    }
     //add a new stage
     public void addStage(int stageNum) {
         this.stageList.add(stageNum + 1, new Stage(stageNum + 1));
@@ -151,6 +156,7 @@ public class Lab {
     private void updateStageList() {
         for (int i = 0; i < this.stageList.size(); i++) {
             this.stageList.get(i).setStageNum(i);
+            System.out.println(this.stageList.get(i));
         }
     }
 
