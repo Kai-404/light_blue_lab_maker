@@ -5,10 +5,13 @@ import axios from "axios";
 
 class Toolmodal extends Component {
   /**
-   * take in stageNum and tool as props
+   * When clicking on the tool, show modal to let prof to change the tool prop
    * stageNum : currently at stage #
    * tool : the tool user want to change
    * showPop : to pop the modal
+   * setShow: show/close modal
+   * setTool(Tool tool): set the tool
+   * setCurrentStage(int stageNum): update the stage accordingly
    */
 
   //change the tool prop
@@ -25,7 +28,11 @@ class Toolmodal extends Component {
     this.props.setTool(tool);
   };
 
-  handleSubmit = () => {
+  handleSubmit = e => {
+    let form = e.currentTarget;
+    console.log(form.checkValidity());
+    e.preventDefault();
+    e.stopPropagation();
     //update tool
     let stageNum = this.props.stageNum;
     let ctool = this.props.tool;
@@ -93,6 +100,23 @@ class Toolmodal extends Component {
                   onChange={this.handleChangeProps}
                 />
               );
+              if (prop.Name == "Color") {
+                control = (
+                  <>
+                    <input
+                      type="color"
+                      id="color"
+                      list="reds"
+                      onChange={this.handleChangeProps}
+                    />
+                    <datalist id="reds">
+                      <option>#990000</option>
+                      <option>#660000</option>
+                      <option>#330000</option>
+                    </datalist>
+                  </>
+                );
+              }
               if (!prop.Editable) {
                 control = (
                   <Form.Control
@@ -120,7 +144,11 @@ class Toolmodal extends Component {
             <br />
             No interaction yet!
           </Form.Group>
-          <Button onClick={this.handleSubmit} className="addtoolButton">
+          <Button
+            type="submit"
+            onClick={this.handleSubmit}
+            className="addtoolButton"
+          >
             Submit
           </Button>
           {"  "}

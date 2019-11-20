@@ -20,6 +20,7 @@ import {
 import uuid from "uuid";
 import Addtool from "./Addtool";
 import ToolModal from "./Toolmodal";
+import Tooltip from "./Tooltip";
 import "../App.css";
 
 const stageW = window.innerWidth - window.innerWidth * 0.3;
@@ -36,7 +37,9 @@ class Makelab extends Component {
       stageTool: []
     }, //all stage start at stage 0
     currentTool: [], //the tool prof want to change property with.
-    showPop: false //show popup
+    showPop: false, //show popup
+    showTooltip: false,
+    countForTooltip: 3
   };
 
   componentDidMount() {}
@@ -206,18 +209,13 @@ class Makelab extends Component {
     });
   };
 
-  setShow = () => {
-    this.setState({ showPop: !this.state.showPop });
-  };
-
   setCurrentTool = tool => {
     this.setState({ currentTool: tool });
   };
 
-  handleClickTool = e => {
-    //console.log("id of the tool:", e.target.attrs.name);
+  //get tool by id and stage num
+  getToolById = id => {
     let stageNum = this.state.currentStage.stageNum;
-    let id = e.target.attrs.name;
     let data = JSON.stringify({
       stageNum,
       id
@@ -233,9 +231,44 @@ class Makelab extends Component {
       .then(res => {
         this.setState({ currentTool: res.data });
       });
-    this.setShow();
   };
 
+  setShowModal = () => {
+    this.setState({ showPop: !this.state.showPop });
+  };
+
+  handleClickTool = e => {
+    //console.log("id of the tool:", e.target.attrs.name);
+    this.getToolById(e.target.attrs.name);
+    this.setShowModal();
+  };
+
+  /*
+  //not working!!!!!!!!
+  setShowTooltip = () => {
+    this.setState({ showTooltip: !this.state.showTooltip });
+  };
+
+  timer = () => {
+    this.setState({
+      countForTooltip: this.state.countForTooltip - 1
+    });
+    console.log(this.intervalId);
+    if (this.state.countForTooltip < 1) {
+      clearInterval(this.intervalId);
+    }
+  };
+
+  handleMouseOver = e => {
+    this.intervalId = setInterval(this.timer, 1000);
+  };
+
+  handleMouseOut = () => {
+    console.log("out!!!!");
+    clearInterval(this.intervalId);
+    this.setState({ countForTooltip: 3 });
+  };
+*/
   render() {
     let Stages = () => {
       let list = [];
@@ -286,6 +319,8 @@ class Makelab extends Component {
           onClick={this.handleClickTool}
           onDragStart={this.handleDragStart}
           onDragEnd={this.handleDragEnd}
+          onMouseOver={this.handleMouseOver}
+          onMouseLeave={this.handleMouseOut}
         />
       );
       return img;
@@ -298,7 +333,7 @@ class Makelab extends Component {
           tool={this.state.currentTool}
           stageNum={this.state.currentStage.stageNum}
           showPop={this.state.showPop}
-          setShow={this.setShow}
+          setShow={this.setShowModal}
           setCurrentStage={this.setCurrentStage}
         />
         <ButtonGroup>
