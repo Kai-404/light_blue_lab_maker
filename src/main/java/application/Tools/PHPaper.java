@@ -4,7 +4,11 @@ import application.Models.Tool;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.data.mongodb.core.mapping.Field;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class PHPaper extends Tool {
     @Field("PHName")
     String name = "PHPaper";
@@ -76,6 +80,12 @@ public class PHPaper extends Tool {
            }
         } );
 
+    }
+
+    public PHPaper clone() throws CloneNotSupportedException {
+        PHPaper clone = (PHPaper) super.clone();
+        clone.setColor(this.getColor());
+        return clone;
     }
 
 }

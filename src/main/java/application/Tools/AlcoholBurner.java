@@ -60,4 +60,10 @@ public class AlcoholBurner extends Tool {
         JSONArray propArray = cTool.getJSONArray( "Prop" );
 
     }
+
+    @Override
+    public AlcoholBurner clone() throws CloneNotSupportedException {
+        AlcoholBurner clone = (AlcoholBurner) super.clone();
+        return clone;
+    }
 }

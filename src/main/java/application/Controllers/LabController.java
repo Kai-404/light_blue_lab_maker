@@ -42,13 +42,6 @@ public class LabController {
     }
 
     //adds a stage to the lab and returns updated lab
-    @PostMapping("/duplicatestage")
-    @ResponseBody
-    public void duplicateStage(@RequestBody int stageNum) {
-        lab.duplicateStage(stageNum);
-    }
-
-    //adds a stage to the lab and returns updated lab
     @PostMapping("/addstage")
     @ResponseBody
     public void addStage(@RequestBody int stageNum) {
@@ -61,6 +54,16 @@ public class LabController {
     @ResponseBody
     public void deleteStage(@RequestBody int stageNum) {
         lab.deleteStage(stageNum);
+    }
+
+    @PostMapping("/duplicatestage")
+    @ResponseBody
+    public void duplicateStage(@RequestBody int stageNum) {
+        try {
+            lab.duplicateStage(stageNum);
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
     }
 
     //returns list of all tools
