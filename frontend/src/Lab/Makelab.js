@@ -123,12 +123,9 @@ class Makelab extends Component {
 
   // pop a tool to the center of the stage with defalut
   popTool = e => {
-    const uuidv4 = require("uuid/v4");
-    let id = uuidv4();
     let name = e.target.alt;
     let stageNum = this.state.currentStage.stageNum;
     let data = JSON.stringify({
-      id,
       name,
       stageNum
     });
@@ -139,7 +136,6 @@ class Makelab extends Component {
         params: {
           stageNum: stageNum,
           toolName: name, //name of tool
-          ID: id
         }
       })
       .then(res => {

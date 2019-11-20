@@ -19,6 +19,7 @@ import java.lang.reflect.InvocationTargetException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -46,7 +47,7 @@ public class Stage {
         this.instructions = instruction;
     }
 
-    public boolean addTool(String toolName, String ID){
+    public boolean addTool(String toolName){
         Tool tool = null;
 
         ClassLoader classLoader = Stage.class.getClassLoader();
@@ -59,8 +60,12 @@ public class Stage {
         }catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
+        UUID uuid = UUID.randomUUID();
+        String toolID = uuid.toString();
 
-        tool.setId( ID );
+        System.out.println( toolID );
+
+        tool.setId( toolID );
 
         stageToolList.add( tool );
 //        System.out.println( tool.getName() );
