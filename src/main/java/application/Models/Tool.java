@@ -2,6 +2,7 @@ package application.Models;
 
 import lombok.Data;
 import lombok.Getter;
+import lombok.Setter;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.data.annotation.Id;
@@ -9,10 +10,12 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.HashMap;
+import java.util.Map;
 
 @Getter
+@Setter
 @Document
-public class Tool {
+public class Tool implements Cloneable{
 
     public String id;
 
@@ -64,5 +67,20 @@ public class Tool {
 
         return  toolJSONObject;
 
+    }
+
+    @Override
+    public Tool clone() throws CloneNotSupportedException {
+        Tool newTool = (Tool) super.clone();
+
+        newTool.setX(this.getX());
+        newTool.setY(this.getY());
+        newTool.setName(this.getName());
+        newTool.setImageName(this.getImageName());
+        for (Map.Entry<String,String> property : this.getPropertyList().entrySet()) {
+            newTool.getPropertyList().put(property.getKey(), property.getValue());
+        }
+
+        return newTool;
     }
 }

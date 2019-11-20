@@ -19,6 +19,7 @@ import {
 } from "react-bootstrap";
 import uuid from "uuid";
 import Addtool from "./Addtool";
+import ToolModal from "./Toolmodal";
 import "../App.css";
 
 const stageW = window.innerWidth - window.innerWidth * 0.3;
@@ -103,6 +104,19 @@ class Makelab extends Component {
                 }
             });
     }
+
+    duplicateStage() {
+        axios
+            .post("http://localhost:8080/duplicatestage",
+                JSON.stringify(this.state.currentStage.stageNum),
+                {headers: {"Content-Type": "application/json;charset=UTF-8"}}
+                )
+            .then(res => {
+                this.getTotalStage();
+                this.setCurrentStage(this.state.currentStage.stageNum+1);
+            })
+    };
+
 
     //add tool to whole lab
     addLabTool = tool => {
@@ -414,10 +428,10 @@ class Makelab extends Component {
                 <ButtonGroup>
                     {toolBar}
                     <Dropdown className="toolButton" as={ButtonGroup}>
-                        <Dropdown.Toggle variant="Secondary">More</Dropdown.Toggle>
+                        {/*<Dropdown.Toggle variant="Secondary">More</Dropdown.Toggle>
                         <Dropdown.Menu>
                             <Dropdown.Item>Tool 1</Dropdown.Item>
-                        </Dropdown.Menu>
+                        </Dropdown.Menu>*/}
                     </Dropdown>
                     <Addtool addLabTool={this.addLabTool}/>
                 </ButtonGroup>
@@ -456,6 +470,13 @@ class Makelab extends Component {
                                                 className="addtoolButton"
                                             >
                                                 New
+                                            </Button>
+                                            <Button
+                                                onClick={() => this.duplicateStage()}
+                                                className="addtoolButton"
+                                                disabled={this.state.currentStage.stageNum === -1}
+                                            >
+                                                Duplicate
                                             </Button>
                                             <Button
                                                 className="addtoolButton"

@@ -134,7 +134,6 @@ public class Lab {
         return stageList.get(stageNum);
     }
 
-
     //add a new stage
     public void addStage(int stageNum) {
         this.stageList.add(stageNum + 1, new Stage(stageNum + 1));
@@ -144,6 +143,19 @@ public class Lab {
     //deletes a stage
     public void deleteStage(int stageNum) {
         this.stageList.remove(stageNum);
+        this.updateStageList();
+    }
+
+    public void duplicateStage(int stageNum) throws CloneNotSupportedException {
+        Stage newStage = new Stage(stageNum+1);
+        Stage oldStage = this.stageList.get(stageNum);
+
+        newStage.setInstruction(oldStage.getInstructions());
+        for (int i=0; i<oldStage.getStageToolList().size(); i++) {
+            newStage.getStageToolList().add(oldStage.getStageToolList().get(i).clone());
+        }
+
+        this.stageList.add(stageNum+1, newStage);
         this.updateStageList();
     }
 
