@@ -19,6 +19,7 @@ import {
 } from "react-bootstrap";
 import uuid from "uuid";
 import Addtool from "./Addtool";
+import ToolModal from "./Toolmodal";
 import "../App.css";
 
 const stageW = window.innerWidth - window.innerWidth * 0.3;
@@ -38,13 +39,7 @@ class Makelab extends Component {
     showPop: false //show popup
   };
 
-  componentDidMount() {
-    /*axios.get("/getlab").then(res => {
-          this.setState({ stageList: res.data.stageList });
-        }); */
-    //this.getTotalStage();
-    //this.setCurrentStage(-1);
-  }
+  componentDidMount() {}
 
   getTotalStage() {
     axios.get("http://localhost:8080/gettotalstage").then(res => {
@@ -52,7 +47,7 @@ class Makelab extends Component {
     });
   }
 
-  setCurrentStage(i) {
+  setCurrentStage = i => {
     console.log("currentstage is: ", i);
     let data = JSON.stringify(i);
     if (i > -1) {
@@ -62,13 +57,13 @@ class Makelab extends Component {
           params: { stageNum: i }
         })
         .then(res => {
+          console.log(res.data);
           this.setState({ currentStage: res.data });
         });
-      console.log(this.state.currentStage);
     } else {
       this.setState({ currentStage: { stageNum: -1, stageTool: [] } });
     }
-  }
+  };
 
   duplicateStage() {
     axios
@@ -215,8 +210,12 @@ class Makelab extends Component {
     this.setState({ showPop: !this.state.showPop });
   };
 
+  setCurrentTool = tool => {
+    this.setState({ currentTool: tool });
+  };
+
   handleClickTool = e => {
-    console.log("id of the tool:", e.target.attrs.name);
+    //console.log("id of the tool:", e.target.attrs.name);
     let stageNum = this.state.currentStage.stageNum;
     let id = e.target.attrs.name;
     let data = JSON.stringify({
@@ -233,55 +232,8 @@ class Makelab extends Component {
       })
       .then(res => {
         this.setState({ currentTool: res.data });
-        console.log(res.data);
       });
     this.setShow();
-  };
-
-  onchange = e => {
-    let tool = this.state.currentTool;
-    let type = e.target.name;
-    let value = e.target.value;
-    console.log(e.target);
-    console.log(type, value);
-    //  if (type === "Prop") {
-    tool.Prop.map(prop => {
-      console.log("onchange: ", prop.Name);
-      if (prop.Name == type) {
-        prop.Value = value;
-        this.setState({ currentTool: tool });
-        console.log(tool);
-      }
-    });
-    //  }
-  };
-
-  handleSubmit = () => {
-    //update tool
-    let stageNum = this.state.currentStage.stageNum;
-    let ctool = this.state.currentTool;
-    let id = ctool.id;
-    let data = JSON.stringify({
-      stageNum,
-      id,
-      ctool
-    });
-    console.log("current tool: ", ctool);
-    axios
-      .post("http://localhost:8080/updatetoolprop", data, {
-        headers: { "Content-Type": "application/json;charset=UTF-8" },
-        params: {
-          stageNum: stageNum,
-          ID: id
-        },
-        toolProps: ctool
-      })
-      .then(res => {
-        //get back the whole stage
-        this.setCurrentStage(stageNum);
-        console.log(res.data);
-        this.setShow();
-      });
   };
 
   render() {
@@ -301,85 +253,6 @@ class Makelab extends Component {
         );
       }
       return list;
-    };
-
-    let ModalTool = () => {
-      let tool = this.state.currentTool;
-      let name, modalBody;
-      try {
-        name = tool.Name;
-        modalBody = (
-          <Form>
-            <Form.Group>
-              Properties:
-              <br />
-              {tool.Prop.map((prop, key) => {
-                let control = (
-                  <Form.Control
-                    name={prop.Name}
-                    required
-                    type={prop.Name}
-                    defaultValue={prop.Value}
-                    onChange={this.onchange}
-                  />
-                );
-                if (!prop.Editable) {
-                  control = (
-                    <Form.Control
-                      required
-                      type={prop.Name}
-                      value={prop.Value}
-                    />
-                  );
-                }
-                return (
-                  <React.Fragment>
-                    <Form.Group as={Row}>
-                      <Form.Label column sm={2}>
-                        {prop.Name}
-                      </Form.Label>
-                      <Col sm={10}>{control}</Col>
-                    </Form.Group>
-                  </React.Fragment>
-                );
-              })}
-            </Form.Group>
-            <Form.Group>
-              Interaction: <br />
-            </Form.Group>
-            <Button variant="primary" type="button" onClick={this.handleSubmit}>
-              Submit
-            </Button>
-          </Form>
-        );
-      } catch (err) {
-        name = "Error, no such tool";
-        modalBody = (
-          <>
-            <Button onClick={this.setShow} className="addtoolButton">
-              Ok
-            </Button>
-          </>
-        );
-      }
-      let pop = (
-        <Modal
-          size="sm"
-          centered
-          show={this.state.showPop}
-          onHide={this.setShow}
-          dialogClassName="modal-90w"
-          aria-labelledby="example-custom-modal-styling-title"
-        >
-          <Modal.Header>
-            <Modal.Title id="example-custom-modal-styling-title">
-              {name}
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>{modalBody}</Modal.Body>
-        </Modal>
-      );
-      return pop;
     };
 
     let toolBar = (
@@ -420,7 +293,14 @@ class Makelab extends Component {
     return (
       <React.Fragment>
         <p className="errmsg">{this.state.errMsg}</p>
-        <ModalTool />
+        <ToolModal
+          setTool={this.setCurrentTool}
+          tool={this.state.currentTool}
+          stageNum={this.state.currentStage.stageNum}
+          showPop={this.state.showPop}
+          setShow={this.setShow}
+          setCurrentStage={this.setCurrentStage}
+        />
         <ButtonGroup>
           {toolBar}
           <Dropdown className="toolButton" as={ButtonGroup}>
