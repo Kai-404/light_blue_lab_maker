@@ -82,8 +82,15 @@ public class LabController {
 
     @PostMapping("/stageaddtool")
     @ResponseBody
-    public boolean stageAddTool(@RequestParam int stageNum, @RequestParam String toolName, @RequestParam String ID ){
-        return lab.getStage( stageNum ).addTool(toolName,ID);
+    public boolean stageAddTool(@RequestParam int stageNum, @RequestParam String toolName){
+        return lab.getStage( stageNum ).addTool(toolName);
+    }
+
+    @PostMapping("/stagedeletetool")
+    @ResponseBody
+    public String stagedeleteTool(@RequestParam int stageNum, @RequestParam String ID){
+        lab.getStage( stageNum ).deleteTool( ID );
+        return getStage( stageNum );
     }
 
 
