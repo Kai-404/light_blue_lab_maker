@@ -26,7 +26,7 @@ import java.util.UUID;
 @Document
 public class Stage {
 
-    private String instructions;
+    private String instructions="Double click to enter instructions";
     private ArrayList<Tool> stageToolList;
     private int stageNum;
 
@@ -98,7 +98,7 @@ public class Stage {
 
         JSONObject stageJSONObject = new JSONObject();
         stageJSONObject.put( "stageNum",this.stageNum );
-        stageJSONObject.put( "instruct",this.instructions );
+        stageJSONObject.put( "instructions",this.instructions );
 
 
         JSONArray toolList = new JSONArray();

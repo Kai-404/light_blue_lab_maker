@@ -176,4 +176,8 @@ public class Lab {
     public int getTotalStage() {
         return stageList.size();
     }
+
+    public void saveInstructions(int stageNum, String instructions) {
+        this.getStage(stageNum).setInstruction(instructions);
+    }
 }
