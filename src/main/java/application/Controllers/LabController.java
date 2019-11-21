@@ -150,12 +150,27 @@ public class LabController {
         return true;
     }
 
-    public void publishLab() {
-        lab.setPublished(true);
+    public boolean publishLab() {
+        try {
+            lab.setPublished(true);
+            labRepository.save(lab);
+        } catch (Error e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 
-    public void deleteLab() {
-        labRepository.delete(lab);
+    public boolean deleteLab(HttpSession session) {
+        String id = lab.getId();
+        if (id != null) {
+            labRepository.delete(lab);
+            User user = userRepository.findByUsername((String) session.getAttribute("user"));
+            Professor professor = professorRepository.findByUserId(user.getId());
+            professor.getLab_list().remove(lab);
+            return true;
+        }
+        return false;
     }
 
 }
