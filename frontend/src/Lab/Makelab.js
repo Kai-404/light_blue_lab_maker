@@ -276,6 +276,10 @@ class Makelab extends Component {
             })
     }
 
+    hideEditInstructions() {
+        this.setState({editInstructions: false});
+    };
+
     /*
     //not working!!!!!!!!
     setShowTooltip = () => {
@@ -395,6 +399,11 @@ class Makelab extends Component {
                             ))}
                             <Text
                                 text={this.state.currentStage.instructions}
+                                fontSize={20}
+                                x={0.1*stageW}
+                                y={0.05*stageH}
+                                width={0.8*stageW}
+                                align='center'
                                 onDblClick={() => {
                                     this.showEditInstructions()
                                 }}
@@ -402,14 +411,18 @@ class Makelab extends Component {
                         </Layer>
                     </Stage>
 
-                    <Modal show={this.state.editInstructions}>
+                    <Modal show={this.state.editInstructions} onHide={() => {this.hideEditInstructions()}}>
                         <Modal.Body>
                             <textarea name='newInstructions' onChange={(e) => {
                                 this.changeInstructions(e)
                             }}>{this.state.currentStage.instructions}</textarea>
-                            <Button onClick={() => {
-                                this.saveInstructions()
-                            }}>Ok</Button>
+                            <br/>
+                            <Button onClick={() => {this.saveInstructions()}}>
+                                Ok
+                            </Button>
+                            <Button onClick={() => {this.hideEditInstructions()}}>
+                                Cancel
+                            </Button>
                         </Modal.Body>
                     </Modal>
 
