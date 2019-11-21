@@ -27,24 +27,20 @@ class LabsPage extends Component {
       });
   };
 
+  deleteLab = () => {};
+
   render() {
     let labs = [];
     labs.push(
       <Card style={{ width: "18rem" }}>
         <Card.Body>
-          <Card.Title>Lab #1</Card.Title>
-          <Card.Text>Lab Description</Card.Text>
-          <ButtonGroup>
-            <LinkContainer to="/dolab">
-              <Button variant="primary">Do</Button>
-            </LinkContainer>
-            <Button variant="primary">Edit</Button>
-            <Button variant="primary">Delete</Button>
-          </ButtonGroup>
+          <Card.Text>
+            You don't have any lab yet, click "Add" button to create a new lab
+          </Card.Text>
         </Card.Body>
       </Card>
     );
-    if (this.state.labList) {
+    if (this.state.labList.length > 0) {
       labs.pop();
       this.state.labList.map(lab => {
         labs.push(
@@ -57,7 +53,9 @@ class LabsPage extends Component {
                   <Button variant="primary">Do</Button>
                 </LinkContainer>
                 <Button variant="primary">Edit</Button>
-                <Button variant="primary">Delete</Button>
+                <Button variant="primary" onClick={this.deleteLab}>
+                  Delete
+                </Button>
               </ButtonGroup>
             </Card.Body>
           </Card>
