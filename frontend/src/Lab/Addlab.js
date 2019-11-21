@@ -17,8 +17,7 @@ class Addlab extends Component {
 
   addNewLab = () => {
     let title = this.state.labTitle;
-    //let author = this.props.user.username;
-    let author = "kai";
+    let author = this.props.user.username;
     let description = this.state.description;
     let data = JSON.stringify({
       author,
@@ -32,6 +31,9 @@ class Addlab extends Component {
       })
       .then(res => {
         this.props.his.push("/makelab");
+      })
+      .catch(err => {
+        alert("Fail to add a new lab");
       });
     this.setState({
       showAddLab: false,

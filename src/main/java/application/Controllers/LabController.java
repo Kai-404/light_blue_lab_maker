@@ -151,6 +151,12 @@ public class LabController {
         return true;
     }
 
+    @GetMapping("/getlablist")
+    @ResponseBody
+    public List<Lab> getLabList(String professor) {
+        return labRepository.findAllByAuthor(professor);
+    }
+
     public boolean publishLab() {
         try {
             lab.setPublished(true);
@@ -174,9 +180,4 @@ public class LabController {
         return false;
     }
 
-    
-    @ResponseBody
-    public List<Lab> getLabList(String professor) {
-        return labRepository.findAllByAuthor(professor);
-    }
 }

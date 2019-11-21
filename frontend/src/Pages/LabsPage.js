@@ -7,21 +7,23 @@ import "../App.css";
 import axios from "axios";
 
 class LabsPage extends Component {
-  //TODO: Zoey will do it!!! just a placeholder
-  makeLab = () => {
-    let index1 = "kai_lab";
-    let index2 = "kai";
-    let data = JSON.stringify({
-      index1,
-      index2
-    });
+  state = {
+    labList: []
+  };
+
+  componentDidMount() {
+    this.getLabPage();
+  }
+
+  getLabPage = () => {
     axios
-      .post("http://localhost:8080/newlab", data, {
+      .get("http://localhost:8080/getlablist", {
         headers: { "Content-Type": "application/json;charset=UTF-8" },
-        params: { title: index1, author: index2 }
+        params: { professor: this.props.user.username }
       })
       .then(res => {
-        this.props.history.push("/makelab");
+        console.log("lab list: ", res.data);
+        this.setState({ labList: res.data });
       });
   };
 
