@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.List;
 
 @CrossOrigin
 @RestController
@@ -148,6 +149,12 @@ public class LabController {
             return false;
         }
         return true;
+    }
+
+    @GetMapping("/getlablist")
+    @ResponseBody
+    public List<Lab> getLabList(String professor) {
+        return labRepository.findAllByAuthor(professor);
     }
 
     public boolean publishLab() {
