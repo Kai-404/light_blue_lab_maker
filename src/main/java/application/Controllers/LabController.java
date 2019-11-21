@@ -168,7 +168,8 @@ public class LabController {
         }
         return true;
     }
-
+    @GetMapping("/deletelab")
+    @ResponseBody
     public boolean deleteLab(HttpSession session) {
         String id = lab.getId();
         if (id != null) {
