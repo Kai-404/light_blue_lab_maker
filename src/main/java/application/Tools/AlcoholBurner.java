@@ -57,7 +57,7 @@ public class AlcoholBurner extends Tool {
         this.x = (int)cTool.get( "x" );
         this.y = (int)cTool.get( "y" );
 
-        JSONArray propArray = cTool.getJSONArray( "Prop" );
+        //JSONArray propArray = cTool.getJSONArray( "Prop" );
 
     }
 
