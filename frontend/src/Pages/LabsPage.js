@@ -51,7 +51,7 @@ class LabsPage extends Component {
           <Card style={{ width: "18rem" }}>
             <Card.Body>
               <Card.Title>{lab.title}</Card.Title>
-              <Card.Text>{lab.discription}</Card.Text>
+              <Card.Text>{lab.description}</Card.Text>
               <ButtonGroup>
                 <LinkContainer to="/dolab">
                   <Button variant="primary">Do</Button>

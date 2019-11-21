@@ -29,9 +29,10 @@ public class LabController {
     //sets lab to a new lab object
     @PostMapping("/newlab")
     @ResponseBody
-    public Lab newLab(@RequestParam String title, @RequestParam String author) throws IOException {
+    public Lab newLab(@RequestParam String title, @RequestParam String author, @RequestParam String description) throws IOException {
         //System.out.println( "a:"+title+"\n"+"b:"+author );
         lab = new Lab(title, author);
+        lab.setDescription( description );
         return lab;
     }
 

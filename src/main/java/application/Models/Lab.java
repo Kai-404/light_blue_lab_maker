@@ -33,6 +33,7 @@ public class Lab {
     private String id;
     private String title;
     private String author;
+    private String description;
     private boolean isPublished;
 
     private ArrayList<Stage> stageList;
@@ -57,6 +58,14 @@ public class Lab {
         this.initToolWarehouse();
         //this.labTools = new ArrayList<Tool>();
         //this.labProgress = new HashMap<String,Integer>();
+    }
+
+    public void setDescription(String description){
+        this.description = description;
+    }
+
+    public void setTitle(String title){
+        this.title = title;
     }
 
     //add tool to warehouse here
