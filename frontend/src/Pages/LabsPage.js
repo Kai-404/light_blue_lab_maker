@@ -1,66 +1,73 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router";
-import { Card, CardColumns, Button } from "react-bootstrap";
+import { LinkContainer } from "react-router-bootstrap";
+import { Card, CardColumns, Button, ButtonGroup } from "react-bootstrap";
+import Addlab from "../Lab/Addlab";
 import "../App.css";
 import axios from "axios";
 
 class LabsPage extends Component {
-  dolab = () => {
-    this.props.history.push("/dolab");
+  state = {
+    labList: []
   };
-  //TODO: Zoey will do it!!! just a placeholder
-  makeLab = () => {
-    let index1 = "kai_lab";
-    let index2 = "kai";
-    let data = JSON.stringify({
-      index1,
-      index2
-    });
+
+  componentDidMount() {
+    this.getLabPage();
+  }
+
+  getLabPage = () => {
     axios
-      .post("http://localhost:8080/newlab", data, {
+      .get("http://localhost:8080/getlablist", {
         headers: { "Content-Type": "application/json;charset=UTF-8" },
-        params: { title: index1, author: index2 }
-      }
-      )
+        params: { professor: this.props.user.username }
+      })
       .then(res => {
-        this.props.history.push("/makelab");
+        console.log("lab list: ", res.data);
+        this.setState({ labList: res.data });
       });
   };
 
   render() {
+    let labs = [];
+    labs.push(
+      <Card style={{ width: "18rem" }}>
+        <Card.Body>
+          <Card.Title>Lab #1</Card.Title>
+          <Card.Text>Lab Description</Card.Text>
+          <ButtonGroup>
+            <LinkContainer to="/dolab">
+              <Button variant="primary">Do</Button>
+            </LinkContainer>
+            <Button variant="primary">Edit</Button>
+            <Button variant="primary">Delete</Button>
+          </ButtonGroup>
+        </Card.Body>
+      </Card>
+    );
+    if (this.state.labList) {
+      labs.pop();
+      this.state.labList.map(lab => {
+        labs.push(
+          <Card style={{ width: "18rem" }}>
+            <Card.Body>
+              <Card.Title>{lab.title}</Card.Title>
+              <Card.Text>{lab.description}</Card.Text>
+              <ButtonGroup>
+                <LinkContainer to="/dolab">
+                  <Button variant="primary">Do</Button>
+                </LinkContainer>
+                <Button variant="primary">Edit</Button>
+                <Button variant="primary">Delete</Button>
+              </ButtonGroup>
+            </Card.Body>
+          </Card>
+        );
+      });
+    }
     return (
       <React.Fragment>
-        <CardColumns>
-          <Card style={{ width: "18rem" }}>
-            <Card.Img variant="top" src="holder.js/100px180" />
-            <Card.Body>
-              <Card.Title>Lab #1</Card.Title>
-              <Card.Text>Lab Description</Card.Text>
-              <Button variant="primary" onClick={this.dolab}>
-                Do Lab
-              </Button>
-            </Card.Body>
-          </Card>
-
-          <Card style={{ width: "18rem" }}>
-            <Card.Img variant="top" src="holder.js/100px180" />
-            <Card.Body>
-              <Card.Title>Lab #2</Card.Title>
-              <Card.Text>Lab Description</Card.Text>
-              <Button variant="primary">Do Lab</Button>
-            </Card.Body>
-          </Card>
-
-          <Card style={{ width: "18rem" }}>
-            <Card.Img variant="top" src="holder.js/100px180" />
-            <Card.Body>
-              <Card.Title>Lab #3</Card.Title>
-              <Card.Text>Lab Description</Card.Text>
-              <Button variant="primary">Do Lab</Button>
-            </Card.Body>
-          </Card>
-        </CardColumns>
-        <Button onClick={this.makeLab}>Add Lab</Button>
+        <CardColumns>{labs}</CardColumns>
+        <Addlab user={this.props.user} his={this.props.history} />
       </React.Fragment>
     );
   }

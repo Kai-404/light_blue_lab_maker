@@ -70,8 +70,7 @@ class Makelab extends Component {
                 });
         } else {
             this.setState({currentStage: {stageNum: -1, stageTool: []}});
-        }
-    };
+        }};
 
     duplicateStage() {
         axios
@@ -105,7 +104,6 @@ class Makelab extends Component {
 
     deleteStage() {
         let stageNum = this.state.currentStage.stageNum;
-
         axios
             .post("http://localhost:8080/deletestage", JSON.stringify(stageNum), {
                 headers: {"Content-Type": "application/json;charset=UTF-8"}
@@ -120,15 +118,17 @@ class Makelab extends Component {
             });
     }
 
-    //add tool to whole lab
-    addLabTool = tool => {
-        let allTool = tool.filter(t => {
-            if (t.Display) {
-                return t;
-            }
-        });
-        this.state.labTools = allTool;
-    };
+  //add tool to whole lab
+  addLabTool = tool => {
+    let allTool = tool.filter(t => {
+      if (t.Display) {
+        return t;
+      }
+    });
+    this.setState({ labTools: allTool });
+    this.setCurrentStage(this.state.currentStage.stageNum);
+  };
+
 
     // pop a tool to the center of the stage with defalut
     popTool = e => {
@@ -157,6 +157,8 @@ class Makelab extends Component {
                 }
             });
     };
+
+
 
     //draging a tool animation
     handleDragStart = e => {
@@ -208,12 +210,18 @@ class Makelab extends Component {
             .then(res => {
                 this.setCurrentStage(stageNum);
             });
+     
     };
-    saveLab = () => {
-        axios.get("http://localhost:8080/savelab").then(res => {
-            console.log("saved to database");
-        });
-    };
+
+  saveLab = () => {
+    axios.get("http://localhost:8080/savelab").then(res => {
+      if (res.data) {
+        alert("successfully saved lab");
+      } else {
+        alert("fail to save the lab");
+      }
+    });
+  };
 
     setCurrentTool = tool => {
         this.setState({currentTool: tool});
@@ -243,11 +251,14 @@ class Makelab extends Component {
         this.setState({showPop: !this.state.showPop});
     };
 
-    handleClickTool = e => {
-        //console.log("id of the tool:", e.target.attrs.name);
-        this.getToolById(e.target.attrs.name);
-        this.setShowModal();
-    };
+
+  handleClickTool = e => {
+    //console.log("id of the tool:", e.target.attrs.name)
+    this.getToolById(e.target.attrs.name);
+    console.log("toooool:", this.state.currentTool)
+    this.setShowModal();
+  };
+
 
     showEditInstructions() {
         this.setState({editInstructions: true});

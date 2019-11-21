@@ -21,6 +21,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @Data
@@ -32,6 +33,7 @@ public class Lab {
     private String id;
     private String title;
     private String author;
+    private String description;
     private boolean isPublished;
 
     private ArrayList<Stage> stageList;
@@ -56,6 +58,14 @@ public class Lab {
         this.initToolWarehouse();
         //this.labTools = new ArrayList<Tool>();
         //this.labProgress = new HashMap<String,Integer>();
+    }
+
+    public void setDescription(String description){
+        this.description = description;
+    }
+
+    public void setTitle(String title){
+        this.title = title;
     }
 
     //add tool to warehouse here
@@ -101,16 +111,6 @@ public class Lab {
             }
             tool.put("Img", imageName);
             toolWarehouseList.put(tool);
-
-            for (Stage stage : this.stageList) {
-                List<Tool> found = new ArrayList<>();
-                for (Tool t : stage.getStageToolList()) {
-                    if (!display && name.equals(t.name)) {
-                        found.add(t);
-                    }
-                }
-                stage.getStageToolList().removeAll(found);
-            }
         });
 
         //System.out.println( toolWarehouseList);
@@ -131,6 +131,20 @@ public class Lab {
 
         });
         this.toolWarehouse = newWareHouse;
+
+        toolWarehouse.forEach( (name, display)->{
+            if (!display){
+                for (Stage stage : this.stageList) {
+                    List<Tool> found = new ArrayList<>();
+                    for (Tool tool : stage.getStageToolList()) {
+                        if ( tool.getName().equals(name)) {
+                            found.add( tool );
+                        }
+                    }
+                    stage.getStageToolList().removeAll(found);
+                }
+            }
+        } );
     }
 
     public JSONObject getStageJSON(int stageNum) {

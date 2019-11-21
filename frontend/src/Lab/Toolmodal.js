@@ -19,20 +19,26 @@ class Toolmodal extends Component {
     let tool = JSON.parse(JSON.stringify(this.props.tool));
     let name = e.target.name;
     let value = e.target.value;
-    console.log(e.target.name, e.target.value);
-    tool.Prop.map(prop => {
-      if (prop.Name == name) {
-        prop.Value = value;
-      }
-    });
+    let type = e.target.id; //init or final
+    if (type == "init") {
+      tool.Prop.map(prop => {
+        if (prop.Name == name) {
+          prop.Value = value;
+        }
+      });
+    } else {
+      tool.FinalProp.map(prop => {
+        if (prop.Name == name) {
+          prop.Value = value;
+        }
+      });
+    }
     this.props.setTool(tool);
   };
 
   handleSubmit = e => {
-    let form = e.currentTarget;
-    console.log(form.checkValidity());
+    console.log(e);
     e.preventDefault();
-    e.stopPropagation();
     //update tool
     let stageNum = this.props.stageNum;
     let ctool = this.props.tool;
@@ -86,13 +92,14 @@ class Toolmodal extends Component {
     let modalBody;
     try {
       modalBody = (
-        <Form>
+        <Form onSubmit={this.handleSubmit}>
           <Form.Group>
-            Properties:
+            Initial Properties:
             <br />
             {this.props.tool.Prop.map((prop, key) => {
               let control = (
                 <Form.Control
+                  id={"init"}
                   name={prop.Name}
                   required
                   type={prop.Name}
@@ -100,23 +107,42 @@ class Toolmodal extends Component {
                   onChange={this.handleChangeProps}
                 />
               );
-              if (prop.Name == "Color") {
+              if (!prop.Editable) {
                 control = (
-                  <>
-                    <input
-                      type="color"
-                      id="color"
-                      list="reds"
-                      onChange={this.handleChangeProps}
-                    />
-                    <datalist id="reds">
-                      <option>#990000</option>
-                      <option>#660000</option>
-                      <option>#330000</option>
-                    </datalist>
-                  </>
+                  <Form.Control
+                    name={prop.Name}
+                    required
+                    type={prop.Name}
+                    defaultValue={prop.Value}
+                  />
                 );
               }
+              return (
+                <React.Fragment>
+                  <Form.Group as={Row}>
+                    <Form.Label column sm={2}>
+                      {prop.Name}
+                    </Form.Label>
+                    <Col sm={10}>{control}</Col>
+                  </Form.Group>
+                </React.Fragment>
+              );
+            })}
+          </Form.Group>
+          <Form.Group>
+            Final Properties:
+            <br />
+            {this.props.tool.FinalProp.map((prop, key) => {
+              let control = (
+                <Form.Control
+                  id={"final"}
+                  name={prop.Name}
+                  required
+                  type={prop.Name}
+                  defaultValue={prop.Value}
+                  onChange={this.handleChangeProps}
+                />
+              );
               if (!prop.Editable) {
                 control = (
                   <Form.Control
@@ -144,11 +170,7 @@ class Toolmodal extends Component {
             <br />
             No interaction yet!
           </Form.Group>
-          <Button
-            type="submit"
-            onClick={this.handleSubmit}
-            className="addtoolButton"
-          >
+          <Button type="submit" className="addtoolButton">
             Submit
           </Button>
           {"  "}

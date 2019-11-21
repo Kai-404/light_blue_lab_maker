@@ -16,6 +16,9 @@ class Header extends Component {
 
   render() {
     let UserName = "User Name";
+    if (this.props.loggedIn) {
+      UserName = this.props.user.username;
+    }
     let BarContent = e => {
       let res = <Nav className="mr-auto"></Nav>;
       if (e.under) {

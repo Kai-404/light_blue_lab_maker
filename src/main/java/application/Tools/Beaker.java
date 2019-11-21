@@ -18,8 +18,14 @@ public class Beaker extends Tool {
     int x = 0;
     @Field("BeakerY")
     int y = 0;
+
+    //initial property
     int size = 100;
-    String color = "green";
+    String color = "black";
+
+    //final property
+    int finalSize = 50;
+    String finalColor = "green";
 
     boolean canBeBurned = true;
     public Beaker(){
@@ -65,6 +71,7 @@ public class Beaker extends Tool {
         toolJSONObject.put( "x",this.x );
         toolJSONObject.put( "y",this.y );
 
+        //initial property
         JSONArray properties = new JSONArray();
 
         JSONObject sizeProp = new JSONObject();
@@ -81,6 +88,25 @@ public class Beaker extends Tool {
         properties.put(colorProp);
 
         toolJSONObject.put( "Prop",properties );
+
+        //final property
+        JSONArray finalProperties = new JSONArray();
+
+        JSONObject finalSizeProp = new JSONObject();
+        finalSizeProp.put( "Name","Size" );
+        finalSizeProp.put( "Value",this.finalSize );
+        finalSizeProp.put( "Editable", true );
+
+        JSONObject finalColorProp = new JSONObject();
+        finalColorProp.put( "Name","Color" );
+        finalColorProp.put( "Value",this.finalColor );
+        finalColorProp.put( "Editable", true );
+
+        finalProperties.put(finalSizeProp);
+        finalProperties.put(finalColorProp);
+
+        toolJSONObject.put( "FinalProp",finalProperties );
+
 
         JSONObject interactions = new JSONObject();
         interactions.put("Name", "Pour");
@@ -113,6 +139,24 @@ public class Beaker extends Tool {
                 }
             }else if (((String)prop.get("Name")).equals( "Color" )){
                 this.color=(String) prop.get( "Value" );
+            }
+        } );
+
+
+        JSONArray finalPropArray = cTool.getJSONArray( "FinalProp" );
+
+        System.out.println( finalPropArray );
+
+        finalPropArray.forEach( e->{
+            JSONObject prop = (JSONObject) e;
+            if ( ((String)prop.get("Name")).equals( "Size" ) ){
+                if (prop.get( "Value" ) instanceof String){
+                    this.finalSize= Integer.parseInt((String) prop.get( "Value" ));
+                }else {
+                    this.finalSize= (int)prop.get( "Value" );
+                }
+            }else if (((String)prop.get("Name")).equals( "Color" )){
+                this.finalColor=(String) prop.get( "Value" );
             }
         } );
 

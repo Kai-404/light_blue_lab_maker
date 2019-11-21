@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.List;
 
 @CrossOrigin
 @RestController
@@ -28,9 +29,10 @@ public class LabController {
     //sets lab to a new lab object
     @PostMapping("/newlab")
     @ResponseBody
-    public Lab newLab(@RequestParam String title, @RequestParam String author) throws IOException {
+    public Lab newLab(@RequestParam String title, @RequestParam String author, @RequestParam String description) throws IOException {
         //System.out.println( "a:"+title+"\n"+"b:"+author );
         lab = new Lab(title, author);
+        lab.setDescription( description );
         return lab;
     }
 
@@ -150,12 +152,34 @@ public class LabController {
         return true;
     }
 
-    public void publishLab() {
-        lab.setPublished(true);
+    @GetMapping("/getlablist")
+    @ResponseBody
+    public List<Lab> getLabList(String professor) {
+        return labRepository.findAllByAuthor(professor);
     }
 
-    public void deleteLab() {
-        labRepository.delete(lab);
+    public boolean publishLab() {
+        try {
+            lab.setPublished(true);
+            labRepository.save(lab);
+        } catch (Error e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+    @GetMapping("/deletelab")
+    @ResponseBody
+    public boolean deleteLab(HttpSession session) {
+        String id = lab.getId();
+        if (id != null) {
+            labRepository.delete(lab);
+            User user = userRepository.findByUsername((String) session.getAttribute("user"));
+            Professor professor = professorRepository.findByUserId(user.getId());
+            professor.getLab_list().remove(lab);
+            return true;
+        }
+        return false;
     }
 
     @PostMapping("/saveinstructions")

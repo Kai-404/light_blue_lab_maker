@@ -42,6 +42,7 @@ class App extends Component {
           <Route
             render={props => (
               <Header
+                user={this.state.user}
                 showCourseContent={this.showCourseContent}
                 loggedIn={this.state.loggedIn}
                 underCourse={this.state.underCourse}
@@ -102,7 +103,7 @@ class App extends Component {
               path="/labspage"
               render={props => (
                 <React.Fragment>
-                  <LabsPage />
+                  <LabsPage user={this.state.user} />
                 </React.Fragment>
               )}
             />
