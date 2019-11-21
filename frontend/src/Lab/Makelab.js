@@ -245,8 +245,9 @@ class Makelab extends Component {
   };
 
   handleClickTool = e => {
-    //console.log("id of the tool:", e.target.attrs.name);
+    //console.log("id of the tool:", e.target.attrs.name)
     this.getToolById(e.target.attrs.name);
+    console.log("toooool:", this.state.currentTool)
     this.setShowModal();
   };
 

@@ -142,6 +142,24 @@ public class Beaker extends Tool {
             }
         } );
 
+
+        JSONArray finalPropArray = cTool.getJSONArray( "FinalProp" );
+
+        System.out.println( finalPropArray );
+
+        finalPropArray.forEach( e->{
+            JSONObject prop = (JSONObject) e;
+            if ( ((String)prop.get("Name")).equals( "Size" ) ){
+                if (prop.get( "Value" ) instanceof String){
+                    this.finalSize= Integer.parseInt((String) prop.get( "Value" ));
+                }else {
+                    this.finalSize= (int)prop.get( "Value" );
+                }
+            }else if (((String)prop.get("Name")).equals( "Color" )){
+                this.finalColor=(String) prop.get( "Value" );
+            }
+        } );
+
     }
 
     public Beaker clone() throws CloneNotSupportedException {

@@ -98,6 +98,15 @@ public class PHPaper extends Tool {
            }
         } );
 
+        JSONArray finalPropArray = cTool.getJSONArray( "FinalProp" );
+
+        finalPropArray.forEach( e->{
+            JSONObject prop = (JSONObject) e;
+            if (((String)prop.get("Name")).equals( "Color" )){
+                this.finalColor=(String) prop.get( "Value" );
+            }
+        } );
+
     }
 
     public PHPaper clone() throws CloneNotSupportedException {
