@@ -1,11 +1,11 @@
 package application.Controllers;
 
-import application.Models.Course;
-import application.Models.CourseRepository;
+import application.Models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @RestController
@@ -14,11 +14,19 @@ public class CourseController {
 
     @Autowired
     private CourseRepository courseRepository;
+    @Autowired
+    private ProfessorRepository professorRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     @PostMapping("/addcourse")
     @ResponseBody
-    public Course addCourse(@RequestBody Course course) {
+    public Course addCourse(@RequestBody Course course, HttpSession session) {
         courseRepository.save(course);
+        User user = userRepository.findByUsername((String) session.getAttribute("user"));
+        Professor professor = professorRepository.findByUserId(user.getId());
+        professor.getCourse_list().add(course.getId());
+        professorRepository.save(professor);
         return course;
     }
 

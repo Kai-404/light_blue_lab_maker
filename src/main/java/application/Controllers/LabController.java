@@ -134,14 +134,20 @@ public class LabController {
 
     @GetMapping("/savelab")
     @ResponseBody
-    public void saveLab(HttpSession session) {
-        User user = userRepository.findByUsername((String) session.getAttribute("user"));
-        labRepository.save(lab);
-        Professor professor = professorRepository.findByUserId(user.getId());
-        if (!professor.getLab_list().contains(lab.getId())) {
-            professor.getLab_list().add(lab.getId());
-            professorRepository.save(professor);
+    public boolean saveLab(HttpSession session) {
+        try {
+            User user = userRepository.findByUsername((String) session.getAttribute("user"));
+            labRepository.save(lab);
+            Professor professor = professorRepository.findByUserId(user.getId());
+            if (!professor.getLab_list().contains(lab.getId())) {
+                professor.getLab_list().add(lab.getId());
+                professorRepository.save(professor);
+            }
+        } catch (Error e) {
+            e.printStackTrace();
+            return false;
         }
+        return true;
     }
 
     public void publishLab() {
