@@ -102,7 +102,7 @@ class App extends Component {
               path="/labspage"
               render={props => (
                 <React.Fragment>
-                  <LabsPage />
+                  <LabsPage user={this.state.user} />
                 </React.Fragment>
               )}
             />

@@ -79,7 +79,7 @@ class Makelab extends Component {
       )
       .then(res => {
         this.getTotalStage();
-        this.setCurrentStage(this.state.currentStage.stageNum+1)
+        this.setCurrentStage(this.state.currentStage.stageNum + 1);
       });
   }
 
@@ -122,7 +122,7 @@ class Makelab extends Component {
         return t;
       }
     });
-    this.state.labTools = allTool;
+    this.setState({ labTools: allTool });
   };
 
   // pop a tool to the center of the stage with defalut
@@ -204,9 +204,14 @@ class Makelab extends Component {
         this.setCurrentStage(stageNum);
       });
   };
+
   saveLab = () => {
     axios.get("http://localhost:8080/savelab").then(res => {
-      console.log("saved to database");
+      if (res.data) {
+        alert("successfully saved lab");
+      } else {
+        alert("fail to save the lab");
+      }
     });
   };
 

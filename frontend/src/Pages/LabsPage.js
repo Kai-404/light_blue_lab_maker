@@ -1,13 +1,12 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router";
+import { LinkContainer } from "react-router-bootstrap";
 import { Card, CardColumns, Button } from "react-bootstrap";
+import Addlab from "../Lab/Addlab";
 import "../App.css";
 import axios from "axios";
 
 class LabsPage extends Component {
-  dolab = () => {
-    this.props.history.push("/dolab");
-  };
   //TODO: Zoey will do it!!! just a placeholder
   makeLab = () => {
     let index1 = "kai_lab";
@@ -20,8 +19,7 @@ class LabsPage extends Component {
       .post("http://localhost:8080/newlab", data, {
         headers: { "Content-Type": "application/json;charset=UTF-8" },
         params: { title: index1, author: index2 }
-      }
-      )
+      })
       .then(res => {
         this.props.history.push("/makelab");
       });
@@ -32,35 +30,16 @@ class LabsPage extends Component {
       <React.Fragment>
         <CardColumns>
           <Card style={{ width: "18rem" }}>
-            <Card.Img variant="top" src="holder.js/100px180" />
             <Card.Body>
               <Card.Title>Lab #1</Card.Title>
               <Card.Text>Lab Description</Card.Text>
-              <Button variant="primary" onClick={this.dolab}>
-                Do Lab
-              </Button>
-            </Card.Body>
-          </Card>
-
-          <Card style={{ width: "18rem" }}>
-            <Card.Img variant="top" src="holder.js/100px180" />
-            <Card.Body>
-              <Card.Title>Lab #2</Card.Title>
-              <Card.Text>Lab Description</Card.Text>
-              <Button variant="primary">Do Lab</Button>
-            </Card.Body>
-          </Card>
-
-          <Card style={{ width: "18rem" }}>
-            <Card.Img variant="top" src="holder.js/100px180" />
-            <Card.Body>
-              <Card.Title>Lab #3</Card.Title>
-              <Card.Text>Lab Description</Card.Text>
-              <Button variant="primary">Do Lab</Button>
+              <LinkContainer to="/dolab">
+                <Button variant="primary">Do Lab</Button>
+              </LinkContainer>
             </Card.Body>
           </Card>
         </CardColumns>
-        <Button onClick={this.makeLab}>Add Lab</Button>
+        <Addlab user={this.props.user} his={this.props.history} />
       </React.Fragment>
     );
   }
