@@ -158,4 +158,10 @@ public class LabController {
         labRepository.delete(lab);
     }
 
+    @PostMapping("/saveinstructions")
+    @ResponseBody
+    public void saveInstructions(@RequestParam(name="stageNum") int stageNum, @RequestParam(name="instructions") String instructions) {
+        lab.saveInstructions(stageNum, instructions);
+    }
+
 }
