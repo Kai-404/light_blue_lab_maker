@@ -123,6 +123,7 @@ class Makelab extends Component {
       }
     });
     this.setState({ labTools: allTool });
+    this.setCurrentStage(this.state.currentStage.stageNum);
   };
 
   // pop a tool to the center of the stage with defalut
