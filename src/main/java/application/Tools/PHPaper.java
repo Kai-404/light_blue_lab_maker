@@ -18,7 +18,12 @@ public class PHPaper extends Tool {
     int x = 0;
     @Field("PHy")
     int y = 0;
-    String color = "green";
+
+    //initial property
+    String color = "black";
+    //final property
+    String finalColor = "green";
+
 
     public PHPaper(){
 
@@ -54,6 +59,19 @@ public class PHPaper extends Tool {
         properties.put(colorProp);
 
         toolJSONObject.put( "Prop",properties );
+
+
+        //final property
+        JSONArray finalProperties = new JSONArray();
+
+        JSONObject finalColorProp = new JSONObject();
+        finalColorProp.put( "Name","Color" );
+        finalColorProp.put( "Value",this.finalColor );
+        finalColorProp.put( "Editable", true );
+
+        finalProperties.put(finalColorProp);
+
+        toolJSONObject.put( "FinalProp",finalProperties );
 
         JSONObject interactions = new JSONObject();
         interactions.put("Name", "Measure");

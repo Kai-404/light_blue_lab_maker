@@ -88,9 +88,61 @@ class Toolmodal extends Component {
       modalBody = (
         <Form>
           <Form.Group>
-            Properties:
+            Initial Properties:
             <br />
             {this.props.tool.Prop.map((prop, key) => {
+              let control = (
+                <Form.Control
+                  name={prop.Name}
+                  required
+                  type={prop.Name}
+                  defaultValue={prop.Value}
+                  onChange={this.handleChangeProps}
+                />
+              );
+              if (prop.Name == "Color") {
+                control = (
+                  <>
+                    <input
+                      type="color"
+                      id="color"
+                      list="reds"
+                      onChange={this.handleChangeProps}
+                    />
+                    <datalist id="reds">
+                      <option>#990000</option>
+                      <option>#660000</option>
+                      <option>#330000</option>
+                    </datalist>
+                  </>
+                );
+              }
+              if (!prop.Editable) {
+                control = (
+                  <Form.Control
+                    name={prop.Name}
+                    required
+                    type={prop.Name}
+                    defaultValue={prop.Value}
+                  />
+                );
+              }
+              return (
+                <React.Fragment>
+                  <Form.Group as={Row}>
+                    <Form.Label column sm={2}>
+                      {prop.Name}
+                    </Form.Label>
+                    <Col sm={10}>{control}</Col>
+                  </Form.Group>
+                </React.Fragment>
+              );
+            })}
+          </Form.Group>
+          <Form.Group>
+            Final Properties:
+            <br />
+            {this.props.tool.FinalProp.map((prop, key) => {
               let control = (
                 <Form.Control
                   name={prop.Name}
