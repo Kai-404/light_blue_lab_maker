@@ -223,13 +223,15 @@ class Makelab extends Component {
     };
 
     publishLab = () => {
-        axios.get("http://lovalhost:8080/publishlab").then(res => {
+        axios.get("http://localhost:8080/publishlab").then(res => {
             if (res.data) {
                 alert("successfully published lab");
             } else {
                 alert("fail to publish the lab");
             }
-        })
+        }).catch(err => {
+            alert("fail to publish the lab with", err);
+        });
     }
 
     setCurrentTool = tool => {

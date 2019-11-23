@@ -159,6 +159,7 @@ public class LabController {
     }
 
     @GetMapping("/publishlab")
+    @ResponseBody
     public boolean publishLab() {
         try {
             lab.setPublished(true);
