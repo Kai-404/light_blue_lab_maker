@@ -17,7 +17,10 @@ class Addlab extends Component {
 
   addNewLab = () => {
     let title = this.state.labTitle;
-    let author = this.props.user.username;
+    //for testing
+    let author = "kai";
+    if (this.props.user)
+      author = this.props.user.username;
     let description = this.state.description;
     let data = JSON.stringify({
       author,

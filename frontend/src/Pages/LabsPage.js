@@ -8,7 +8,8 @@ import axios from "axios";
 
 class LabsPage extends Component {
   state = {
-    labList: []
+    labList: [],
+    currentLab: []
   };
 
   componentDidMount() {
@@ -22,12 +23,44 @@ class LabsPage extends Component {
         params: { professor: this.props.user.username }
       })
       .then(res => {
-        console.log("lab list: ", res.data);
         this.setState({ labList: res.data });
+        console.log("lab list: ", this.state.labList);
       });
   };
 
-  deleteLab = () => {};
+  deleteLab = id => {
+    console.log(id);
+    axios
+      .get("http://localhost:8080//deletelab", {
+        headers: { "Content-Type": "application/json;charset=UTF-8" },
+        params: { id: id }
+      })
+      .then(res => {
+        if (res.data) {
+          this.setState({ labList: res.data });
+          alert("lab is being delete");
+        } else {
+          alert("Cannot delete this lab");
+        }
+      })
+      .catch(err => {
+        alert("Cannot delete this lab now, try again later");
+      });
+  };
+
+  editLab = id => {
+    axios
+      .get("http://localhost:8080//editlab", {
+        headers: { "Content-Type": "application/json;charset=UTF-8" },
+        params: { id: id }
+      })
+      .then(res => {
+        this.setState({ currentLab: res.data });
+      })
+      .catch(err => {
+        alert("Cannot load the lab to edit, try again later");
+      });
+  };
 
   render() {
     let labs = [];
@@ -43,20 +76,31 @@ class LabsPage extends Component {
     if (this.state.labList.length > 0) {
       labs.pop();
       this.state.labList.map(lab => {
+        let buttonGroup = (
+          <ButtonGroup>
+            <LinkContainer to="/dolab">
+              <Button variant="primary">Do</Button>
+            </LinkContainer>
+            <Button variant="primary" onClick={() => this.editLab(lab.id)}>Edit</Button>
+            <Button variant="primary" onClick={() => this.deleteLab(lab.id)}>Delete</Button>
+          </ButtonGroup>
+        )
+        if (lab.published) {
+          buttonGroup = (
+            <ButtonGroup>
+              <LinkContainer to="/dolab">
+                <Button variant="primary">Do</Button>
+              </LinkContainer>
+            </ButtonGroup>
+          )
+        }
+
         labs.push(
           <Card style={{ width: "18rem" }}>
             <Card.Body>
               <Card.Title>{lab.title}</Card.Title>
               <Card.Text>{lab.description}</Card.Text>
-              <ButtonGroup>
-                <LinkContainer to="/dolab">
-                  <Button variant="primary">Do</Button>
-                </LinkContainer>
-                <Button variant="primary">Edit</Button>
-                <Button variant="primary" onClick={this.deleteLab}>
-                  Delete
-                </Button>
-              </ButtonGroup>
+              {buttonGroup}
             </Card.Body>
           </Card>
         );

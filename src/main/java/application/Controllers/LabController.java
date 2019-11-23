@@ -158,6 +158,7 @@ public class LabController {
         return labRepository.findAllByAuthor(professor);
     }
 
+    @GetMapping("/publishlab")
     public boolean publishLab() {
         try {
             lab.setPublished(true);
