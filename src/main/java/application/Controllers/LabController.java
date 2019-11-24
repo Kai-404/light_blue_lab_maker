@@ -170,13 +170,13 @@ public class LabController {
     }
     @GetMapping("/deletelab")
     @ResponseBody
-    public boolean deleteLab(HttpSession session) {
-        String id = lab.getId();
+    public boolean deleteLab(@RequestParam(name = "id") String id, HttpSession session) {
+        Lab lab = labRepository.getById(id);
         if (id != null) {
             labRepository.delete(lab);
             User user = userRepository.findByUsername((String) session.getAttribute("user"));
             Professor professor = professorRepository.findByUserId(user.getId());
-            professor.getLab_list().remove(lab);
+            professor.getLab_list().remove(lab.getId());
             return true;
         }
         return false;

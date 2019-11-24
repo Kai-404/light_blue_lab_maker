@@ -8,4 +8,5 @@ import java.util.List;
 @Repository
 public interface LabRepository extends MongoRepository<Lab, String> {
     List<Lab> findAllByAuthor(String author);
+    Lab getById(String id);
 }
