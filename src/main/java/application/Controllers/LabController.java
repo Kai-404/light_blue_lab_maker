@@ -190,7 +190,7 @@ public class LabController {
         lab.saveInstructions(stageNum, instructions);
     }
 
-    @PostMapping("/searchlab")
+    @GetMapping("/searchlab")
     @ResponseBody
     public ResponseEntity<List<Lab>> searchLab(@RequestParam(name = "id") String name, HttpSession session) {
         List<Lab> labList = new ArrayList<>();

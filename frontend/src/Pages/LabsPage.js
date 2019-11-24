@@ -15,7 +15,7 @@ class LabsPage extends Component {
   };
 
   componentDidMount() {
-    //this.getLabPage();
+    this.getLabPage();
   }
 
   getLabPage = () => {
@@ -65,18 +65,20 @@ class LabsPage extends Component {
   };
 
   handleOnChange = e => {
-    this.setState({ message: "" });
+    this.setState({ searchInput: e.target.value, message: "" });
   };
 
   searchLab = e => {
     if (e.key === "Enter") {
+      console.log(this.state.searchInput);
       axios
-        .get("http://localhost:8080//searchlab", {
+        .get("http://localhost:8080/searchlab", {
           headers: { "Content-Type": "application/json;charset=UTF-8" },
           params: { id: this.state.searchInput }
         })
         .then(res => {
-          this.setState({ currentLab: res.data, messgae: "" });
+          console.log("searched", res.data);
+          this.setState({ labList: res.data, messgae: "" });
         })
         .catch(err => {
           this.setState({ message: "No such lab" });
