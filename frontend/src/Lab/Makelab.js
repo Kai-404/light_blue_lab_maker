@@ -17,9 +17,10 @@ import {
   Row,
   Modal
 } from "react-bootstrap";
-import uuid from "uuid";
 import Addtool from "./Addtool";
 import ToolModal from "./Toolmodal";
+import LabStageBar from "./LabStageBar";
+import ToolImg from "./ToolImg";
 import Tooltip from "./Tooltip";
 import "../App.css";
 
@@ -315,24 +316,6 @@ class Makelab extends Component {
     };
   */
   render() {
-    let Stages = () => {
-      let list = [];
-      for (let i = 0; i < this.state.getTotalStage; i++) {
-        list.push(
-          <ListGroup.Item
-            action
-            onClick={() => {
-              this.setCurrentStage(i);
-            }}
-            active={i === this.state.currentStage.stageNum}
-          >
-            {i}
-          </ListGroup.Item>
-        );
-      }
-      return list;
-    };
-
     let toolBar = (
       <React.Fragment>
         {this.state.labTools.map(tool => (
@@ -350,6 +333,7 @@ class Makelab extends Component {
         ))}
       </React.Fragment>
     );
+
     let ToolImg = Img => {
       let [tool] = useImage(Object.values(Img)[0]);
       let img = (
@@ -370,6 +354,7 @@ class Makelab extends Component {
       );
       return img;
     };
+
     return (
       <React.Fragment>
         <p className="errmsg">{this.state.errMsg}</p>
@@ -405,6 +390,21 @@ class Makelab extends Component {
                   id={toolImg.id}
                 />
               ))}
+              {/*this.state.currentStage.stageTool.map((toolImg, key) => (
+                <ToolImg
+                  key={key}
+                  Img={toolImg.Img}
+                  xVal={toolImg.x}
+                  yVal={toolImg.y}
+                  id={toolImg.id}
+                  stageNum={this.state.currentStage.stageNum}
+                  stageTool={this.state.currentStage.stageTool}
+                  setCurrentStage={this.setCurrentStage}
+                  setTool={this.setCurrentTool}
+                  setShow={this.setShowModal}
+                />
+              ))*/}
+
               <Text
                 text={this.state.currentStage.instructions}
                 fontSize={20}
@@ -462,7 +462,11 @@ class Makelab extends Component {
                 }}
               >
                 <ListGroup>
-                  <Stages />
+                  <LabStageBar
+                    totalStage={this.state.getTotalStage}
+                    currentStageNum={this.state.currentStage.stageNum}
+                    setCurrentStage={this.setCurrentStage}
+                  />
                   <ListGroup.Item>
                     <ButtonGroup vertical>
                       <Button
