@@ -188,4 +188,10 @@ public class LabController {
         lab.saveInstructions(stageNum, instructions);
     }
 
+    //ADD DRAGGABLE POSTMAPPING
+    @PostMapping("/swapstages")
+    @ResponseBody
+    public void swapstages(@RequestParam(name="oldIndex") int oldIndex, @RequestParam(name="newIndex") int newIndex) {
+        lab.swapStages(oldIndex, newIndex);
+    }
 }

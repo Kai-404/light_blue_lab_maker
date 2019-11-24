@@ -194,4 +194,11 @@ public class Lab {
     public void saveInstructions(int stageNum, String instructions) {
         this.getStage(stageNum).setInstruction(instructions);
     }
+
+    //ADD SWAP STAGES
+    public void swapStages(int oldIndex, int newIndex) {
+        Stage stage = this.stageList.remove(oldIndex);
+        this.stageList.add(newIndex, stage);
+        this.updateStageList();
+    }
 }

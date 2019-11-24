@@ -23,6 +23,7 @@ import Addtool from "./Addtool";
 import ToolModal from "./Toolmodal";
 import Tooltip from "./Tooltip";
 import "../App.css";
+import {sortableContainer, sortableElement, sortableHandle} from 'react-sortable-hoc';
 
 const stageW = window.innerWidth - window.innerWidth * 0.3;
 const stageH = window.innerHeight - 200;
@@ -70,7 +71,8 @@ class Makelab extends Component {
                 });
         } else {
             this.setState({currentStage: {stageNum: -1, stageTool: []}});
-        }};
+        }
+    };
 
     duplicateStage() {
         axios
@@ -118,16 +120,16 @@ class Makelab extends Component {
             });
     }
 
-  //add tool to whole lab
-  addLabTool = tool => {
-    let allTool = tool.filter(t => {
-      if (t.Display) {
-        return t;
-      }
-    });
-    this.setState({ labTools: allTool });
-    this.setCurrentStage(this.state.currentStage.stageNum);
-  };
+    //add tool to whole lab
+    addLabTool = tool => {
+        let allTool = tool.filter(t => {
+            if (t.Display) {
+                return t;
+            }
+        });
+        this.setState({labTools: allTool});
+        this.setCurrentStage(this.state.currentStage.stageNum);
+    };
 
 
     // pop a tool to the center of the stage with defalut
@@ -157,7 +159,6 @@ class Makelab extends Component {
                 }
             });
     };
-
 
 
     //draging a tool animation
@@ -210,18 +211,18 @@ class Makelab extends Component {
             .then(res => {
                 this.setCurrentStage(stageNum);
             });
-     
+
     };
 
-  saveLab = () => {
-    axios.get("http://localhost:8080/savelab").then(res => {
-      if (res.data) {
-        alert("successfully saved lab");
-      } else {
-        alert("fail to save the lab");
-      }
-    });
-  };
+    saveLab = () => {
+        axios.get("http://localhost:8080/savelab").then(res => {
+            if (res.data) {
+                alert("successfully saved lab");
+            } else {
+                alert("fail to save the lab");
+            }
+        });
+    };
 
     setCurrentTool = tool => {
         this.setState({currentTool: tool});
@@ -252,12 +253,12 @@ class Makelab extends Component {
     };
 
 
-  handleClickTool = e => {
-    //console.log("id of the tool:", e.target.attrs.name)
-    this.getToolById(e.target.attrs.name);
-    console.log("toooool:", this.state.currentTool)
-    this.setShowModal();
-  };
+    handleClickTool = e => {
+        //console.log("id of the tool:", e.target.attrs.name)
+        this.getToolById(e.target.attrs.name);
+        console.log("toooool:", this.state.currentTool)
+        this.setShowModal();
+    };
 
 
     showEditInstructions() {
@@ -317,20 +318,58 @@ class Makelab extends Component {
       this.setState({ countForTooltip: 3 });
     };
   */
+
+    //ADD POSTMAPPING
+
+    onSortEnd = ({oldIndex, newIndex}) => {
+        axios
+            .post(
+                'http://localhost:8080/swapstages',
+                null,
+                {
+                    headers: {"Content-Type": "application/json;charset=UTF-8"},
+                    params: {
+                        oldIndex: oldIndex,
+                        newIndex: newIndex
+                    }
+                }
+            )
+            .then(res => {
+                this.setCurrentStage(oldIndex);
+            })
+    };
+
     render() {
+
+        const DragHandle = sortableHandle(() => <span class='sortablehandler'>:::</span>);
+
+        let SortableItem = sortableElement(({value}) =>
+            <ListGroup.Item
+                action
+                active={value === this.state.currentStage.stageNum}
+                onClick={() => {
+                    this.setCurrentStage(value);
+                }}
+            >
+                <DragHandle />
+                {value}
+            </ListGroup.Item>);
+
+        let SortableContainer = sortableContainer(({children}) => {
+            return <ListGroup>{children}</ListGroup>;
+        });
+
         let Stages = () => {
             let list = [];
             for (let i = 0; i < this.state.getTotalStage; i++) {
                 list.push(
-                    <ListGroup.Item
-                        action
-                        onClick={() => {
-                            this.setCurrentStage(i);
-                        }}
-                        active={i === this.state.currentStage.stageNum}
+                    //ADD DRAGGABLE
+                    <SortableItem
+                        key={'item-'+i}
+                        index={i}
+                        value={i}
                     >
-                        {i}
-                    </ListGroup.Item>
+                    </SortableItem>
                 );
             }
             return list;
@@ -411,9 +450,9 @@ class Makelab extends Component {
                             <Text
                                 text={this.state.currentStage.instructions}
                                 fontSize={20}
-                                x={0.1*stageW}
-                                y={0.05*stageH}
-                                width={0.8*stageW}
+                                x={0.1 * stageW}
+                                y={0.05 * stageH}
+                                width={0.8 * stageW}
                                 align='center'
                                 onDblClick={() => {
                                     this.showEditInstructions()
@@ -422,16 +461,22 @@ class Makelab extends Component {
                         </Layer>
                     </Stage>
 
-                    <Modal show={this.state.editInstructions} onHide={() => {this.hideEditInstructions()}}>
+                    <Modal show={this.state.editInstructions} onHide={() => {
+                        this.hideEditInstructions()
+                    }}>
                         <Modal.Body>
                             <textarea name='newInstructions' onChange={(e) => {
                                 this.changeInstructions(e)
                             }}>{this.state.currentStage.instructions}</textarea>
                             <br/>
-                            <Button onClick={() => {this.saveInstructions()}}>
+                            <Button onClick={() => {
+                                this.saveInstructions()
+                            }}>
                                 Ok
                             </Button>
-                            <Button onClick={() => {this.hideEditInstructions()}}>
+                            <Button onClick={() => {
+                                this.hideEditInstructions()
+                            }}>
                                 Cancel
                             </Button>
                         </Modal.Body>
@@ -446,33 +491,31 @@ class Makelab extends Component {
                                     "overflow-y": "auto"
                                 }}
                             >
-                                <ListGroup>
+                                <SortableContainer onSortEnd={this.onSortEnd}>
                                     <Stages/>
-                                    <ListGroup.Item>
-                                        <ButtonGroup vertical>
-                                            <Button
-                                                onClick={() => this.addStage()}
-                                                className="addtoolButton"
-                                            >
-                                                New
-                                            </Button>
-                                            <Button
-                                                onClick={() => this.duplicateStage()}
-                                                className="addtoolButton"
-                                                disabled={this.state.currentStage.stageNum === -1}
-                                            >
-                                                Duplicate
-                                            </Button>
-                                            <Button
-                                                className="addtoolButton"
-                                                onClick={() => this.deleteStage()}
-                                                disabled={this.state.currentStage.stageNum === -1}
-                                            >
-                                                Delete
-                                            </Button>
-                                        </ButtonGroup>
-                                    </ListGroup.Item>
-                                </ListGroup>
+                                </SortableContainer>
+                                <ButtonGroup vertical>
+                                    <Button
+                                        onClick={() => this.addStage()}
+                                        className="addtoolButton"
+                                    >
+                                        New
+                                    </Button>
+                                    <Button
+                                        onClick={() => this.duplicateStage()}
+                                        className="addtoolButton"
+                                        disabled={this.state.currentStage.stageNum === -1}
+                                    >
+                                        Duplicate
+                                    </Button>
+                                    <Button
+                                        className="addtoolButton"
+                                        onClick={() => this.deleteStage()}
+                                        disabled={this.state.currentStage.stageNum === -1}
+                                    >
+                                        Delete
+                                    </Button>
+                                </ButtonGroup>
                             </Modal.Body>
                         </Card.Body>
                     </Card>
