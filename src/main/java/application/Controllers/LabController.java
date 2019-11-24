@@ -4,14 +4,14 @@ import application.Models.*;
 import application.Models.Lab;
 // Not the real JSON Library!!!
 //import net.minidev.json.JSONArray;
-import application.Tools.Beaker;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @CrossOrigin
@@ -190,4 +190,20 @@ public class LabController {
         lab.saveInstructions(stageNum, instructions);
     }
 
+    @PostMapping("/searchlab")
+    @ResponseBody
+    public ResponseEntity<List<Lab>> searchLab(@RequestParam(name = "id") String name, HttpSession session) {
+        List<Lab> labList = new ArrayList<>();
+        User user = userRepository.findByUsername((String) session.getAttribute("user"));
+        Professor professor = professorRepository.findByUserId(user.getId());
+        for (String id : professor.getLab_list()) {
+            Lab lab = labRepository.getById(id);
+            if (lab.getTitle().contains(name))
+                labList.add(lab);
+        }
+        if (labList.size() == 0)
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        else
+            return new ResponseEntity<>(labList, HttpStatus.OK);
+    }
 }
