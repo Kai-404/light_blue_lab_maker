@@ -1,11 +1,11 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import axios from "axios";
-import {withRouter} from "react-router";
+import { withRouter } from "react-router";
 import Konva from "konva";
-import {Stage, Layer, Star, Text, Image} from "react-konva";
+import { Stage, Layer, Star, Text, Image } from "react-konva";
 import useImage from "use-image";
 import Sidebar from "../Layout/Sidebar";
-import {LinkContainer} from "react-router-bootstrap";
+import { LinkContainer } from "react-router-bootstrap";
 import {
     Button,
     ButtonGroup,
@@ -51,26 +51,25 @@ class Makelab extends Component {
 
     getTotalStage() {
         axios.get("http://localhost:8080/gettotalstage").then(res => {
-            this.setState({getTotalStage: res.data});
+            this.setState({ getTotalStage: res.data });
         });
     }
 
     setCurrentStage = i => {
-        console.log("currentstage is: ", i);
         let data = JSON.stringify(i);
         if (i > -1) {
             axios
                 .post("http://localhost:8080/getstage", data, {
-                    headers: {"Content-Type": "application/json;charset=UTF-8"},
-                    params: {stageNum: i}
+                    headers: { "Content-Type": "application/json;charset=UTF-8" },
+                    params: { stageNum: i }
                 })
                 .then(res => {
-                    console.log(res.data);
-                    this.setState({currentStage: res.data});
+                    this.setState({ currentStage: res.data });
                 });
         } else {
-            this.setState({currentStage: {stageNum: -1, stageTool: []}});
-        }};
+            this.setState({ currentStage: { stageNum: -1, stageTool: [] } });
+        }
+    };
 
     duplicateStage() {
         axios
@@ -78,7 +77,7 @@ class Makelab extends Component {
                 "http://localhost:8080/duplicatestage",
                 JSON.stringify(this.state.currentStage.stageNum),
                 {
-                    headers: {"Content-Type": "application/json;charset=UTF-8"}
+                    headers: { "Content-Type": "application/json;charset=UTF-8" }
                 }
             )
             .then(res => {
@@ -93,7 +92,7 @@ class Makelab extends Component {
                 "http://localhost:8080/addstage",
                 JSON.stringify(this.state.currentStage.stageNum),
                 {
-                    headers: {"Content-Type": "application/json;charset=UTF-8"}
+                    headers: { "Content-Type": "application/json;charset=UTF-8" }
                 }
             )
             .then(res => {
@@ -106,7 +105,7 @@ class Makelab extends Component {
         let stageNum = this.state.currentStage.stageNum;
         axios
             .post("http://localhost:8080/deletestage", JSON.stringify(stageNum), {
-                headers: {"Content-Type": "application/json;charset=UTF-8"}
+                headers: { "Content-Type": "application/json;charset=UTF-8" }
             })
             .then(res => {
                 this.getTotalStage();
@@ -118,16 +117,16 @@ class Makelab extends Component {
             });
     }
 
-  //add tool to whole lab
-  addLabTool = tool => {
-    let allTool = tool.filter(t => {
-      if (t.Display) {
-        return t;
-      }
-    });
-    this.setState({ labTools: allTool });
-    this.setCurrentStage(this.state.currentStage.stageNum);
-  };
+    //add tool to whole lab
+    addLabTool = tool => {
+        let allTool = tool.filter(t => {
+            if (t.Display) {
+                return t;
+            }
+        });
+        this.setState({ labTools: allTool });
+        this.setCurrentStage(this.state.currentStage.stageNum);
+    };
 
 
     // pop a tool to the center of the stage with defalut
@@ -144,7 +143,7 @@ class Makelab extends Component {
         //request a tool with , get back a default tool
         axios
             .post("http://localhost:8080/stageaddtool", data, {
-                headers: {"Content-Type": "application/json;charset=UTF-8"},
+                headers: { "Content-Type": "application/json;charset=UTF-8" },
                 params: {
                     stageNum: stageNum,
                     toolName: name, //name of tool
@@ -180,7 +179,7 @@ class Makelab extends Component {
             if (tool.id === id) {
                 tool.x = e.target.attrs.x;
                 tool.y = e.target.attrs.y;
-                this.setState({currentTool: tool});
+                this.setState({ currentTool: tool });
             }
         });
         e.target.to({
@@ -200,7 +199,7 @@ class Makelab extends Component {
 
         axios
             .post("http://localhost:8080/updatetoolprop", data, {
-                headers: {"Content-Type": "application/json;charset=UTF-8"},
+                headers: { "Content-Type": "application/json;charset=UTF-8" },
                 params: {
                     stageNum: stageNum,
                     ID: id
@@ -210,25 +209,42 @@ class Makelab extends Component {
             .then(res => {
                 this.setCurrentStage(stageNum);
             });
-     
+
     };
 
-  saveLab = () => {
-    axios.get("http://localhost:8080/savelab").then(res => {
-      if (res.data) {
-        alert("successfully saved lab");
-      } else {
-        alert("fail to save the lab");
-      }
-    });
-  };
+    saveLab = () => {
+        axios.get("http://localhost:8080/savelab").then(res => {
+            if (res.data) {
+                alert("successfully saved lab");
+            } else {
+                alert("fail to save the lab");
+            }
+        });
+    };
+
+    publishLab = () => {
+        axios.get("http://localhost:8080/publishlab").then(res => {
+            if (res.data) {
+                alert("successfully published lab");
+            } else {
+                alert("fail to publish the lab");
+            }
+        }).catch(err => {
+            alert("fail to publish the lab with", err);
+        });
+    }
 
     setCurrentTool = tool => {
-        this.setState({currentTool: tool});
+        this.setState({ currentTool: tool });
     };
 
-    //get tool by id and stage num
-    getToolById = id => {
+    setShowModal = () => {
+        this.setState({ showPop: !this.state.showPop });
+    };
+
+
+    handleClickTool = e => {
+        let id = e.target.attrs.name;
         let stageNum = this.state.currentStage.stageNum;
         let data = JSON.stringify({
             stageNum,
@@ -236,36 +252,25 @@ class Makelab extends Component {
         });
         axios
             .post("http://localhost:8080/gettool", data, {
-                headers: {"Content-Type": "application/json;charset=UTF-8"},
+                headers: { "Content-Type": "application/json;charset=UTF-8" },
                 params: {
                     stageNum: stageNum,
                     ID: id
                 }
             })
             .then(res => {
-                this.setState({currentTool: res.data});
+                this.setState({ currentTool: res.data });
+                this.setShowModal();
             });
     };
 
-    setShowModal = () => {
-        this.setState({showPop: !this.state.showPop});
-    };
-
-
-  handleClickTool = e => {
-    //console.log("id of the tool:", e.target.attrs.name)
-    this.getToolById(e.target.attrs.name);
-    console.log("toooool:", this.state.currentTool)
-    this.setShowModal();
-  };
-
 
     showEditInstructions() {
-        this.setState({editInstructions: true});
+        this.setState({ editInstructions: true });
     }
 
     changeInstructions(e) {
-        this.setState({[e.target.name]: e.target.value});
+        this.setState({ [e.target.name]: e.target.value });
     }
 
     saveInstructions() {
@@ -274,7 +279,7 @@ class Makelab extends Component {
                 'http://localhost:8080/saveinstructions',
                 null,
                 {
-                    headers: {"Content-Type": "application/json;charset=UTF-8"},
+                    headers: { "Content-Type": "application/json;charset=UTF-8" },
                     params: {
                         stageNum: this.state.currentStage.stageNum,
                         instructions: this.state.newInstructions
@@ -282,13 +287,13 @@ class Makelab extends Component {
                 }
             )
             .then(res => {
-                this.setState({editInstructions: false});
+                this.setState({ editInstructions: false });
                 this.setCurrentStage(this.state.currentStage.stageNum);
             })
     }
 
     hideEditInstructions() {
-        this.setState({editInstructions: false});
+        this.setState({ editInstructions: false });
     };
 
     /*
@@ -392,9 +397,9 @@ class Makelab extends Component {
                             <Dropdown.Item>Tool 1</Dropdown.Item>
                         </Dropdown.Menu>
                     </Dropdown>
-                    <Addtool addLabTool={this.addLabTool}/>
+                    <Addtool addLabTool={this.addLabTool} />
                 </ButtonGroup>
-                <br/>
+                <br />
                 <Row>
                     {/* append tools to the stageTool and rerender */}
                     <Stage width={stageW} height={stageH} className="stage">
@@ -411,9 +416,9 @@ class Makelab extends Component {
                             <Text
                                 text={this.state.currentStage.instructions}
                                 fontSize={20}
-                                x={0.1*stageW}
-                                y={0.05*stageH}
-                                width={0.8*stageW}
+                                x={0.1 * stageW}
+                                y={0.05 * stageH}
+                                width={0.8 * stageW}
                                 align='center'
                                 onDblClick={() => {
                                     this.showEditInstructions()
@@ -422,16 +427,16 @@ class Makelab extends Component {
                         </Layer>
                     </Stage>
 
-                    <Modal show={this.state.editInstructions} onHide={() => {this.hideEditInstructions()}}>
+                    <Modal show={this.state.editInstructions} onHide={() => { this.hideEditInstructions() }}>
                         <Modal.Body>
                             <textarea name='newInstructions' onChange={(e) => {
                                 this.changeInstructions(e)
                             }}>{this.state.currentStage.instructions}</textarea>
-                            <br/>
-                            <Button onClick={() => {this.saveInstructions()}}>
+                            <br />
+                            <Button onClick={() => { this.saveInstructions() }}>
                                 Ok
                             </Button>
-                            <Button onClick={() => {this.hideEditInstructions()}}>
+                            <Button onClick={() => { this.hideEditInstructions() }}>
                                 Cancel
                             </Button>
                         </Modal.Body>
@@ -447,7 +452,7 @@ class Makelab extends Component {
                                 }}
                             >
                                 <ListGroup>
-                                    <Stages/>
+                                    <Stages />
                                     <ListGroup.Item>
                                         <ButtonGroup vertical>
                                             <Button
@@ -478,12 +483,12 @@ class Makelab extends Component {
                     </Card>
                 </Row>
 
-                <br/>
+                <br />
                 <ButtonGroup>
                     <Button className="submitButton" onClick={this.saveLab}>
                         Save
                     </Button>
-                    <Button className="submitButton">Publish</Button>
+                    <Button className="submitButton" onClick={this.publishLab}>Publish</Button>
                     <LinkContainer to="/labspage">
                         <Button className="submitButton">Cancel</Button>
                     </LinkContainer>
