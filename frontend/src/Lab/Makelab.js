@@ -20,7 +20,7 @@ import {
 import Addtool from "./Addtool";
 import ToolModal from "./Toolmodal";
 import LabStageBar from "./LabStageBar";
-import ToolImg from "./ToolImg";
+import LabTool from "./LabTool";
 import Tooltip from "./Tooltip";
 import "../App.css";
 
@@ -40,8 +40,6 @@ class Makelab extends Component {
     }, //all stage start at stage 0
     currentTool: [], //the tool prof want to change property with.
     showPop: false, //show popup
-    showTooltip: false,
-    countForTooltip: 3,
     editInstructions: false,
     newInstructions: ""
   };
@@ -155,58 +153,6 @@ class Makelab extends Component {
       });
   };
 
-  //draging a tool animation
-  handleDragStart = e => {
-    e.target.setAttrs({
-      shadowOffset: {
-        x: 2,
-        y: 2
-      },
-      scaleX: 1.1,
-      scaleY: 1.1
-    });
-  };
-  //drag tool end animation
-  handleDragEnd = e => {
-    let stageNum = this.state.currentStage.stageNum;
-    let id = e.target.attrs.name;
-    this.state.currentStage.stageTool.map(tool => {
-      // e.target.attrs.name is the id of img
-      if (tool.id === id) {
-        tool.x = e.target.attrs.x;
-        tool.y = e.target.attrs.y;
-        this.setState({ currentTool: tool });
-      }
-    });
-    e.target.to({
-      duration: 1.0,
-      easing: Konva.Easings.ElasticEaseOut,
-      scaleX: 1,
-      scaleY: 1,
-      shadowOffsetX: 0,
-      shadowOffsetY: 0
-    });
-    let ctool = this.state.currentTool;
-    let data = JSON.stringify({
-      stageNum,
-      id,
-      ctool
-    });
-
-    axios
-      .post("http://localhost:8080/updatetoolprop", data, {
-        headers: { "Content-Type": "application/json;charset=UTF-8" },
-        params: {
-          stageNum: stageNum,
-          ID: id
-        },
-        toolProps: ctool
-      })
-      .then(res => {
-        this.setCurrentStage(stageNum);
-      });
-  };
-
   saveLab = () => {
     axios.get("http://localhost:8080/savelab").then(res => {
       if (res.data) {
@@ -241,27 +187,6 @@ class Makelab extends Component {
     this.setState({ showPop: !this.state.showPop });
   };
 
-  handleClickTool = e => {
-    let id = e.target.attrs.name;
-    let stageNum = this.state.currentStage.stageNum;
-    let data = JSON.stringify({
-      stageNum,
-      id
-    });
-    axios
-      .post("http://localhost:8080/gettool", data, {
-        headers: { "Content-Type": "application/json;charset=UTF-8" },
-        params: {
-          stageNum: stageNum,
-          ID: id
-        }
-      })
-      .then(res => {
-        this.setState({ currentTool: res.data });
-        this.setShowModal();
-      });
-  };
-
   showEditInstructions() {
     this.setState({ editInstructions: true });
   }
@@ -289,32 +214,6 @@ class Makelab extends Component {
     this.setState({ editInstructions: false });
   }
 
-  /*
-    //not working!!!!!!!!
-    setShowTooltip = () => {
-      this.setState({ showTooltip: !this.state.showTooltip });
-    };
-
-    timer = () => {
-      this.setState({
-        countForTooltip: this.state.countForTooltip - 1
-      });
-      console.log(this.intervalId);
-      if (this.state.countForTooltip < 1) {
-        clearInterval(this.intervalId);
-      }
-    };
-
-    handleMouseOver = e => {
-      this.intervalId = setInterval(this.timer, 1000);
-    };
-
-    handleMouseOut = () => {
-      console.log("out!!!!");
-      clearInterval(this.intervalId);
-      this.setState({ countForTooltip: 3 });
-    };
-  */
   render() {
     let toolBar = (
       <React.Fragment>
@@ -333,28 +232,6 @@ class Makelab extends Component {
         ))}
       </React.Fragment>
     );
-
-    let ToolImg = Img => {
-      let [tool] = useImage(Object.values(Img)[0]);
-      let img = (
-        <Image
-          name={Img.id}
-          width={stageW * 0.05}
-          height={stageH * 0.1}
-          x={Img.xVal}
-          y={Img.yVal}
-          image={tool}
-          draggable
-          onClick={this.handleClickTool}
-          onDragStart={this.handleDragStart}
-          onDragEnd={this.handleDragEnd}
-          onMouseOver={this.handleMouseOver}
-          onMouseLeave={this.handleMouseOut}
-        />
-      );
-      return img;
-    };
-
     return (
       <React.Fragment>
         <p className="errmsg">{this.state.errMsg}</p>
@@ -381,29 +258,20 @@ class Makelab extends Component {
           {/* append tools to the stageTool and rerender */}
           <Stage width={stageW} height={stageH} className="stage">
             <Layer>
-              {this.state.currentStage.stageTool.map((toolImg, key) => (
-                <ToolImg
+              {this.state.currentStage.stageTool.map((tool, key) => (
+                <LabTool
                   key={key}
-                  Img={toolImg.Img}
-                  xVal={toolImg.x}
-                  yVal={toolImg.y}
-                  id={toolImg.id}
-                />
-              ))}
-              {/*this.state.currentStage.stageTool.map((toolImg, key) => (
-                <ToolImg
-                  key={key}
-                  Img={toolImg.Img}
-                  xVal={toolImg.x}
-                  yVal={toolImg.y}
-                  id={toolImg.id}
+                  src={tool.Img}
+                  x={tool.x}
+                  y={tool.y}
+                  id={tool.id}
                   stageNum={this.state.currentStage.stageNum}
                   stageTool={this.state.currentStage.stageTool}
                   setCurrentStage={this.setCurrentStage}
                   setTool={this.setCurrentTool}
-                  setShow={this.setShowModal}
+                  setShowModal={this.setShowModal}
                 />
-              ))*/}
+              ))}
 
               <Text
                 text={this.state.currentStage.instructions}

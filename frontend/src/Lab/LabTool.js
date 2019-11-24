@@ -9,25 +9,52 @@ import useImage from "use-image";
  *  Img //image of the tool
  *  xVal // x-cor of the tool
  *  yVal //y-cor of the tool
- *  id={toolImg.id}
+ *  id //name of the tool
  *  stageNum //current stage num
  *  setCurrentStage() //set current stage
  *  setTool() //set tool
- *  setShow() //setShowModal
+ *  setShowModal() //setShowModal
  */
 const stageW = window.innerWidth - window.innerWidth * 0.3;
 const stageH = window.innerHeight - 200;
 
-class ToolImg extends Component {
+class LabTool extends Component {
   state = {
-    currentTool: null
+    image: null
   };
+  componentDidMount() {
+    this.loadImage();
+  }
+  componentDidUpdate(oldProps) {
+    if (oldProps.src !== this.props.src) {
+      this.loadImage();
+    }
+  }
+  componentWillUnmount() {
+    this.image.removeEventListener("load", this.handleLoad);
+  }
+  loadImage() {
+    // save to "this" to remove "load" handler on unmount
+    this.image = new window.Image();
+    this.image.src = this.props.src;
+    this.image.addEventListener("load", this.handleLoad);
+  }
+  handleLoad = () => {
+    // after setState react-konva will update canvas and redraw the layer
+    // because "image" property is changed
+    this.setState({
+      image: this.image
+    });
+    // if you keep same image object during source updates
+    // you will have to update layer manually:
+    // this.imageNode.getLayer().batchDraw();
+  };
+
   /*
     //not working!!!!!!!!
     setShowTooltip = () => {
       this.setState({ showTooltip: !this.state.showTooltip });
     };
-
     timer = () => {
       this.setState({
         countForTooltip: this.state.countForTooltip - 1
@@ -37,11 +64,9 @@ class ToolImg extends Component {
         clearInterval(this.intervalId);
       }
     };
-
     handleMouseOver = e => {
       this.intervalId = setInterval(this.timer, 1000);
     };
-
     handleMouseOut = () => {
       console.log("out!!!!");
       clearInterval(this.intervalId);
@@ -123,19 +148,24 @@ class ToolImg extends Component {
   };
 
   render() {
-    let [tool] = useImage(Object.values(this.props.Img)[0]);
     return (
       <Image
-        name={this.props.Img.id}
+        x={this.props.x}
+        y={this.props.y}
         width={stageW * 0.05}
         height={stageH * 0.1}
-        x={this.props.xVal}
-        y={this.props.yVal}
-        image={tool}
+        name={this.props.id}
+        image={this.state.image}
+        ref={node => {
+          this.imageNode = node;
+        }}
         draggable
+        onClick={this.handleClickTool}
+        onDragStart={this.handleDragStart}
+        onDragEnd={this.handleDragEnd}
       />
     );
   }
 }
 
-export default ToolImg;
+export default LabTool;
