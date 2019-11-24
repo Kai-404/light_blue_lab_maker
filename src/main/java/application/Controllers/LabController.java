@@ -198,7 +198,7 @@ public class LabController {
         Professor professor = professorRepository.findByUserId(user.getId());
         for (String id : professor.getLab_list()) {
             Lab lab = labRepository.getById(id);
-            if (lab.getTitle().contains(name))
+            if (lab != null && lab.getTitle().contains(name))
                 labList.add(lab);
         }
         if (labList.size() == 0)
