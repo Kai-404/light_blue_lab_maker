@@ -69,7 +69,13 @@ class Header extends Component {
               </button>
             </LinkContainer>
             <LinkContainer to="/">
-              <button className="IconButton" onClick={this.showBar}>
+              <button
+                className="IconButton"
+                onClick={() => {
+                  this.showBar();
+                  this.props.logout();
+                }}
+              >
                 <img src={LogoutIcon} className="UserIcon" alt="Logout" />
               </button>
             </LinkContainer>

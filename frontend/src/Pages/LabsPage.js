@@ -15,10 +15,10 @@ class LabsPage extends Component {
   };
 
   componentDidMount() {
-    this.getLabPage();
+    this.getLabsList();
   }
 
-  getLabPage = () => {
+  getLabsList = () => {
     axios
       .get("http://localhost:8080/getlablist", {
         headers: { "Content-Type": "application/json;charset=UTF-8" },
@@ -26,12 +26,11 @@ class LabsPage extends Component {
       })
       .then(res => {
         this.setState({ labList: res.data });
-        console.log("lab list: ", this.state.labList);
+        //console.log("lab list: ", this.state.labList);
       });
   };
 
   deleteLab = id => {
-    console.log(id);
     axios
       .get("http://localhost:8080//deletelab", {
         headers: { "Content-Type": "application/json;charset=UTF-8" },
@@ -66,23 +65,31 @@ class LabsPage extends Component {
 
   handleOnChange = e => {
     this.setState({ searchInput: e.target.value, message: "" });
+    if (this.state.searchInput == "") this.getLabsList();
   };
 
   searchLab = e => {
     if (e.key === "Enter") {
-      console.log(this.state.searchInput);
-      axios
-        .get("http://localhost:8080/searchlab", {
-          headers: { "Content-Type": "application/json;charset=UTF-8" },
-          params: { id: this.state.searchInput }
-        })
-        .then(res => {
-          console.log("searched", res.data);
-          this.setState({ labList: res.data, messgae: "" });
-        })
-        .catch(err => {
-          this.setState({ message: "No such lab" });
-        });
+      if (this.state.searchInput == "") {
+        this.getLabsList();
+      } else {
+        axios
+          .get("http://localhost:8080/searchlab", {
+            headers: { "Content-Type": "application/json;charset=UTF-8" },
+            params: { id: this.state.searchInput }
+          })
+          .then(res => {
+            //console.log("status: ", res.status);
+            if (res.status == 200) {
+              this.setState({ labList: res.data, messgae: "" });
+            } else {
+              this.setState({ message: "No such lab" });
+            }
+          })
+          .catch(err => {
+            this.setState({ message: "No such lab" });
+          });
+      }
     }
   };
 

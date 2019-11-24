@@ -27,6 +27,10 @@ class App extends Component {
     this.setState({ user: user });
   };
 
+  logout = () => {
+    this.setState({ user: null, loggedIn: false, underCourse: false });
+  };
+
   showbar = val => {
     this.setState({ loggedIn: val });
   };
@@ -45,6 +49,7 @@ class App extends Component {
                 user={this.state.user}
                 showCourseContent={this.showCourseContent}
                 loggedIn={this.state.loggedIn}
+                logout={this.logout}
                 underCourse={this.state.underCourse}
               />
             )}
