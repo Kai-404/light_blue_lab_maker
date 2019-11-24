@@ -121,7 +121,7 @@ public class Stage {
                 int index = stageToolList.indexOf( tool );
                 if (tool.getName().equals( "Beaker" )){
                     Beaker beaker = (Beaker) tool;
-                    beaker.updateProp( toolProps );
+                    //beaker.updateProp( toolProps );
                     toReturn = beaker.getToolAsJSON();
                     stageToolList.set( index,beaker );
                 }else if (tool.getName().equals( "PHPaper" )){
@@ -129,12 +129,14 @@ public class Stage {
                     phpaper.updateProp( toolProps );
                     toReturn = phpaper.getToolAsJSON();
                     stageToolList.set( index,phpaper );
-                }else if (tool.getName().equals( "AlcoholBurner" )){
-                    AlcoholBurner alcoholBurner = (AlcoholBurner) tool;
-                    alcoholBurner.updateProp( toolProps );
-                    toReturn = alcoholBurner.getToolAsJSON();
-                    stageToolList.set( index,alcoholBurner );
                 }
+//                else if (tool.getName().equals( "AlcoholBurner" )){
+//                    AlcoholBurner alcoholBurner = (AlcoholBurner) tool;
+//                    alcoholBurner.updateProp( toolProps );
+//                    toReturn = alcoholBurner.getToolAsJSON();
+//                    stageToolList.set( index,alcoholBurner );
+// Removed Tool
+//                }
             }
         }
         return toReturn;

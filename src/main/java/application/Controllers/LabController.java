@@ -190,4 +190,13 @@ public class LabController {
         lab.saveInstructions(stageNum, instructions);
     }
 
+    //returns list of all tools
+    @GetMapping("/getbeaker")
+    @ResponseBody
+    public Tool getBeaker() {
+        Beaker beaker = new Beaker();
+        return  beaker;
+
+    }
+
 }

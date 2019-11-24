@@ -20,9 +20,9 @@ public class PHPaper extends Tool {
     int y = 0;
 
     //initial property
-    String color = "black";
+    String color = "#ffffff";
     //final property
-    String finalColor = "green";
+    String finalColor = "#FF0000";
 
 
     public PHPaper(){
