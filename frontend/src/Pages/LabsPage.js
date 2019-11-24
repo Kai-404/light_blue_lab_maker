@@ -1,19 +1,21 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router";
 import { LinkContainer } from "react-router-bootstrap";
-import { Card, CardColumns, Button, ButtonGroup } from "react-bootstrap";
+import { Card, CardColumns, Button, ButtonGroup, Form } from "react-bootstrap";
 import Addlab from "../Lab/Addlab";
-import "../App.css";
 import axios from "axios";
+import "./labsPage.css";
 
 class LabsPage extends Component {
   state = {
     labList: [],
-    currentLab: []
+    currentLab: [],
+    message: "",
+    searchInput: "" //lab name for search
   };
 
   componentDidMount() {
-    this.getLabPage();
+    //this.getLabPage();
   }
 
   getLabPage = () => {
@@ -62,6 +64,26 @@ class LabsPage extends Component {
       });
   };
 
+  handleOnChange = e => {
+    this.setState({ message: "" });
+  };
+
+  searchLab = e => {
+    if (e.key === "Enter") {
+      axios
+        .get("http://localhost:8080//searchlab", {
+          headers: { "Content-Type": "application/json;charset=UTF-8" },
+          params: { id: this.state.searchInput }
+        })
+        .then(res => {
+          this.setState({ currentLab: res.data, messgae: "" });
+        })
+        .catch(err => {
+          this.setState({ message: "No such lab" });
+        });
+    }
+  };
+
   render() {
     let labs = [];
     labs.push(
@@ -81,10 +103,14 @@ class LabsPage extends Component {
             <LinkContainer to="/dolab">
               <Button variant="primary">Do</Button>
             </LinkContainer>
-            <Button variant="primary" onClick={() => this.editLab(lab.id)}>Edit</Button>
-            <Button variant="primary" onClick={() => this.deleteLab(lab.id)}>Delete</Button>
+            <Button variant="primary" onClick={() => this.editLab(lab.id)}>
+              Edit
+            </Button>
+            <Button variant="primary" onClick={() => this.deleteLab(lab.id)}>
+              Delete
+            </Button>
           </ButtonGroup>
-        )
+        );
         if (lab.published) {
           buttonGroup = (
             <ButtonGroup>
@@ -92,7 +118,7 @@ class LabsPage extends Component {
                 <Button variant="primary">Do</Button>
               </LinkContainer>
             </ButtonGroup>
-          )
+          );
         }
 
         labs.push(
@@ -108,7 +134,19 @@ class LabsPage extends Component {
     }
     return (
       <React.Fragment>
-        <CardColumns>{labs}</CardColumns>
+        <p className="errmsg">{this.state.message}</p>
+        <Form.Control
+          className="control"
+          type="search"
+          placeholder="Search by Lab Name"
+          input={this.state.searchInput}
+          onKeyPress={this.searchLab}
+          onChange={this.handleOnChange}
+        />
+        <br />
+        <>
+          <CardColumns>{labs}</CardColumns>
+        </>
         <Addlab user={this.props.user} his={this.props.history} />
       </React.Fragment>
     );
