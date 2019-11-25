@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public class Student {
     @Id
     private String id;
-    private final String userType = "student";
+    private String userType = "Student";
     private String userId;
     private ArrayList<String> course_list;
     private ArrayList<String> lab_list;
