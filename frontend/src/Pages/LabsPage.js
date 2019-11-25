@@ -56,7 +56,7 @@ class LabsPage extends Component {
         params: { id: id }
       })
       .then(res => {
-        this.setState({ currentLab: res.data });
+          this.props.history.push("/makelab");
       })
       .catch(err => {
         alert("Cannot load the lab to edit, try again later");

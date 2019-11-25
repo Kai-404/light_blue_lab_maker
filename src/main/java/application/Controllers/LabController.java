@@ -213,4 +213,10 @@ public class LabController {
     public void swapstages(@RequestParam(name="oldIndex") int oldIndex, @RequestParam(name="newIndex") int newIndex) {
         lab.swapStages(oldIndex, newIndex);
     }
+
+    @GetMapping("/editlab")
+    @ResponseBody
+    public void editlab(String id) {
+        lab = labRepository.findById(id).get();
+    }
 }
