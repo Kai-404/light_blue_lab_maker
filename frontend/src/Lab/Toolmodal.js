@@ -194,7 +194,6 @@ class Toolmodal extends Component {
     return (
       <React.Fragment>
         <Modal
-          size="sm"
           centered
           show={this.props.showPop}
           onHide={this.props.setShow}

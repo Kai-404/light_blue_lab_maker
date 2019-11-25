@@ -332,12 +332,12 @@ class Makelab extends Component {
                   "overflow-y": "auto"
                 }}
               >
-                <LabStageBar
-                  totalStage={this.state.getTotalStage}
-                  currentStageNum={this.state.currentStage.stageNum}
-                  setCurrentStage={this.setCurrentStage}
-                />
                 <ButtonGroup vertical>
+                  <LabStageBar
+                    totalStage={this.state.getTotalStage}
+                    currentStageNum={this.state.currentStage.stageNum}
+                    setCurrentStage={this.setCurrentStage}
+                  />
                   <Button
                     onClick={() => this.addStage()}
                     className="addtoolButton"
