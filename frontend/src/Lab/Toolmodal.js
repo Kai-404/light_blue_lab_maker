@@ -89,6 +89,56 @@ class Toolmodal extends Component {
   };
 
   render() {
+    let interaction;
+
+    try {
+      interaction = (
+        <Form.Group>
+          {/*this.props.tool.Interactions.map(intera => {
+            let inter = (
+              <Form.Control
+                name={intera.Name}
+                plaintext
+                readOnly
+                defaultValue={intera.Value}
+              />
+            );
+            return (
+              <React.Fragment>
+                <Form.Group as={Row}>
+                  <Form.Label column sm={2}>
+                    {intera.Name}
+                  </Form.Label>
+                  <Col sm={10}>{inter}</Col>
+                </Form.Group>
+              </React.Fragment>
+            );
+          })*/}
+          <React.Fragment>
+            Interactions:
+            <Col sm={10}>
+              <Form.Control
+                name={this.props.tool.Interactions.Name}
+                plaintext
+                readOnly
+                defaultValue={this.props.tool.Interactions.Name}
+              />
+            </Col>
+          </React.Fragment>
+        </Form.Group>
+      );
+    } catch (err) {
+      interaction = (
+        <>
+          <Form.Group>
+            Interaction: <br />
+            <br />
+            No interaction yet!
+          </Form.Group>
+        </>
+      );
+    }
+
     let modalBody;
     try {
       modalBody = (
@@ -114,6 +164,7 @@ class Toolmodal extends Component {
                     required
                     type={prop.Name}
                     defaultValue={prop.Value}
+                    disabled
                   />
                 );
               }
@@ -150,6 +201,7 @@ class Toolmodal extends Component {
                     required
                     type={prop.Name}
                     defaultValue={prop.Value}
+                    disabled
                   />
                 );
               }
@@ -165,11 +217,7 @@ class Toolmodal extends Component {
               );
             })}
           </Form.Group>
-          <Form.Group>
-            Interaction: <br />
-            <br />
-            No interaction yet!
-          </Form.Group>
+          {interaction}
           <Button type="submit" className="addtoolButton">
             Submit
           </Button>
@@ -186,6 +234,10 @@ class Toolmodal extends Component {
             <Form.Group>This tool has no property</Form.Group>
             <Button onClick={this.props.setShow} className="addtoolButton">
               OK
+            </Button>
+            {"  "}
+            <Button onClick={this.deleteTool} className="addtoolButton">
+              Delete
             </Button>
           </Form>
         </>

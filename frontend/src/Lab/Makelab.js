@@ -47,6 +47,9 @@ class Makelab extends Component {
   componentDidMount() {
     this.getTotalStage();
     this.setCurrentStage(-1);
+    axios.get("http://localhost:8080/getalltools").then(res => {
+      this.addLabTool(res.data);
+    });
   }
 
   getTotalStage() {
