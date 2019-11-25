@@ -5,6 +5,7 @@ import application.Models.AnnouncementRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -14,6 +15,7 @@ public class AnnouncementController {
     @Autowired
     private AnnouncementRepository announcementRepository;
 
+    @ResponseBody
     public boolean createAnnouncement(String title, String content, String author, String courseId) {
         try {
             Announcement announcement = new Announcement(title, content, author, courseId);
@@ -25,6 +27,7 @@ public class AnnouncementController {
         return true;
     }
 
+    @ResponseBody
     public ResponseEntity<List<Announcement>> getAllAnnouncement(String courseId) {
         List<Announcement> announcementList = announcementRepository.findAllByCourseId(courseId);
         if (announcementList.size() == 0) {
