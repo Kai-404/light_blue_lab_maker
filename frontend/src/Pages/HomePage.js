@@ -27,9 +27,9 @@ class HomePage extends Component {
         this.getCourseList();
     };
 
-    showBar = () => {
+    showBar = id => {
         this.props.underCourse(true);
-
+        this.props.currentCourse(id);
         this.props.history.push("/announcements");
     };
 
@@ -46,7 +46,7 @@ class HomePage extends Component {
                         <Card.Body>
                             <Card.Title>{course.title}</Card.Title>
                             <Card.Text>{course.professor}</Card.Text>
-                            <Button variant="primary" onClick={this.showBar}>
+                            <Button variant="primary" onClick={() => this.showBar(course.professor)}>
                                 Go to the course
                             </Button>
                         </Card.Body>

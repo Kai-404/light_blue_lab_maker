@@ -23,7 +23,7 @@ class LabsPage extends Component {
             .get("http://localhost:8080/getlablist", {
                 headers: {"Content-Type": "application/json;charset=UTF-8"},
                 params: {
-                    courseID: "test"
+                    professor: this.props.currentCourse
                 }
             })
             .then(res => {
