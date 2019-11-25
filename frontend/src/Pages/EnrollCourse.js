@@ -29,6 +29,30 @@ class EnrollCourse extends Component {
         })
     };
 
+    getCourseList = () => {
+        axios
+            .get(
+                "http://localhost:8080/getcourselist",
+                {
+                    headers: {"Content-Type": "application/json;charset=UTF-8"},
+                    params: {
+                        id: this.props.user.id,
+                        username: this.props.user.username,
+                        userType: this.props.user.userType
+                    }
+                }
+            )
+            .then(
+                res => {
+                    let idList = [];
+                    res.data.map(course => {idList.push(course.id)});
+                    this.setState({
+                        courseListIDs: idList
+                    })
+                }
+            )
+    };
+
     getCourseSelection() {
         axios
             .get(
@@ -43,10 +67,9 @@ class EnrollCourse extends Component {
             )
             .then(
                 res => {
-                    let idList = [];
-                    this.props.courseList.map(course => {idList.push(course.id)});
+                    this.props.getCourseList();
+                    this.getCourseList();
                     this.setState({
-                        courseListIDs: idList,
                         courseList: res.data
                     })
                 }
@@ -67,7 +90,8 @@ class EnrollCourse extends Component {
             )
             .then(
                 res => {
-                    this.setState()
+                    this.getCourseList();
+                    this.getCourseSelection();
                 }
             )
     };
@@ -86,7 +110,7 @@ class EnrollCourse extends Component {
             )
             .then(
                 res => {
-                    this.setState()
+                    this.getCourseSelection();
                 }
             )
     };

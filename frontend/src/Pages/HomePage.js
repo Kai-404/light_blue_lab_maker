@@ -56,7 +56,7 @@ class HomePage extends Component {
                     this.props.user.userType==='Professor'?
                         <AddCourse user={this.props.user} getCourseList={this.getCourseList}/>
                         :
-                        <EnrollCourse user={this.props.user} courseList={this.state.courseList}/>
+                        <EnrollCourse user={this.props.user} getCourseList={this.getCourseList}/>
                 }
             </ListGroup>
         );
