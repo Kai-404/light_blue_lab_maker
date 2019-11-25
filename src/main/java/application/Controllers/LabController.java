@@ -4,6 +4,7 @@ import application.Models.*;
 import application.Models.Lab;
 // Not the real JSON Library!!!
 //import net.minidev.json.JSONArray;
+import application.Tools.Beaker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -219,4 +220,13 @@ public class LabController {
     public void editlab(String id) {
         lab = labRepository.findById(id).get();
     }
+    //returns list of all tools
+    @GetMapping("/getbeaker")
+    @ResponseBody
+    public String getBeaker() {
+        Beaker beaker = new Beaker();
+        return  beaker.getToolAsJSON().toString();
+
+    }
+
 }

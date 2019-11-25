@@ -1,3 +1,2 @@
-AlcoholBurner
 Beaker
 PHPaper

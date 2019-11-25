@@ -27,7 +27,7 @@ public class Tool implements Cloneable{
 
     public String imageName;
 
-    private HashMap<String,String> propertyList;
+    public HashMap<String,Boolean> propertyList;
 
     public Tool() {
         this.propertyList = new HashMap<>();
@@ -77,7 +77,7 @@ public class Tool implements Cloneable{
         newTool.setY(this.getY());
         newTool.setName(this.getName());
         newTool.setImageName(this.getImageName());
-        for (Map.Entry<String,String> property : this.getPropertyList().entrySet()) {
+        for (Map.Entry<String,Boolean> property : this.getPropertyList().entrySet()) {
             newTool.getPropertyList().put(property.getKey(), property.getValue());
         }
 
