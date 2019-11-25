@@ -7,6 +7,8 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.HashMap;
+
 @Getter
 @Setter
 public class PHPaper extends Tool {
@@ -21,8 +23,26 @@ public class PHPaper extends Tool {
 
     //initial property
     String color = "#ffffff";
+    String phStatus = "NONE";
     //final property
-    String finalColor = "#FF0000";
+    String finalColor = "#00ff00";
+    String finalPhStatus = "Neutral";
+
+//    HashMap<String,Boolean> propertyEditableList = new HashMap<String, Boolean>( ){{
+//        put( "color", false );
+//        put( "phStatus", false );
+//
+//        put( "finalColor", true );
+//        put( "finalPhStatus", true );
+//    }};
+//
+//    HashMap<String,String> propertyNameList = new HashMap<String, String>( ){{
+//        put( "color", "Color" );
+//        put( "phStatus", "PH Status" );
+//
+//        put( "finalColor", "Final Color" );
+//        put( "finalPhStatus", "Final PH Status"  );
+//    }};
 
 
     public PHPaper(){

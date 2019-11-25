@@ -193,9 +193,9 @@ public class LabController {
     //returns list of all tools
     @GetMapping("/getbeaker")
     @ResponseBody
-    public Tool getBeaker() {
+    public String getBeaker() {
         Beaker beaker = new Beaker();
-        return  beaker;
+        return  beaker.getToolAsJSON().toString();
 
     }
 

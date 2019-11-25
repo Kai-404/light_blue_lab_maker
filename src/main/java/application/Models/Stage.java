@@ -121,7 +121,7 @@ public class Stage {
                 int index = stageToolList.indexOf( tool );
                 if (tool.getName().equals( "Beaker" )){
                     Beaker beaker = (Beaker) tool;
-                    //beaker.updateProp( toolProps );
+                    beaker.updateProp( toolProps );
                     toReturn = beaker.getToolAsJSON();
                     stageToolList.set( index,beaker );
                 }else if (tool.getName().equals( "PHPaper" )){
