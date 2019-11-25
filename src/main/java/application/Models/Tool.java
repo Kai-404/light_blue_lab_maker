@@ -52,6 +52,7 @@ public class Tool implements Cloneable{
         this.y = y;
     }
 
+    HashMap<String,String> canInteractWith;
 
     public JSONObject getToolAsJSON(){
 

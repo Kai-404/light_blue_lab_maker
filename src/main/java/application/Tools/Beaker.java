@@ -1,14 +1,12 @@
 package application.Tools;
 
 import application.Models.Tool;
-import com.fasterxml.jackson.databind.ser.Serializers;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.data.mongodb.core.mapping.Field;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -39,6 +37,13 @@ public class Beaker extends Tool {
     String finalPhStatus = "Neutral";
 
     boolean canBeBurned = true;
+
+    HashMap<String,String> canInteractWith = (HashMap<String, String>) Map.of(
+            "Beaker","Pour"
+    );
+
+
+
     public Beaker(){
 
     }

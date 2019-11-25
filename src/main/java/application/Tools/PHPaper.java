@@ -10,6 +10,7 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -29,6 +30,10 @@ public class PHPaper extends Tool {
     //final property
     String finalColor = "#00ff00";
     String finalPhStatus = "Neutral";
+
+    HashMap<String,String> canInteractWith = (HashMap<String, String>) Map.of(
+            "Beaker","Measure"
+    );
 
 //    HashMap<String,Boolean> propertyEditableList = new HashMap<String, Boolean>( ){{
 //        put( "color", false );
@@ -168,6 +173,11 @@ public class PHPaper extends Tool {
             }
         } );
 
+    }
+
+    public boolean measurePh(Beaker toMeasure){
+        this.setPhStatus( toMeasure.getPhStatus() );
+        return true;
     }
 
     public PHPaper clone() throws CloneNotSupportedException {
