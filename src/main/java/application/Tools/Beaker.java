@@ -116,7 +116,7 @@ public class Beaker extends Tool {
         phStatusProp.put( "Name","PH Status" );
         phStatusProp.put( "Value",this.phStatus );
         phStatusProp.put( "Editable", true );
-        phStatusProp.put( "Valid Status",
+        phStatusProp.put( "ValidStatus",
                 new ArrayList<String>(
                         Arrays.asList( "BASE", "ACID", "NEUTRAL" )
                 )
@@ -155,7 +155,7 @@ public class Beaker extends Tool {
         finalPhStatusProp.put( "Name","PH Status" );
         finalPhStatusProp.put( "Value",this.finalPhStatus );
         finalPhStatusProp.put( "Editable", true );
-        finalPhStatusProp.put( "Valid Status",
+        finalPhStatusProp.put( "ValidStatus",
                 new ArrayList<String>(
                         Arrays.asList( "BASE", "ACID", "NEUTRAL" )
                 )

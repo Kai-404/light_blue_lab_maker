@@ -77,7 +77,7 @@ public class PHPaper extends Tool {
         colorProp.put( "Name","Color" );
         colorProp.put( "Value",this.color );
         colorProp.put( "Editable", false );
-        colorProp.put( "Valid Color",
+        colorProp.put( "ValidColor",
                 new ArrayList<String>(
                         Arrays.asList( "#6a0dad", "#ff0000","#00ff00" )
                 )
@@ -87,7 +87,7 @@ public class PHPaper extends Tool {
         phStatusProp.put( "Name","PH Status" );
         phStatusProp.put( "Value",this.phStatus );
         phStatusProp.put( "Editable", false );
-        phStatusProp.put( "Valid Status",
+        phStatusProp.put( "ValidStatus",
                 new ArrayList<String>(
                         Arrays.asList( "BASE", "ACID", "NEUTRAL" )
                 )
@@ -106,7 +106,7 @@ public class PHPaper extends Tool {
         finalColorProp.put( "Name","Color" );
         finalColorProp.put( "Value",this.finalColor );
         finalColorProp.put( "Editable", true );
-        finalColorProp.put( "Valid Color",
+        finalColorProp.put( "ValidColor",
                 new ArrayList<String>(
                         Arrays.asList( "#6a0dad", "#ff0000","#00ff00" )
                 )
@@ -116,7 +116,7 @@ public class PHPaper extends Tool {
         finalPhStatusProp.put( "Name","PH Status" );
         finalPhStatusProp.put( "Value",this.finalPhStatus );
         finalPhStatusProp.put( "Editable", true );
-        finalPhStatusProp.put( "Valid Status",
+        finalPhStatusProp.put( "ValidStatus",
                 new ArrayList<String>(
                         Arrays.asList( "BASE", "ACID", "NEUTRAL" )
                 )
