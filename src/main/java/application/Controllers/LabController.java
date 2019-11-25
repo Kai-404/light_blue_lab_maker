@@ -220,13 +220,14 @@ public class LabController {
     public void editlab(String id) {
         lab = labRepository.findById(id).get();
     }
-    //returns list of all tools
-    @GetMapping("/getbeaker")
-    @ResponseBody
-    public String getBeaker() {
-        Beaker beaker = new Beaker();
-        return  beaker.getToolAsJSON().toString();
+//    //returns list of all tools
+//    @GetMapping("/getbeaker")
+//    @ResponseBody
+//    public String getBeaker() {
+//        Beaker beaker = new Beaker();
+//        return  beaker.getToolAsJSON().toString();
+//
+//    }
 
-    }
 
 }

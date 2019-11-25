@@ -256,4 +256,16 @@ public class Beaker extends Tool {
         return clone;
     }
 
+    public boolean pour(Beaker pourTo, Double amount){
+        if(amount>this.currentVolume){
+            return false;
+        }else if((pourTo.getCurrentVolume()+amount) > pourTo.getMaxVolume()){
+            return false;
+        }else {
+            this.currentVolume = this.currentVolume - amount;
+            pourTo.currentVolume = pourTo.currentVolume - amount;
+            return true;
+        }
+    }
+
 }
