@@ -1,26 +1,70 @@
 import React, { Component } from "react";
 import { ListGroup } from "react-bootstrap";
+import axios from "axios";
+import {sortableContainer, sortableElement, sortableHandle} from 'react-sortable-hoc';
 
 class LabStageBar extends Component {
+
+  onSortEnd = ({oldIndex, newIndex}) => {
+    axios
+        .post(
+            'http://localhost:8080/swapstages',
+            null,
+            {
+              headers: {"Content-Type": "application/json;charset=UTF-8"},
+              params: {
+                oldIndex: oldIndex,
+                newIndex: newIndex
+              }
+            }
+        )
+        .then(res => {
+          this.props.setCurrentStage(oldIndex);
+        })
+  };
+
   render() {
+
+    const DragHandle = sortableHandle(() => <span class='sortablehandler'>:::</span>);
+
+    let SortableItem = sortableElement(({value}) =>
+        <ListGroup.Item
+            action
+            active={value === this.props.currentStageNum}
+            onClick={() => {
+              this.props.setCurrentStage(value);
+            }}
+        >
+          <DragHandle />
+          {value}
+        </ListGroup.Item>);
+
+    let SortableContainer = sortableContainer(({children}) => {
+      return <ListGroup>{children}</ListGroup>;
+    });
+
     let Stages = () => {
       let list = [];
       for (let i = 0; i < this.props.totalStage; i++) {
         list.push(
-          <ListGroup.Item
-            action
-            onClick={() => {
-              this.props.setCurrentStage(i);
-            }}
-            active={i === this.props.currentStageNum}
-          >
-            {i}
-          </ListGroup.Item>
+            <SortableItem
+                key={'item-'+i}
+                index={i}
+                value={i}
+            >
+            </SortableItem>
         );
       }
       return list;
     };
-    return <Stages />;
+
+    return (
+        <React.Fragment>
+          <SortableContainer onSortEnd={this.onSortEnd}>
+            <Stages/>
+          </SortableContainer>
+        </React.Fragment>
+    )
   }
 }
 

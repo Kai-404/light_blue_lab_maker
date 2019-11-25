@@ -206,4 +206,11 @@ public class LabController {
         else
             return new ResponseEntity<>(labList, HttpStatus.OK);
     }
+
+    //ADD DRAGGABLE POSTMAPPING
+    @PostMapping("/swapstages")
+    @ResponseBody
+    public void swapstages(@RequestParam(name="oldIndex") int oldIndex, @RequestParam(name="newIndex") int newIndex) {
+        lab.swapStages(oldIndex, newIndex);
+    }
 }

@@ -329,37 +329,33 @@ class Makelab extends Component {
                   "overflow-y": "auto"
                 }}
               >
-                <ListGroup>
-                  <LabStageBar
-                    totalStage={this.state.getTotalStage}
-                    currentStageNum={this.state.currentStage.stageNum}
-                    setCurrentStage={this.setCurrentStage}
-                  />
-                  <ListGroup.Item>
-                    <ButtonGroup vertical>
-                      <Button
-                        onClick={() => this.addStage()}
-                        className="addtoolButton"
-                      >
-                        New
-                      </Button>
-                      <Button
-                        onClick={() => this.duplicateStage()}
-                        className="addtoolButton"
-                        disabled={this.state.currentStage.stageNum === -1}
-                      >
-                        Duplicate
-                      </Button>
-                      <Button
-                        className="addtoolButton"
-                        onClick={() => this.deleteStage()}
-                        disabled={this.state.currentStage.stageNum === -1}
-                      >
-                        Delete
-                      </Button>
-                    </ButtonGroup>
-                  </ListGroup.Item>
-                </ListGroup>
+                <LabStageBar
+                  totalStage={this.state.getTotalStage}
+                  currentStageNum={this.state.currentStage.stageNum}
+                  setCurrentStage={this.setCurrentStage}
+                />
+                <ButtonGroup vertical>
+                  <Button
+                    onClick={() => this.addStage()}
+                    className="addtoolButton"
+                  >
+                    New
+                  </Button>
+                  <Button
+                    onClick={() => this.duplicateStage()}
+                    className="addtoolButton"
+                    disabled={this.state.currentStage.stageNum === -1}
+                  >
+                    Duplicate
+                  </Button>
+                  <Button
+                    className="addtoolButton"
+                    onClick={() => this.deleteStage()}
+                    disabled={this.state.currentStage.stageNum === -1}
+                  >
+                    Delete
+                  </Button>
+                </ButtonGroup>
               </Modal.Body>
             </Card.Body>
           </Card>
