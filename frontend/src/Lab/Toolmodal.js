@@ -164,6 +164,7 @@ class Toolmodal extends Component {
                     required
                     type={prop.Name}
                     defaultValue={prop.Value}
+                    disabled
                   />
                 );
               }
@@ -200,6 +201,7 @@ class Toolmodal extends Component {
                     required
                     type={prop.Name}
                     defaultValue={prop.Value}
+                    disabled
                   />
                 );
               }
