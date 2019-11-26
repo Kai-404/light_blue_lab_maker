@@ -34,7 +34,7 @@ public class AnnouncementController {
             String emails = stringBuilder.toString();
             System.out.println(emails);
             if (!emails.equals("")) {
-                
+                // send notification email
             }
         } catch (Error e) {
             e.printStackTrace();
