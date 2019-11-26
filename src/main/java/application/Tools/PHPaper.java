@@ -31,9 +31,9 @@ public class PHPaper extends Tool {
     String finalColor = "#00ff00";
     String finalPhStatus = "Neutral";
 
-    HashMap<String,String> canInteractWith = (HashMap<String, String>) Map.of(
-            "Beaker","Measure"
-    );
+//    HashMap<String,String> canInteractWith = (HashMap<String, String>) Map.of(
+//            "Beaker","Measure"
+//    );
 
 //    HashMap<String,Boolean> propertyEditableList = new HashMap<String, Boolean>( ){{
 //        put( "color", false );
