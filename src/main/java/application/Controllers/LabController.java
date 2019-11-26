@@ -217,16 +217,17 @@ public class LabController {
 
     @GetMapping("/editlab")
     @ResponseBody
-    public void editlab(String id) {
-        lab = labRepository.findById(id).get();
+    public void editlab(@RequestParam(name="id") String id) {
+        lab = labRepository.getById(id);
     }
-    //returns list of all tools
-    @GetMapping("/getbeaker")
-    @ResponseBody
-    public String getBeaker() {
-        Beaker beaker = new Beaker();
-        return  beaker.getToolAsJSON().toString();
+//    //returns list of all tools
+//    @GetMapping("/getbeaker")
+//    @ResponseBody
+//    public String getBeaker() {
+//        Beaker beaker = new Beaker();
+//        return  beaker.getToolAsJSON().toString();
+//
+//    }
 
-    }
 
 }

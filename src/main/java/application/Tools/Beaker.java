@@ -1,14 +1,12 @@
 package application.Tools;
 
 import application.Models.Tool;
-import com.fasterxml.jackson.databind.ser.Serializers;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.data.mongodb.core.mapping.Field;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -39,6 +37,13 @@ public class Beaker extends Tool {
     String finalPhStatus = "Neutral";
 
     boolean canBeBurned = true;
+
+    Map<String,String> canInteractWith = Map.of(
+            "Beaker","Pour"
+    );
+
+
+
     public Beaker(){
 
     }
@@ -116,7 +121,7 @@ public class Beaker extends Tool {
         phStatusProp.put( "Name","PH Status" );
         phStatusProp.put( "Value",this.phStatus );
         phStatusProp.put( "Editable", true );
-        phStatusProp.put( "Valid Status",
+        phStatusProp.put( "ValidStatus",
                 new ArrayList<String>(
                         Arrays.asList( "BASE", "ACID", "NEUTRAL" )
                 )
@@ -155,7 +160,7 @@ public class Beaker extends Tool {
         finalPhStatusProp.put( "Name","PH Status" );
         finalPhStatusProp.put( "Value",this.finalPhStatus );
         finalPhStatusProp.put( "Editable", true );
-        finalPhStatusProp.put( "Valid Status",
+        finalPhStatusProp.put( "ValidStatus",
                 new ArrayList<String>(
                         Arrays.asList( "BASE", "ACID", "NEUTRAL" )
                 )
@@ -254,6 +259,18 @@ public class Beaker extends Tool {
         clone.setFinalCurrentChemicalsList( this.finalCurrentChemicalsList );
         clone.setFinalPhStatus( this.finalPhStatus );
         return clone;
+    }
+
+    public boolean pour(Beaker pourTo, Double amount){
+        if(amount>this.currentVolume){
+            return false;
+        }else if((pourTo.getCurrentVolume()+amount) > pourTo.getMaxVolume()){
+            return false;
+        }else {
+            this.currentVolume = this.currentVolume - amount;
+            pourTo.currentVolume = pourTo.currentVolume - amount;
+            return true;
+        }
     }
 
 }

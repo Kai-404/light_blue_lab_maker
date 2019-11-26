@@ -10,6 +10,7 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -29,6 +30,10 @@ public class PHPaper extends Tool {
     //final property
     String finalColor = "#00ff00";
     String finalPhStatus = "Neutral";
+
+    Map<String,String> canInteractWith = Map.of(
+            "Beaker","Measure"
+    );
 
 //    HashMap<String,Boolean> propertyEditableList = new HashMap<String, Boolean>( ){{
 //        put( "color", false );
@@ -77,7 +82,7 @@ public class PHPaper extends Tool {
         colorProp.put( "Name","Color" );
         colorProp.put( "Value",this.color );
         colorProp.put( "Editable", false );
-        colorProp.put( "Valid Color",
+        colorProp.put( "ValidColor",
                 new ArrayList<String>(
                         Arrays.asList( "#6a0dad", "#ff0000","#00ff00" )
                 )
@@ -87,7 +92,7 @@ public class PHPaper extends Tool {
         phStatusProp.put( "Name","PH Status" );
         phStatusProp.put( "Value",this.phStatus );
         phStatusProp.put( "Editable", false );
-        phStatusProp.put( "Valid Status",
+        phStatusProp.put( "ValidStatus",
                 new ArrayList<String>(
                         Arrays.asList( "BASE", "ACID", "NEUTRAL" )
                 )
@@ -106,7 +111,7 @@ public class PHPaper extends Tool {
         finalColorProp.put( "Name","Color" );
         finalColorProp.put( "Value",this.finalColor );
         finalColorProp.put( "Editable", true );
-        finalColorProp.put( "Valid Color",
+        finalColorProp.put( "ValidColor",
                 new ArrayList<String>(
                         Arrays.asList( "#6a0dad", "#ff0000","#00ff00" )
                 )
@@ -116,7 +121,7 @@ public class PHPaper extends Tool {
         finalPhStatusProp.put( "Name","PH Status" );
         finalPhStatusProp.put( "Value",this.finalPhStatus );
         finalPhStatusProp.put( "Editable", true );
-        finalPhStatusProp.put( "Valid Status",
+        finalPhStatusProp.put( "ValidStatus",
                 new ArrayList<String>(
                         Arrays.asList( "BASE", "ACID", "NEUTRAL" )
                 )
@@ -168,6 +173,11 @@ public class PHPaper extends Tool {
             }
         } );
 
+    }
+
+    public boolean measurePh(Beaker toMeasure){
+        this.setPhStatus( toMeasure.getPhStatus() );
+        return true;
     }
 
     public PHPaper clone() throws CloneNotSupportedException {
