@@ -45,7 +45,14 @@ class Makelab extends Component {
     editInstructions: false,
     newInstructions: "",
     hasInter: false,
-    interaction: null
+    inter: {
+      Description: "Some description",
+      Name: "Name of interaction",
+      Prams: {
+        PramName: "",
+        Value: ""
+      }
+    }
   };
 
   componentDidMount() {
@@ -127,7 +134,7 @@ class Makelab extends Component {
 
   setInteraction = inter => {
     console.log("pased:", inter);
-    this.setState({ interaction: inter });
+    this.setState({ inter: inter });
   };
   //add tool to whole lab
   addLabTool = tool => {
@@ -264,13 +271,25 @@ class Makelab extends Component {
         >
           <Modal.Header>
             <Modal.Title id="example-custom-modal-styling-title">
-              {"this.state.inter.Name"}
+              {this.state.inter.Name}
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <Form>"Form to fill"</Form>
+            <Form>
+              <Form.Label column sm={2}>
+                {this.state.inter.Prams.PramName}
+              </Form.Label>
+              <Col sm={10}>
+                <Form.Control
+                  required
+                  type={this.state.inter.Prams.PramName}
+                  defaultValue={this.state.inter.Prams.Value}
+                  onChange={this.handleChangeProps}
+                />
+              </Col>
+            </Form>
           </Modal.Body>
-          <Modal.Footer>{"this.state.inter.Description"}</Modal.Footer>
+          <Modal.Footer>{this.state.inter.Description}</Modal.Footer>
         </Modal>
 
         <ToolModal

@@ -145,7 +145,6 @@ class LabTool extends Component {
               //rotate the tool to the top of another
               if (res.status == 200) {
                 //animation, goes to the top of interacted tool and rotate 40 degree
-
                 this.props.setInteraction(res.data);
                 this.props.setShowInterModal();
                 console.log(res.data);
