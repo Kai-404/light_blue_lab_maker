@@ -17,15 +17,13 @@ import java.io.OutputStream;
 import java.util.List;
 import java.util.Properties;
 
-@Service
+@Service("mailService")
 public class MailService {
-    private static final String SMTP_SERVER = "smtp server ";
-    private static final String USERNAME = "";
-    private static final String PASSWORD = "";
+    private static final String SMTP_SERVER = "smtp.gmail.com";
+    private static final String USERNAME = "fhzotxldj@gmail.com";
+    private static final String PASSWORD = "qazwsxedC1@";
 
     private static final String EMAIL_FROM = "From@gmail.com";
-    private static final String EMAIL_TO = "email_1@yahoo.com, email_2@gmail.com";
-    private static final String EMAIL_TO_CC = "";
 
     private static final String NOTIFICATION_EMAIL_SUBJECT = "Notification";
     private static final String NOTIFICATION_EMAIL_TEXT = "New announcement has been posted in class ";
@@ -46,6 +44,8 @@ public class MailService {
     private void sendEmail(String subject, String text, String recipients) {
         Properties prop = System.getProperties();
         prop.put("mail.smtp.auth", "true");
+        prop.put("mail.smtp.port", "587");
+        prop.put("mail.smtp.starttls.enable", "true");
 
         Session session = Session.getInstance(prop, null);
         Message msg = new MimeMessage(session);
