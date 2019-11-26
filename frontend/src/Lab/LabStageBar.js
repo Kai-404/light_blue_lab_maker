@@ -19,7 +19,7 @@ class LabStageBar extends Component {
             }
         )
         .then(res => {
-          this.props.setCurrentStage(oldIndex);
+          this.props.setCurrentStage(newIndex);
         })
   };
 
