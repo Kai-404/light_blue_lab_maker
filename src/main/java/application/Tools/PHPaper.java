@@ -181,6 +181,20 @@ public class PHPaper extends Tool {
         return true;
     }
 
+    public JSONObject getInteractionDetail(String interactionName){
+        JSONObject interactionJSONObject = new JSONObject();
+
+        if (interactionName.equals("Measure")){
+            interactionJSONObject.put( "Name",interactionName );
+            interactionJSONObject.put( "Description","Measure chemical PH status" );
+            //JSONObject pourPrams = new JSONObject();
+            interactionJSONObject.put( "Prams","None" );
+        }
+
+        return interactionJSONObject;
+
+    }
+
     public PHPaper clone() throws CloneNotSupportedException {
         PHPaper clone = (PHPaper) super.clone();
         clone.setColor(this.getColor());

@@ -94,6 +94,16 @@ public class Stage {
         return toReturn;
     }
 
+    public Tool getToolByID(String ID){
+        Tool toReturn = null;
+        for (Tool tool : stageToolList) {
+            if (tool.getId().equals( ID )) {
+                toReturn= tool;
+            }
+        }
+        return toReturn;
+    }
+
     public JSONObject getStageAsJSON(){
 
         JSONObject stageJSONObject = new JSONObject();
