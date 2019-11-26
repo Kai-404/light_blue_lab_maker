@@ -6,6 +6,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 @Data
 @Getter
@@ -17,10 +18,12 @@ public class Student {
     private String userId;
     private ArrayList<String> course_list;
     private ArrayList<String> lab_list;
+    private HashMap<String,Integer> labProgress;
 
     public Student(String userId) {
         this.userId = userId;
         this.course_list = new ArrayList<>();
         this.lab_list = new ArrayList<>();
+        this.labProgress = new HashMap<>();
     }
 }
