@@ -32,8 +32,12 @@ const stageH = window.innerHeight - 200;
 class Dolab extends Component {
 
     state = {
+        currentTool: [],
+        showPop: false,
         stage: {
-            stageTool: []
+            stageNum: -1,
+            stageTool: [],
+            instructions: ""
         }
     };
 
@@ -57,10 +61,42 @@ class Dolab extends Component {
         this.getStage();
     }
 
+    setShowModal = () => {
+        this.setState({showPop: !this.state.showPop});
+    };
+
+    setCurrentTool = tool => {
+        this.setState({currentTool: tool});
+    };
+
+    setCurrentStage = i => {
+        let data = JSON.stringify(i);
+        if (i > -1) {
+            axios
+                .post("http://localhost:8080/getstage", data, {
+                    headers: {"Content-Type": "application/json;charset=UTF-8"},
+                    params: {stageNum: i}
+                })
+                .then(res => {
+                    this.setState({currentStage: res.data});
+                });
+        } else {
+            this.setState({currentStage: {stageNum: -1, stageTool: []}});
+        }
+    };
+
     render() {
 
         return (
             <React.Fragment>
+                <ToolModal
+                    setTool={this.setCurrentTool}
+                    tool={this.state.currentTool}
+                    stageNum={this.state.stage.stageNum}
+                    showPop={this.state.showPop}
+                    setShow={this.setShowModal}
+                    setCurrentStage={this.setCurrentStage}
+                />
                 <Row>
                     <Stage width={stageW} height={stageH} className="stage">
                         <Layer>
