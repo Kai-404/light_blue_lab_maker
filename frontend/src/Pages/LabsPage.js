@@ -3,6 +3,7 @@ import {withRouter} from "react-router";
 import {LinkContainer} from "react-router-bootstrap";
 import {Card, CardColumns, Button, ButtonGroup, Form} from "react-bootstrap";
 import Addlab from "../Lab/Addlab";
+import Dolab from "../Lab/Dolab"
 import axios from "axios";
 import "./labsPage.css";
 
@@ -11,7 +12,8 @@ class LabsPage extends Component {
         labList: [],
         currentLab: [],
         message: "",
-        searchInput: "" //lab name for search
+        searchInput: "", //lab name for search
+        labID: "test"
     };
 
     componentDidMount() {
@@ -32,9 +34,36 @@ class LabsPage extends Component {
             });
     };
 
+    dolab = id => {
+        this.setState(
+            {labID: id},
+            () => {
+                this.props.setLabID(id);
+                this.setDoLab(id);
+            }
+            );
+
+    };
+
+    setDoLab(id) {
+        axios
+            .get(
+                "http://localhost:8080/setdolab",
+                {
+                    headers: {"Content-Type": "application/json;charset=UTF-8"},
+                    params: {
+                        id: id
+                    }
+                }
+            )
+            .then(
+                res => {this.props.history.push("/dolab");}
+            )
+    }
+
     deleteLab = id => {
         axios
-            .get("http://localhost:8080//deletelab", {
+            .get("http://localhost:8080/deletelab", {
                 headers: {"Content-Type": "application/json;charset=UTF-8"},
                 params: {id: id}
             })
@@ -53,7 +82,7 @@ class LabsPage extends Component {
 
     editLab = id => {
         axios
-            .get("http://localhost:8080//editlab", {
+            .get("http://localhost:8080/editlab", {
                 headers: {"Content-Type": "application/json;charset=UTF-8"},
                 params: {id: id}
             })
@@ -111,15 +140,9 @@ class LabsPage extends Component {
             this.state.labList.map(lab => {
                 let buttonGroup = (
                     <ButtonGroup>
-                        <LinkContainer to="/dolab">
-                            <Button variant="primary">Do</Button>
-                        </LinkContainer>
-                        <Button variant="primary" onClick={() => this.editLab(lab.id)}>
-                            Edit
-                        </Button>
-                        <Button variant="primary" onClick={() => this.deleteLab(lab.id)}>
-                            Delete
-                        </Button>
+                        <Button variant="primary" onClick={() => {this.dolab(lab.id)}}>Do</Button>
+                        <Button variant="primary" onClick={() => this.editLab(lab.id)}>Edit</Button>
+                        <Button variant="primary" onClick={() => this.deleteLab(lab.id)}>Delete</Button>
                     </ButtonGroup>
                 );
                 if (lab.published) {
