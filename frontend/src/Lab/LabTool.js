@@ -1,9 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
 import Konva from "konva";
-import { Stage, Layer, Star, Text, Image } from "react-konva";
-import useImage from "use-image";
-
+import { Image } from "react-konva";
 /**
  * Props:
  *  Img //image of the tool
@@ -12,6 +10,7 @@ import useImage from "use-image";
  *  id //name of the tool
  *  stageNum //current stage num
  *  setCurrentStage() //set current stage
+ *  stageTool // all the tool in this current stage
  *  setTool() //set tool
  *  setShowModal() //setShowModal
  */
@@ -74,7 +73,19 @@ class LabTool extends Component {
     };
   */
 
-  //draging a tool animation
+  haveIntersection = (r1, r2) => {
+    let width = (stageW * 0.05) / 2;
+    let height = (stageH * 0.1) / 2;
+
+    return !(
+      r2.x > r1.x + width ||
+      r2.x + width < r1.x ||
+      r2.y > r1.y + height ||
+      r2.y + height < r1.y
+    );
+  };
+
+  //dragging a tool animation, show the boundingBox
   handleDragStart = e => {
     e.target.setAttrs({
       shadowOffset: {
@@ -85,10 +96,54 @@ class LabTool extends Component {
       scaleY: 1.1
     });
   };
-  //drag tool end animation
+
+  //while dragging the tool, detection collision and perform interaction if any
+  checkInteraction = (e, stageNum, id) => {
+    const targetTool = e.target.getClientRect();
+
+    this.props.stageTool.forEach(tool => {
+      let id2 = tool.id;
+      if (id2 != e.target.attrs.name) {
+        if (this.haveIntersection(tool, targetTool)) {
+          console.log("Hit! rotate the tool to the top of another");
+          e.target.setAttrs({ rotation: 45 });
+          let data = JSON.stringify({
+            stageNum,
+            id,
+            id2
+          });
+          //params: stage#, id1(dragging tool), id2(being hitted tool)
+          axios
+            .post("http://localhost:8080/checkInteraction", data, {
+              headers: { "Content-Type": "application/json;charset=UTF-8" },
+              params: {
+                stageNum,
+                id,
+                id2
+              }
+            })
+            .then(res => {
+              //rotate the tool to the top of another
+              if (res.status == 200) {
+                console.log(res.data);
+                e.target.setAttrs({ rotation: 45 });
+              }
+            })
+            .catch(err => {
+              console.log(err);
+            });
+        }
+      }
+    });
+  };
+
+  //drag tool end animation, boundingBox disappears
   handleDragEnd = e => {
     let stageNum = this.props.stageNum;
     let id = e.target.attrs.name;
+
+    this.checkInteraction(e, stageNum, id);
+
     this.props.stageTool.map(tool => {
       // e.target.attrs.name is the id of img
       if (tool.id === id) {
@@ -98,6 +153,8 @@ class LabTool extends Component {
       }
     });
     e.target.to({
+      rotation: 0,
+      stroke: "transparent",
       duration: 1.0,
       easing: Konva.Easings.ElasticEaseOut,
       scaleX: 1,

@@ -39,6 +39,7 @@ class Makelab extends Component {
       instructions: ""
     }, //all stage start at stage 0
     currentTool: [], //the tool prof want to change property with.
+    allStageToolAsKonva: [],
     showPop: false, //show popup
     editInstructions: false,
     newInstructions: ""
@@ -47,6 +48,7 @@ class Makelab extends Component {
   componentDidMount() {
     this.getTotalStage();
     this.setCurrentStage(-1);
+    //  to display the lab tool bar when loading the page
     axios.get("http://localhost:8080/getalltools").then(res => {
       this.addLabTool(res.data);
     });
