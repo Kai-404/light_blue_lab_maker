@@ -26,6 +26,7 @@ public class LabController {
     private ProfessorRepository professorRepository;
     //Lab object that gets modified when creating a lab
     Lab lab;
+    int currentStage = 0;
 
     //sets lab to a new lab object
     @PostMapping("/newlab")
@@ -229,5 +230,29 @@ public class LabController {
 //
 //    }
 
+    @GetMapping("/setdolab")
+    @ResponseBody
+    public void setDoLab(@RequestParam(name="id") String id) {
+        lab = labRepository.getById(id);
+        currentStage = 0;
+    }
+
+    @GetMapping("/getdolabstage")
+    @ResponseBody
+    public String getDoLabStage() {
+        return lab.getStage(currentStage).getStageAsJSON().toString();
+    }
+
+    @GetMapping("/getcurrentstage")
+    @ResponseBody
+    public int getCurrentStage(){
+        return currentStage;
+    }
+
+    @GetMapping("/getnextstage")
+    @ResponseBody
+    public void getNextStage() {
+        ++currentStage;
+    }
 
 }
