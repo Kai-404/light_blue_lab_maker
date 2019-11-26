@@ -38,9 +38,9 @@ public class Beaker extends Tool {
 
     boolean canBeBurned = true;
 
-//    HashMap<String,String> canInteractWith = (HashMap<String, String>) Map.of(
-//            "Beaker","Pour"
-//    );
+    Map<String,String> canInteractWith = Map.of(
+            "Beaker","Pour"
+    );
 
 
 
