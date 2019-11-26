@@ -38,6 +38,7 @@ public class Beaker extends Tool {
 
     boolean canBeBurned = true;
 
+    @Field("BeakerInteractWith")
     Map<String,String> canInteractWith = Map.of(
             "Beaker","Pour"
     );
