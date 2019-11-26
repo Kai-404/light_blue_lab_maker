@@ -1,6 +1,7 @@
 package application.Controllers;
 
 import application.Models.*;
+import application.Services.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,8 @@ public class AnnouncementController {
     private CourseRepository courseRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private MailService mailService;
 
     @ResponseBody
     public boolean createAnnouncement(String title, String content, String author, String courseId) {
@@ -35,6 +38,7 @@ public class AnnouncementController {
             System.out.println(emails);
             if (!emails.equals("")) {
                 // send notification email
+                mailService.sendNotificationEmail(title, emails);
             }
         } catch (Error e) {
             e.printStackTrace();
