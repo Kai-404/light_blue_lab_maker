@@ -45,7 +45,7 @@ class Login extends Component {
         })
         .then(res => {
           if (res.data != "") {
-            if (!res.data.isActive) {
+            if (!res.data.active) {
               this.setState({ errmsg: "Please verify your email"});
             } else {
               this.props.login(res.data);
