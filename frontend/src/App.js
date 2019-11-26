@@ -21,7 +21,8 @@ class App extends Component {
         user: null,
         currentCourse: null,
         loggedIn: false,
-        underCourse: false
+        underCourse: false,
+        labID: ""
     };
 
     login = user => {
@@ -42,6 +43,10 @@ class App extends Component {
 
     showCourseContent = val => {
         this.setState({underCourse: val});
+    };
+
+    setLabID = id => {
+        this.setState({labID: id})
     };
 
     render() {
@@ -114,7 +119,7 @@ class App extends Component {
                             path="/labspage"
                             render={props => (
                                 <React.Fragment>
-                                    <LabsPage user={this.state.user} currentCourse={this.state.currentCourse}/>
+                                    <LabsPage user={this.state.user} currentCourse={this.state.currentCourse} setLabID={this.setLabID}/>
                                 </React.Fragment>
                             )}
                         />
@@ -123,7 +128,7 @@ class App extends Component {
                             path="/dolab"
                             render={props => (
                                 <React.Fragment>
-                                    <Dolab/>
+                                    <Dolab labID={this.state.labID}/>
                                 </React.Fragment>
                             )}
                         />

@@ -15,7 +15,9 @@ import {
   Form,
   ListGroup,
   Row,
-  Modal
+  Modal,
+  CardDeck,
+  ProgressBar
 } from "react-bootstrap";
 import Addtool from "./Addtool";
 import ToolModal from "./Toolmodal";
@@ -39,7 +41,6 @@ class Makelab extends Component {
       instructions: ""
     }, //all stage start at stage 0
     currentTool: [], //the tool prof want to change property with.
-    allStageToolAsKonva: [],
     showPop: false, //show popup
     editInstructions: false,
     newInstructions: ""
