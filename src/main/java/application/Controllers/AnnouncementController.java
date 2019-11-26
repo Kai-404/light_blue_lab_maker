@@ -1,7 +1,6 @@
 package application.Controllers;
 
-import application.Models.Announcement;
-import application.Models.AnnouncementRepository;
+import application.Models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,12 +13,29 @@ import java.util.List;
 public class AnnouncementController {
     @Autowired
     private AnnouncementRepository announcementRepository;
+    @Autowired
+    private CourseRepository courseRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     @ResponseBody
     public boolean createAnnouncement(String title, String content, String author, String courseId) {
         try {
             Announcement announcement = new Announcement(title, content, author, courseId);
             announcementRepository.save(announcement);
+            Course course = courseRepository.getById(courseId);
+            StringBuilder stringBuilder = new StringBuilder();
+            for (String id : course.getStudent_list()) {
+                User user = userRepository.getById(id);
+                if (user != null) {
+                    stringBuilder.append(user.getEmail()).append(", ");
+                }
+            }
+            String emails = stringBuilder.toString();
+            System.out.println(emails);
+            if (!emails.equals("")) {
+                
+            }
         } catch (Error e) {
             e.printStackTrace();
             return false;

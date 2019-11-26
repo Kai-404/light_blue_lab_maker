@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface CourseRepository extends MongoRepository<Course, String> {
     List<Course> findByProfessor(String professor);
+    Course getById(String id);
 }
