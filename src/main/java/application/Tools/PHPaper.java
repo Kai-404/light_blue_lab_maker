@@ -31,6 +31,7 @@ public class PHPaper extends Tool {
     String finalColor = "#00ff00";
     String finalPhStatus = "Neutral";
 
+    @Field("PHInteractWith")
     Map<String,String> canInteractWith = Map.of(
             "Beaker","Measure"
     );
