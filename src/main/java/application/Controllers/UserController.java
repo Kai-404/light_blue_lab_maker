@@ -58,12 +58,14 @@ public class UserController {
     }
 
     @GetMapping("/verify-email")
-    public void verifyUserEmail(@RequestParam(name="userId") String id) {
+    public String verifyUserEmail(@RequestParam(name="userId") String id) {
         User user = userRepository.getById(id);
         if (user != null) {
             user.setActive(true);
             userRepository.save(user);
+            return "Your email has been verified! Please login.";
         }
+        return "Something is wrong.";
     }
 
     private String encryptPassword(String password) {
