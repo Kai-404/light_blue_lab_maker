@@ -1,7 +1,15 @@
 import React, { Component } from "react";
 import axios from "axios";
 import Konva from "konva";
-import { Image } from "react-konva";
+import { Image, Layer } from "react-konva";
+import Portal from "react-portal";
+import Tooltip from "./Tooltip";
+import {
+  Button,
+  ButtonToolbar,
+  OverlayTrigger,
+  Popover
+} from "react-bootstrap";
 /**
  * Props:
  *  Img //image of the tool
@@ -19,7 +27,10 @@ const stageH = window.innerHeight - 200;
 
 class LabTool extends Component {
   state = {
-    image: null
+    image: null,
+    showTooltip: false,
+    toolx: 0,
+    tooly: 0
   };
   componentDidMount() {
     this.loadImage();
@@ -74,8 +85,8 @@ class LabTool extends Component {
   */
 
   haveIntersection = (r1, r2) => {
-    let width = (stageW * 0.05) / 2;
-    let height = (stageH * 0.1) / 2;
+    let width = (stageW * 0.1) / 2;
+    let height = (stageH * 0.2) / 2;
 
     return !(
       r2.x > r1.x + width ||
@@ -106,7 +117,12 @@ class LabTool extends Component {
       if (id2 != e.target.attrs.name) {
         if (this.haveIntersection(tool, targetTool)) {
           console.log("Hit! rotate the tool to the top of another");
-          e.target.setAttrs({ rotation: 45 });
+          //animation, goes to the top of interacted tool and rotate 40 degree
+          e.target.setAttrs({
+            x: tool.x,
+            y: tool.y - stageH * 0.2,
+            rotation: 45
+          });
           let data = JSON.stringify({
             stageNum,
             id,
@@ -154,8 +170,7 @@ class LabTool extends Component {
     });
     e.target.to({
       rotation: 0,
-      stroke: "transparent",
-      duration: 1.0,
+      duration: 4,
       easing: Konva.Easings.ElasticEaseOut,
       scaleX: 1,
       scaleY: 1,
@@ -183,45 +198,84 @@ class LabTool extends Component {
       });
   };
 
-  handleClickTool = e => {
-    let id = e.target.attrs.name;
-    let stageNum = this.props.stageNum;
-    let data = JSON.stringify({
-      stageNum,
-      id
+  handleOptionSelected = option => {
+    console.log(option);
+    this.setState({ selectedContextMenu: null });
+  };
+
+  //left click show property read only form
+  handleContextMenu = e => {
+    e.evt.preventDefault(true);
+    const mousePosition = e.target.getStage().getPointerPosition();
+    console.log("Tool: ", e.target.attrs);
+    console.log("mouse: ", mousePosition);
+
+    this.setState({
+      showTooltip: true,
+      toolx: e.target.attrs.x,
+      tooly: e.target.attrs.y
     });
-    axios
-      .post("http://localhost:8080/gettool", data, {
-        headers: { "Content-Type": "application/json;charset=UTF-8" },
-        params: {
-          stageNum: stageNum,
-          ID: id
-        }
-      })
-      .then(res => {
-        console.log(res.data);
-        this.props.setTool(res.data);
-        this.props.setShowModal();
+
+    console.log(this.state.toolx, this.state.tooly);
+  };
+
+  //right click show property form
+  handleClickTool = e => {
+    this.setState({ showTooltip: false });
+    if (e.evt.button === 0) {
+      let id = e.target.attrs.name;
+      let stageNum = this.props.stageNum;
+      let data = JSON.stringify({
+        stageNum,
+        id
       });
+      axios
+        .post("http://localhost:8080/gettool", data, {
+          headers: { "Content-Type": "application/json;charset=UTF-8" },
+          params: {
+            stageNum: stageNum,
+            ID: id
+          }
+        })
+        .then(res => {
+          console.log(res.data);
+          this.props.setTool(res.data);
+          this.props.setShowModal();
+        });
+    }
   };
 
   render() {
     return (
-      <Image
-        x={this.props.x}
-        y={this.props.y}
-        width={stageW * 0.05}
-        height={stageH * 0.1}
-        name={this.props.id}
-        image={this.state.image}
-        ref={node => {
-          this.imageNode = node;
-        }}
-        draggable
-        onClick={this.handleClickTool}
-        onDragStart={this.handleDragStart}
-        onDragEnd={this.handleDragEnd}
-      />
+      <>
+        <Image
+          x={this.props.x}
+          y={this.props.y}
+          width={stageW * 0.1}
+          height={stageH * 0.2}
+          name={this.props.id}
+          image={this.state.image}
+          ref={node => {
+            this.imageNode = node;
+          }}
+          draggable
+          onClick={this.handleClickTool}
+          onDragStart={this.handleDragStart}
+          onDragEnd={this.handleDragEnd}
+          onContextMenu={this.handleContextMenu}
+        />
+        <Portal isOpened={this.state.showTooltip}>
+          <p
+            style={{
+              position: "absolute",
+              top: this.state.tooly,
+              left: this.state.toolx
+            }}
+          >
+            FK U
+          </p>
+        </Portal>
+      </>
     );
   }
 }
