@@ -121,6 +121,11 @@ class LabTool extends Component {
         if (this.haveIntersection(tool, targetTool)) {
           console.log("Hit! rotate the tool to the top of another");
           this.setState({ interactedTool: tool });
+          e.target.setAttrs({
+            x: this.state.interactedTool.x,
+            y: this.state.interactedTool.y - stageH * 0.2,
+            rotation: 45
+          });
           let data = JSON.stringify({
             stageNum,
             id,
@@ -140,11 +145,6 @@ class LabTool extends Component {
               //rotate the tool to the top of another
               if (res.status == 200) {
                 //animation, goes to the top of interacted tool and rotate 40 degree
-                e.target.setAttrs({
-                  x: this.state.interactedTool.x,
-                  y: this.state.interactedTool.y - stageH * 0.2,
-                  rotation: 45
-                });
 
                 this.props.setInteraction(res.data);
                 this.props.setShowInterModal();
