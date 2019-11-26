@@ -34,7 +34,7 @@ class LabsPage extends Component {
 
     deleteLab = id => {
         axios
-            .get("http://localhost:8080//deletelab", {
+            .get("http://localhost:8080/deletelab", {
                 headers: {"Content-Type": "application/json;charset=UTF-8"},
                 params: {id: id}
             })
@@ -53,7 +53,7 @@ class LabsPage extends Component {
 
     editLab = id => {
         axios
-            .get("http://localhost:8080//editlab", {
+            .get("http://localhost:8080/editlab", {
                 headers: {"Content-Type": "application/json;charset=UTF-8"},
                 params: {id: id}
             })
