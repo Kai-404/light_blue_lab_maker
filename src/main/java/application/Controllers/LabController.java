@@ -6,6 +6,7 @@ import application.Models.Lab;
 //import net.minidev.json.JSONArray;
 import application.Tools.Beaker;
 import application.Tools.PHPaper;
+import com.google.gson.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -222,6 +223,32 @@ public class LabController {
         lab = labRepository.getById(id);
     }
 
+    @PostMapping("/checkInteraction")
+    @ResponseBody
+    public ResponseEntity<String> checkInteraction(@RequestParam(name="stageNum") int stageNum,
+                                                   @RequestParam(name="id") String id,
+                                                   @RequestParam(name="id2") String id2) {
+
+        Stage stage = lab.getStage( stageNum );
+        Tool tool1 = stage.getToolByID( id );
+        Tool tool2 = stage.getToolByID( id2 );
+
+        if (! tool1.getCanInteractWith().containsKey( tool2.getName() )){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }else {
+            String interActionName = tool1.getCanInteractWith().get(tool2.getName());
+            if (tool1.getName().equals( "Beaker" )){
+                Beaker tool = (Beaker) tool1;
+                return new ResponseEntity<>(tool.getInteractionDetail(interActionName).toString(), HttpStatus.OK);
+            }else if (tool1.getName().equals( "PHPaper" )) {
+                PHPaper tool = (PHPaper) tool1;
+                return new ResponseEntity<>(tool.getInteractionDetail(interActionName).toString(), HttpStatus.OK);
+            }else {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+
+        }
+    }
 
 ////    for test only
 //    @GetMapping("/getbeaker")
