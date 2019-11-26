@@ -9,7 +9,6 @@ import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 
 @Getter
@@ -272,6 +271,22 @@ public class Beaker extends Tool {
             pourTo.currentVolume = pourTo.currentVolume - amount;
             return true;
         }
+    }
+
+    public JSONObject getInteractionDetail(String interactionName){
+        JSONObject interactionJSONObject = new JSONObject();
+
+        if (interactionName.equals("Pour")){
+            interactionJSONObject.put( "Name",interactionName );
+            interactionJSONObject.put( "Description","Type how much you want pour to another Beaker" );
+            JSONObject pourPrams = new JSONObject();
+            pourPrams.put( "PramName","Amount to pour" );
+            pourPrams.put( "Value",Double.valueOf( 0 ) );
+            interactionJSONObject.put( "Prams",pourPrams );
+        }
+
+        return interactionJSONObject;
+
     }
 
 }
