@@ -3,13 +3,9 @@ import axios from "axios";
 import Konva from "konva";
 import { Image, Layer } from "react-konva";
 import Portal from "react-portal";
+import InteractionModal from "./InteractionModal";
 import Tooltip from "./Tooltip";
-import {
-  Button,
-  ButtonToolbar,
-  OverlayTrigger,
-  Popover
-} from "react-bootstrap";
+import { Button, Form, Modal, Row, Col } from "react-bootstrap";
 /**
  * Props:
  *  Img //image of the tool
@@ -21,6 +17,7 @@ import {
  *  stageTool // all the tool in this current stage
  *  setTool() //set tool
  *  setShowModal() //setShowModal
+ *   setShowInterModal()
  */
 const stageW = window.innerWidth - window.innerWidth * 0.3;
 const stageH = window.innerHeight - 200;
@@ -28,6 +25,12 @@ const stageH = window.innerHeight - 200;
 class LabTool extends Component {
   state = {
     image: null,
+    interactedTool: null,
+    inter: {
+      Description: "Type how much you want pour to another Beaker",
+      Name: "Pour"
+    },
+    showPop: false,
     showTooltip: false,
     toolx: 0,
     tooly: 0
@@ -117,12 +120,7 @@ class LabTool extends Component {
       if (id2 != e.target.attrs.name) {
         if (this.haveIntersection(tool, targetTool)) {
           console.log("Hit! rotate the tool to the top of another");
-          //animation, goes to the top of interacted tool and rotate 40 degree
-          e.target.setAttrs({
-            x: tool.x,
-            y: tool.y - stageH * 0.2,
-            rotation: 45
-          });
+          this.setState({ interactedTool: tool });
           let data = JSON.stringify({
             stageNum,
             id,
@@ -141,6 +139,15 @@ class LabTool extends Component {
             .then(res => {
               //rotate the tool to the top of another
               if (res.status == 200) {
+                //animation, goes to the top of interacted tool and rotate 40 degree
+                e.target.setAttrs({
+                  x: this.state.interactedTool.x,
+                  y: this.state.interactedTool.y - stageH * 0.2,
+                  rotation: 45
+                });
+
+                this.props.setInteraction(res.data);
+                this.props.setShowInterModal();
                 console.log(res.data);
                 e.target.setAttrs({ rotation: 45 });
               }
@@ -245,6 +252,10 @@ class LabTool extends Component {
     }
   };
 
+  setShowModal = () => {
+    this.setState({ showPop: !this.state.showPop });
+  };
+
   render() {
     return (
       <>
@@ -264,7 +275,7 @@ class LabTool extends Component {
           onDragEnd={this.handleDragEnd}
           onContextMenu={this.handleContextMenu}
         />
-        <Portal isOpened={this.state.showTooltip}>
+        {/*<Portal isOpened={this.state.showTooltip}>
           <p
             style={{
               position: "absolute",
@@ -274,6 +285,13 @@ class LabTool extends Component {
           >
             FK U
           </p>
+          </Portal>*/}
+        <Portal isOpend={this.state.showPop}>
+          {/*<InteractionModal
+            interaction={this.state.inter}
+            show={this.state.showPop}
+            setShow={this.showTooltip}
+          />*/}
         </Portal>
       </>
     );

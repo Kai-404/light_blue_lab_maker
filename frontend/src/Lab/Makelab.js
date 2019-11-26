@@ -43,7 +43,9 @@ class Makelab extends Component {
     currentTool: [], //the tool prof want to change property with.
     showPop: false, //show popup
     editInstructions: false,
-    newInstructions: ""
+    newInstructions: "",
+    hasInter: false,
+    interaction: null
   };
 
   componentDidMount() {
@@ -123,6 +125,10 @@ class Makelab extends Component {
       });
   }
 
+  setInteraction = inter => {
+    console.log("pased:", inter);
+    this.setState({ interaction: inter });
+  };
   //add tool to whole lab
   addLabTool = tool => {
     let allTool = tool.filter(t => {
@@ -196,6 +202,10 @@ class Makelab extends Component {
     this.setState({ showPop: !this.state.showPop });
   };
 
+  setShowInterModal = () => {
+    this.setState({ hasInter: !this.state.hasInter });
+  };
+
   showEditInstructions() {
     this.setState({ editInstructions: true });
   }
@@ -244,6 +254,25 @@ class Makelab extends Component {
     return (
       <React.Fragment>
         <p className="errmsg">{this.state.errMsg}</p>
+        <Modal
+          size="sm"
+          centered
+          show={this.state.hasInter}
+          onHide={this.setShowInterModal}
+          dialogClassName="modal-90w"
+          aria-labelledby="example-custom-modal-styling-title"
+        >
+          <Modal.Header>
+            <Modal.Title id="example-custom-modal-styling-title">
+              {"this.state.inter.Name"}
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Form>"Form to fill"</Form>
+          </Modal.Body>
+          <Modal.Footer>{"this.state.inter.Description"}</Modal.Footer>
+        </Modal>
+
         <ToolModal
           setTool={this.setCurrentTool}
           tool={this.state.currentTool}
@@ -279,6 +308,8 @@ class Makelab extends Component {
                   setCurrentStage={this.setCurrentStage}
                   setTool={this.setCurrentTool}
                   setShowModal={this.setShowModal}
+                  setInteraction={this.setInteraction}
+                  setShowInterModal={this.setShowInterModal}
                 />
               ))}
 
