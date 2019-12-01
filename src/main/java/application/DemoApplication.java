@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 @EnableMongoRepositories(basePackages = "application.Models")
-@SpringBootApplication(scanBasePackages = {"application.Controllers", "application.Models"})
+@SpringBootApplication(scanBasePackages = {"application.Controllers", "application.Models", "application.Config"})
 public class DemoApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(DemoApplication.class, args);
