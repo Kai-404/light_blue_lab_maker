@@ -27,10 +27,12 @@ class App extends Component {
 
     login = user => {
         this.setState({user: user});
+        //sessionStorage.setItem("user", JSON.stringify(user));
     };
 
     logout = () => {
         this.setState({user: null, loggedIn: false, underCourse: false});
+        //sessionStorage.clear();
     };
 
     showbar = val => {
