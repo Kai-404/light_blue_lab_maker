@@ -69,7 +69,7 @@ class LabsPage extends Component {
             })
             .then(res => {
                 if (res.data) {
-                    this.setState({labList: res.data});
+                    this.getLabsList();
                     alert("lab is being delete");
                 } else {
                     alert("Cannot delete this lab");
@@ -140,16 +140,16 @@ class LabsPage extends Component {
             this.state.labList.map(lab => {
                 let buttonGroup = (
                     <ButtonGroup>
-                        <Button variant="primary" onClick={() => {this.dolab(lab.id)}}>Do</Button>
-                        <Button variant="primary" onClick={() => this.editLab(lab.id)}>Edit</Button>
-                        <Button variant="primary" onClick={() => this.deleteLab(lab.id)}>Delete</Button>
+                        <Button variant="info" onClick={() => {this.dolab(lab.id)}}>Do</Button>
+                        <Button variant="info" onClick={() => this.editLab(lab.id)}>Edit</Button>
+                        <Button variant="info" onClick={() => this.deleteLab(lab.id)}>Delete</Button>
                     </ButtonGroup>
                 );
                 if (lab.published) {
                     buttonGroup = (
                         <ButtonGroup>
                             <LinkContainer to="/dolab">
-                                <Button variant="primary">Do</Button>
+                                <Button variant="info">Do</Button>
                             </LinkContainer>
                         </ButtonGroup>
                     );
