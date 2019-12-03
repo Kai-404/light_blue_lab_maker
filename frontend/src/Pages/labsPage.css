@@ -1,0 +1,9 @@
+.control {
+  /* text-align:right; */
+  text-align: center;
+  background-color: transparent;
+}
+
+.errmsg {
+  color: red;
+}

@@ -5,13 +5,16 @@ import application.Models.Lab;
 // Not the real JSON Library!!!
 //import net.minidev.json.JSONArray;
 import application.Tools.Beaker;
-import org.json.JSONArray;
-import org.json.JSONObject;
+import application.Tools.PHPaper;
+import com.google.gson.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @CrossOrigin
@@ -25,6 +28,7 @@ public class LabController {
     private ProfessorRepository professorRepository;
     //Lab object that gets modified when creating a lab
     Lab lab;
+    int currentStage = 0;
 
     //sets lab to a new lab object
     @PostMapping("/newlab")
@@ -158,6 +162,8 @@ public class LabController {
         return labRepository.findAllByAuthor(professor);
     }
 
+    @GetMapping("/publishlab")
+    @ResponseBody
     public boolean publishLab() {
         try {
             lab.setPublished(true);
@@ -170,13 +176,13 @@ public class LabController {
     }
     @GetMapping("/deletelab")
     @ResponseBody
-    public boolean deleteLab(HttpSession session) {
-        String id = lab.getId();
+    public boolean deleteLab(@RequestParam(name = "id") String id, HttpSession session) {
+        Lab lab = labRepository.getById(id);
         if (id != null) {
             labRepository.delete(lab);
             User user = userRepository.findByUsername((String) session.getAttribute("user"));
             Professor professor = professorRepository.findByUserId(user.getId());
-            professor.getLab_list().remove(lab);
+            professor.getLab_list().remove(lab.getId());
             return true;
         }
         return false;
@@ -186,6 +192,99 @@ public class LabController {
     @ResponseBody
     public void saveInstructions(@RequestParam(name="stageNum") int stageNum, @RequestParam(name="instructions") String instructions) {
         lab.saveInstructions(stageNum, instructions);
+    }
+
+    @GetMapping("/searchlab")
+    @ResponseBody
+    public ResponseEntity<List<Lab>> searchLab(@RequestParam(name = "id") String name, HttpSession session) {
+        List<Lab> labList = new ArrayList<>();
+        User user = userRepository.findByUsername((String) session.getAttribute("user"));
+        Professor professor = professorRepository.findByUserId(user.getId());
+        for (String id : professor.getLab_list()) {
+            Lab lab = labRepository.getById(id);
+            if (lab != null && lab.getTitle().contains(name))
+                labList.add(lab);
+        }
+        if (labList.size() == 0)
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        else
+            return new ResponseEntity<>(labList, HttpStatus.OK);
+    }
+
+    //ADD DRAGGABLE POSTMAPPING
+    @PostMapping("/swapstages")
+    @ResponseBody
+    public void swapstages(@RequestParam(name="oldIndex") int oldIndex, @RequestParam(name="newIndex") int newIndex) {
+        lab.swapStages(oldIndex, newIndex);
+    }
+
+    @GetMapping("/editlab")
+    @ResponseBody
+    public void editlab(@RequestParam(name="id") String id) {
+        lab = labRepository.getById(id);
+    }
+
+    @PostMapping("/checkInteraction")
+    @ResponseBody
+    public ResponseEntity<String> checkInteraction(@RequestParam(name="stageNum") int stageNum,
+                                                   @RequestParam(name="id") String id,
+                                                   @RequestParam(name="id2") String id2) {
+
+        Stage stage = lab.getStage( stageNum );
+        Tool tool1 = stage.getToolByID( id );
+        Tool tool2 = stage.getToolByID( id2 );
+
+        if (! tool1.getCanInteractWith().containsKey( tool2.getName() )){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }else {
+            String interActionName = tool1.getCanInteractWith().get(tool2.getName());
+            if (tool1.getName().equals( "Beaker" )){
+                Beaker tool = (Beaker) tool1;
+                return new ResponseEntity<>(tool.getInteractionDetail(interActionName).toString(), HttpStatus.OK);
+            }else if (tool1.getName().equals( "PHPaper" )) {
+                PHPaper tool = (PHPaper) tool1;
+                return new ResponseEntity<>(tool.getInteractionDetail(interActionName).toString(), HttpStatus.OK);
+            }else {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+
+        }
+    }
+
+////    for test only
+//    @GetMapping("/getbeaker")
+//    @ResponseBody
+//    public String getBeaker() {
+////        Beaker beaker = new Beaker();
+////        return  beaker.getInteractionDetail( "Pour" ).toString();
+//        PHPaper ph = new PHPaper();
+//        return  ph.getInteractionDetail( "Measure" ).toString();
+//
+//    }
+
+    @GetMapping("/setdolab")
+    @ResponseBody
+    public void setDoLab(@RequestParam(name="id") String id) {
+        lab = labRepository.getById(id);
+        currentStage = 0;
+    }
+
+    @GetMapping("/getdolabstage")
+    @ResponseBody
+    public String getDoLabStage() {
+        return lab.getStage(currentStage).getStageAsJSON().toString();
+    }
+
+    @GetMapping("/getcurrentstage")
+    @ResponseBody
+    public int getCurrentStage(){
+        return currentStage;
+    }
+
+    @GetMapping("/getnextstage")
+    @ResponseBody
+    public void getNextStage() {
+        ++currentStage;
     }
 
 }

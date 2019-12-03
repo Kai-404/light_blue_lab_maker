@@ -7,6 +7,10 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Map;
+
 @Getter
 @Setter
 public class Beaker extends Tool {
@@ -20,14 +24,26 @@ public class Beaker extends Tool {
     int y = 0;
 
     //initial property
-    int size = 100;
-    String color = "black";
+    double maxVolume = 100.0;
+    double currentVolume = 50.0;
+    ArrayList<String> currentChemicalsList = new ArrayList<>( Arrays.asList("H20"));
+    String phStatus = "Neutral";
 
     //final property
-    int finalSize = 50;
-    String finalColor = "green";
+    double finalMaxVolume = 100.0;
+    double finalCurrentVolume = 50.0;
+    ArrayList<String> finalCurrentChemicalsList = new ArrayList<>( Arrays.asList("H20"));
+    String finalPhStatus = "Neutral";
 
     boolean canBeBurned = true;
+
+    @Field("BeakerInteractWith")
+    Map<String,String> canInteractWith = Map.of(
+            "Beaker","Pour"
+    );
+
+
+
     public Beaker(){
 
     }
@@ -39,6 +55,22 @@ public class Beaker extends Tool {
     @Override
     public String getImageName() {
         return imageName;
+    }
+
+    public String chemicalListToString(ArrayList<String> list){
+        String toReturn;
+        toReturn = String.join( "," ,list );
+        return toReturn;
+    }
+
+    public ArrayList<String> chemicalStringToList(String chemicalString){
+        ArrayList<String> chemicalList = new ArrayList(Arrays.asList( chemicalString.split( "," )));
+        for(String s : chemicalList){
+            if (s.isBlank()){
+                chemicalList.remove( s );
+            }
+        }
+        return chemicalList;
     }
 
 //    [
@@ -55,10 +87,7 @@ public class Beaker extends Tool {
 //          Interaction: [Pour]
 //    },
 //    {
-
 //     },
-//    {
-
 //     }
 //    ]
 
@@ -74,36 +103,81 @@ public class Beaker extends Tool {
         //initial property
         JSONArray properties = new JSONArray();
 
-        JSONObject sizeProp = new JSONObject();
-        sizeProp.put( "Name","Size" );
-        sizeProp.put( "Value",this.size );
-        sizeProp.put( "Editable", true );
+        JSONObject maxVolumeProp = new JSONObject();
+        maxVolumeProp.put( "Name","Max Volume" );
+        maxVolumeProp.put( "Value",this.maxVolume );
+        maxVolumeProp.put( "Editable", true );
+        maxVolumeProp.put( "Max", "9999" );
+        maxVolumeProp.put( "Min", "1" );
 
-        JSONObject colorProp = new JSONObject();
-        colorProp.put( "Name","Color" );
-        colorProp.put( "Value",this.color );
-        colorProp.put( "Editable", true );
+        JSONObject currentVolumeProp = new JSONObject();
+        currentVolumeProp.put( "Name","Current Volume" );
+        currentVolumeProp.put( "Value",this.currentVolume );
+        currentVolumeProp.put( "Editable", true );
+        currentVolumeProp.put( "Max", "9999" );
+        currentVolumeProp.put( "Min", "1" );
 
-        properties.put(sizeProp);
-        properties.put(colorProp);
+        JSONObject phStatusProp = new JSONObject();
+        phStatusProp.put( "Name","PH Status" );
+        phStatusProp.put( "Value",this.phStatus );
+        phStatusProp.put( "Editable", true );
+        phStatusProp.put( "ValidStatus",
+                new ArrayList<String>(
+                        Arrays.asList( "BASE", "ACID", "NEUTRAL" )
+                )
+        );
+
+        JSONObject chemicalsListProp = new JSONObject();
+        chemicalsListProp.put( "Name","Chemicals List" );
+        chemicalsListProp.put( "Value",chemicalListToString( this.currentChemicalsList ) );
+        chemicalsListProp.put( "Editable", true );
+
+        properties.put(maxVolumeProp);
+        properties.put(currentVolumeProp);
+        properties.put(phStatusProp);
+        properties.put(chemicalsListProp);
 
         toolJSONObject.put( "Prop",properties );
 
         //final property
         JSONArray finalProperties = new JSONArray();
 
-        JSONObject finalSizeProp = new JSONObject();
-        finalSizeProp.put( "Name","Size" );
-        finalSizeProp.put( "Value",this.finalSize );
-        finalSizeProp.put( "Editable", true );
+        JSONObject finalMaxVolumeProp = new JSONObject();
+        finalMaxVolumeProp.put( "Name","Max Volume" );
+        finalMaxVolumeProp.put( "Value",this.finalMaxVolume );
+        finalMaxVolumeProp.put( "Editable", true );
+        finalMaxVolumeProp.put( "Max", "9999" );
+        finalMaxVolumeProp.put( "Min", "1" );
 
-        JSONObject finalColorProp = new JSONObject();
-        finalColorProp.put( "Name","Color" );
-        finalColorProp.put( "Value",this.finalColor );
-        finalColorProp.put( "Editable", true );
+        JSONObject finalCurrentVolumeProp = new JSONObject();
+        finalCurrentVolumeProp.put( "Name","Current Volume" );
+        finalCurrentVolumeProp.put( "Value",this.finalCurrentVolume );
+        finalCurrentVolumeProp.put( "Editable", true );
+        finalCurrentVolumeProp.put( "Max", "9999" );
+        finalCurrentVolumeProp.put( "Min", "1" );
 
-        finalProperties.put(finalSizeProp);
-        finalProperties.put(finalColorProp);
+        JSONObject finalPhStatusProp = new JSONObject();
+        finalPhStatusProp.put( "Name","PH Status" );
+        finalPhStatusProp.put( "Value",this.finalPhStatus );
+        finalPhStatusProp.put( "Editable", true );
+        finalPhStatusProp.put( "ValidStatus",
+                new ArrayList<String>(
+                        Arrays.asList( "BASE", "ACID", "NEUTRAL" )
+                )
+        );
+
+        JSONObject finalChemicalsListProp = new JSONObject();
+        finalChemicalsListProp.put( "Name","Chemicals List" );
+        finalChemicalsListProp.put( "Value",chemicalListToString(this.finalCurrentChemicalsList ));
+        finalChemicalsListProp.put( "Editable", true );
+
+
+
+
+        finalProperties.put(finalMaxVolumeProp);
+        finalProperties.put(finalCurrentVolumeProp);
+        finalProperties.put(finalPhStatusProp);
+        finalProperties.put(finalChemicalsListProp);
 
         toolJSONObject.put( "FinalProp",finalProperties );
 
@@ -131,15 +205,23 @@ public class Beaker extends Tool {
 
         propArray.forEach( e->{
             JSONObject prop = (JSONObject) e;
-            if ( ((String)prop.get("Name")).equals( "Size" ) ){
-                if (prop.get( "Value" ) instanceof String){
-                    this.size= Integer.parseInt((String) prop.get( "Value" ));
-                }else {
-                    this.size= (int)prop.get( "Value" );
-                }
-            }else if (((String)prop.get("Name")).equals( "Color" )){
-                this.color=(String) prop.get( "Value" );
+            if ( ((String)prop.get("Name")).equals( "Max Volume" ) ){
+                this.maxVolume = Double.parseDouble( String.valueOf( prop.get( "Value" ) ) );
+
             }
+            else if (((String)prop.get("Name")).equals( "Current Volume" )){
+                this.currentVolume = Double.parseDouble( String.valueOf( prop.get( "Value" ) ) );
+
+            }
+            else if (((String)prop.get("Name")).equals( "PH Status" )){
+                this.phStatus= (String) prop.get( "Value" );
+            }
+            else if (((String)prop.get("Name")).equals( "Chemicals List" )){
+                this.currentChemicalsList = chemicalStringToList((String) prop.get( "Value" ) );
+            }
+
+
+
         } );
 
 
@@ -149,14 +231,17 @@ public class Beaker extends Tool {
 
         finalPropArray.forEach( e->{
             JSONObject prop = (JSONObject) e;
-            if ( ((String)prop.get("Name")).equals( "Size" ) ){
-                if (prop.get( "Value" ) instanceof String){
-                    this.finalSize= Integer.parseInt((String) prop.get( "Value" ));
-                }else {
-                    this.finalSize= (int)prop.get( "Value" );
-                }
-            }else if (((String)prop.get("Name")).equals( "Color" )){
-                this.finalColor=(String) prop.get( "Value" );
+            if ( ((String)prop.get("Name")).equals( "Max Volume" ) ){
+                this.finalMaxVolume = Double.parseDouble( String.valueOf( prop.get( "Value" ) ) );
+            }
+            else if (((String)prop.get("Name")).equals( "Current Volume" )){
+                this.finalCurrentVolume = Double.parseDouble( String.valueOf( prop.get( "Value" ) ) );
+            }
+            else if (((String)prop.get("Name")).equals( "PH Status" )){
+                this.finalPhStatus= (String) prop.get( "Value" );
+            }
+            else if (((String)prop.get("Name")).equals( "Chemicals List" )){
+                this.finalCurrentChemicalsList = chemicalStringToList((String) prop.get( "Value" ) );
             }
         } );
 
@@ -164,9 +249,44 @@ public class Beaker extends Tool {
 
     public Beaker clone() throws CloneNotSupportedException {
         Beaker clone = (Beaker) super.clone();
-        clone.setSize(this.getSize());
-        clone.setColor(this.getColor());
+        clone.setMaxVolume(this.maxVolume);
+        clone.setCurrentVolume(this.currentVolume);
+        clone.setCurrentChemicalsList( this.currentChemicalsList );
+        clone.setPhStatus( this.phStatus );
+
+        clone.setFinalMaxVolume(this.finalMaxVolume);
+        clone.setFinalCurrentVolume(this.finalCurrentVolume);
+        clone.setFinalCurrentChemicalsList( this.finalCurrentChemicalsList );
+        clone.setFinalPhStatus( this.finalPhStatus );
         return clone;
+    }
+
+    public boolean pour(Beaker pourTo, Double amount){
+        if(amount>this.currentVolume){
+            return false;
+        }else if((pourTo.getCurrentVolume()+amount) > pourTo.getMaxVolume()){
+            return false;
+        }else {
+            this.currentVolume = this.currentVolume - amount;
+            pourTo.currentVolume = pourTo.currentVolume - amount;
+            return true;
+        }
+    }
+
+    public JSONObject getInteractionDetail(String interactionName){
+        JSONObject interactionJSONObject = new JSONObject();
+
+        if (interactionName.equals("Pour")){
+            interactionJSONObject.put( "Name",interactionName );
+            interactionJSONObject.put( "Description","Type how much you want pour to another Beaker" );
+            JSONObject pourPrams = new JSONObject();
+            pourPrams.put( "PramName","Amount to pour" );
+            pourPrams.put( "Value",Double.valueOf( 0 ) );
+            interactionJSONObject.put( "Prams",pourPrams );
+        }
+
+        return interactionJSONObject;
+
     }
 
 }

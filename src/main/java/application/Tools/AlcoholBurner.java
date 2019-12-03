@@ -1,3 +1,6 @@
+/*
+Removed Tool
+ */
 package application.Tools;
 
 import application.Models.Tool;
