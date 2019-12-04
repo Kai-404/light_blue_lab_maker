@@ -83,6 +83,17 @@ public class UserController {
         session.setAttribute("reset_password_id", id);
     }
 
+    @PostMapping("/reset-password")
+    public boolean resetPassword(@RequestParam(name="password") String password, HttpSession session) {
+        User user = userRepository.getById((String)session.getAttribute("reset_password_id"));
+        if (user == null)
+            return false;
+        else {
+            user.setPassword(encryptPassword(password));
+            userRepository.save(user);
+            return true;
+        }
+    }
     private String encryptPassword(String password) {
         try {
             MessageDigest sh = MessageDigest.getInstance("SHA-256");

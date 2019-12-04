@@ -9,7 +9,6 @@ class ResetPassword extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            email: "",
             password: "",
             password2 : ""
         };
@@ -21,20 +20,40 @@ class ResetPassword extends Component {
 
     onChange = e => this.setState({ [e.target.name]: e.target.value });
 
+    onSubmit = e => {
+        e.preventDefault();
+        const { password, password2} = this.state;
+
+        if (password === "" || password2 === "") {
+            this.setState({errmsg : "fill in all fields"});
+        } else if (password !== password2) {
+            this.setState({errmsg: "password don't match"});
+        } else if (password.length < 8) {
+            this.setState({
+                errmsg: "password needs to be at least 8 characters long"
+            });
+        } else {
+            axios
+                .post("http://localhost:8080/reset-password",{
+                    headers: { "Content-Type": "application/json;charset=UTF-8" },
+                    params: {
+                        password: password
+                    }
+                })
+                .then(res => {
+                    this.routeLogin();
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        }
+    };
+
     render() {
         return (
             <div>
                 <p className="errmsg">{this.state.errmsg}</p>
                 <form className="form" onSubmit={this.onSubmit}>
-                    Username or Email:
-                    <input
-                        className="input"
-                        value={this.state.email}
-                        type="text"
-                        name="email"
-                        onChange={this.onChange}
-                    />
-                    <br />
                     <br />
                     New Password:
                     <input
@@ -59,18 +78,11 @@ class ResetPassword extends Component {
                     <button
                         type="submit"
                         className="submitButton"
-                        onClick={this.routeLogin}
+                        onClick={this.onSubmit}
                     >
                         Submit
                     </button>
                     {"  "}
-                    <button
-                        type="button"
-                        className="submitButton"
-                        onClick={this.routeLogin}
-                    >
-                        Cancel
-                    </button>
                 </form>
             </div>
         )
