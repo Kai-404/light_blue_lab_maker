@@ -68,6 +68,15 @@ public class UserController {
         return "Something is wrong.";
     }
 
+    @GetMapping("/reset")
+    public boolean sendResetPasswordEmail(@RequestParam(name="email") String email) {
+        User user = userRepository.findByEmail(email);
+        if (user != null) {
+            return true;
+        }
+        return false;
+    }
+
     private String encryptPassword(String password) {
         try {
             MessageDigest sh = MessageDigest.getInstance("SHA-256");
