@@ -72,9 +72,15 @@ public class UserController {
     public boolean sendResetPasswordEmail(@RequestParam(name="email") String email) {
         User user = userRepository.findByEmail(email);
         if (user != null) {
+            mailService.sendResetPasswordEmail(email, user.getId());
             return true;
         }
         return false;
+    }
+
+    @GetMapping("/resetpassword")
+    public void resetPasswordPage(@RequestParam(name="id") String id, HttpSession session) {
+        session.setAttribute("reset_password_id", id);
     }
 
     private String encryptPassword(String password) {
