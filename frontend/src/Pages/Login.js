@@ -45,14 +45,18 @@ class Login extends Component {
         })
         .then(res => {
           if (res.data != "") {
-            this.props.login(res.data);
-            this.props.showbar(true);
-            this.setState({
-              email: "",
-              password: "",
-              errmsg: ""
-            });
-            this.routeHome();
+            if (!res.data.active) {
+              this.setState({ errmsg: "Please verify your email"});
+            } else {
+              this.props.login(res.data);
+              this.props.showbar(true);
+              this.setState({
+                email: "",
+                password: "",
+                errmsg: ""
+              });
+              this.routeHome();
+            }
           } else {
             this.setState({ errmsg: "Invalid username/email or password" });
           }

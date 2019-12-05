@@ -19,8 +19,7 @@ class Addlab extends Component {
     let title = this.state.labTitle;
     //for testing
     let author = "kai";
-    if (this.props.user)
-      author = this.props.user.username;
+    if (this.props.user) author = this.props.user.username;
     let description = this.state.description;
     let data = JSON.stringify({
       author,
@@ -50,7 +49,9 @@ class Addlab extends Component {
   render() {
     return (
       <div>
-        <Button onClick={this.setShowAddLab}>Add Lab</Button>
+        <Button variant="info" onClick={this.setShowAddLab}>
+          Add Lab
+        </Button>
 
         <Modal show={this.state.showAddLab} onHide={this.setShowAddLab}>
           <Modal.Header>
@@ -79,8 +80,12 @@ class Addlab extends Component {
             </form>
           </Modal.Body>
           <Modal.Footer>
-            <Button onClick={this.addNewLab}>Add</Button>
-            <Button onClick={this.setShowAddLab}>Cancel</Button>
+            <Button variant="info" onClick={this.addNewLab}>
+              Add
+            </Button>
+            <Button variant="info" onClick={this.setShowAddLab}>
+              Cancel
+            </Button>
           </Modal.Footer>
         </Modal>
       </div>

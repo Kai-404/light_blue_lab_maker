@@ -1,6 +1,6 @@
-import React, {Component} from "react";
-import {withRouter} from "react-router";
-import {Card, ListGroup, Button} from "react-bootstrap";
+import React, { Component } from "react";
+import { withRouter } from "react-router";
+import { Card, ListGroup, Button } from "react-bootstrap";
 import "../App.css";
 import axios from "axios";
 import AddCourse from "./AddCourse";
@@ -14,13 +14,13 @@ class HomePage extends Component {
 
     getCourseList = () => {
         axios.get("http://localhost:8080/getcourselist", {
-            headers: {"Content-Type": "application/json;charset=UTF-8"},
+            headers: { "Content-Type": "application/json;charset=UTF-8" },
             params: {
                 id: this.props.user.id,
                 username: this.props.user.username,
                 userType: this.props.user.userType
             }
-        }).then(res => this.setState({courseList: res.data}))
+        }).then(res => this.setState({ courseList: res.data }))
     };
 
     componentDidMount() {
@@ -28,6 +28,7 @@ class HomePage extends Component {
     };
 
     showBar = id => {
+        console.log("course id: ", id);
         this.props.underCourse(true);
         this.props.currentCourse(id);
         this.props.history.push("/announcements");
@@ -46,17 +47,17 @@ class HomePage extends Component {
                         <Card.Body>
                             <Card.Title>{course.title}</Card.Title>
                             <Card.Text>{course.professor}</Card.Text>
-                            <Button variant="primary" onClick={() => this.showBar(course.professor)}>
+                            <Button variant="primary" onClick={() => this.showBar(course.id)}>
                                 Go to the course
                             </Button>
                         </Card.Body>
                     </Card>
                 ))}
                 {
-                    this.props.user.userType==='Professor'?
-                        <AddCourse user={this.props.user} getCourseList={this.getCourseList}/>
+                    this.props.user.userType === 'Professor' ?
+                        <AddCourse user={this.props.user} getCourseList={this.getCourseList} />
                         :
-                        <EnrollCourse user={this.props.user} getCourseList={this.getCourseList}/>
+                        <EnrollCourse user={this.props.user} getCourseList={this.getCourseList} />
                 }
             </ListGroup>
         );

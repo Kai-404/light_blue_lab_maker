@@ -1,16 +1,50 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router";
-import { Card, ListGroup, Button } from "react-bootstrap";
-import "../App.css";
+import axios from "axios";
+import { Button, Card, Col, Row } from "react-bootstrap";
+import AddAnnouncement from "./AddAnnouncement";
 
 class Announcements extends Component {
+  state = {
+    announList: [
+      {
+        title: "Demo announcement",
+        context: "Hello World"
+      }
+    ]
+  };
+
+  getAnnounList = () => {
+
+    axios
+      .get("http://localhost:8080/getannounlist", {
+        headers: { "Content-Type": "application/json;charset=UTF-8" },
+        params: {
+          courseId: this.props.currentCourse
+        }
+      })
+      .then(res => this.setState({ announList: res.data }));
+  };
+
   render() {
-    return (
-      <Card>
-        <Card.Body>
-          <Card.Title as="h1" align="left">
-            Announcements
-          </Card.Title>
+    let Announcements;
+    try {
+      Announcements = this.state.announList.map(announ => (
+        <React.Fragment>
+          <Card>
+            <Card.Body>
+              <Card.Title as="h4" align="left">
+                {announ.title}
+              </Card.Title>
+              <Card.Text align="left">{announ.context}</Card.Text>
+            </Card.Body>
+          </Card>
+        </React.Fragment>
+      ));
+    } catch (error) {
+      console.log(error);
+      Announcements = (
+        <React.Fragment>
           <Card>
             <Card.Body>
               <Card.Title as="h4" align="left">
@@ -19,16 +53,24 @@ class Announcements extends Component {
               <Card.Text align="left">Announcement context goes here</Card.Text>
             </Card.Body>
           </Card>
-          <Card>
-            <Card.Body>
-              <Card.Title as="h4" align="left">
-                Hello World
+        </React.Fragment>
+      );
+    }
+
+    return (
+      <Card>
+        <Card.Body>
+          <Row>
+            <Col>
+              <Card.Title as="h1" align="left">
+                Announcements
               </Card.Title>
-              <Card.Text align="left">
-                "Hello World!" from Light Blue Lab Maker
-              </Card.Text>
-            </Card.Body>
-          </Card>
+            </Col>
+            <Col>
+              <AddAnnouncement courseId={this.props.currentCourse} />
+            </Col>
+          </Row>
+          {Announcements}
         </Card.Body>
       </Card>
     );

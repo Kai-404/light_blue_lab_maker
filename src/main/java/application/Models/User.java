@@ -18,6 +18,7 @@ public class User {
     private String password;
     private String email;
     private String userType;
+    private boolean isActive;
 
     public User() {}
 
@@ -30,6 +31,7 @@ public class User {
         this.username = username;
         this.email = email;
         this.password = password;
+        this.isActive = false;
     }
 
     public User(String id, String username, String password, String email) {
@@ -37,6 +39,7 @@ public class User {
         this.username = username;
         this.password = password;
         this.email = email;
+        this.isActive = false;
     }
 
     public User(String id, String username, String password, String email, String userType) {
@@ -45,5 +48,6 @@ public class User {
         this.password = password;
         this.email = email;
         this.userType = userType;
+        this.isActive = false;
     }
 }

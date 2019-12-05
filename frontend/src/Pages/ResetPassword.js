@@ -19,6 +19,8 @@ class ResetPassword extends Component {
         this.props.history.push("/login");
     };
 
+    onChange = e => this.setState({ [e.target.name]: e.target.value });
+
     render() {
         return (
             <div>
