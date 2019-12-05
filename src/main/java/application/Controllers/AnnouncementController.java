@@ -5,9 +5,9 @@ import application.Services.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @RestController
@@ -22,9 +22,11 @@ public class AnnouncementController {
     private MailService mailService;
 
     @ResponseBody
-    public boolean createAnnouncement(String title, String content, String author, String courseId) {
+    @PostMapping("/newAnnouncement")
+    public boolean createAnnouncement(@RequestParam(name = "title") String title, @RequestParam(name = "content") String content,
+                                      @RequestParam(name="courseId") String courseId, HttpSession session) {
         try {
-            Announcement announcement = new Announcement(title, content, author, courseId);
+            Announcement announcement = new Announcement(title, content, (String) session.getAttribute("user"), courseId);
             announcementRepository.save(announcement);
             Course course = courseRepository.getById(courseId);
             StringBuilder stringBuilder = new StringBuilder();
@@ -48,7 +50,8 @@ public class AnnouncementController {
     }
 
     @ResponseBody
-    public ResponseEntity<List<Announcement>> getAllAnnouncement(String courseId) {
+    @GetMapping("/getannouncementlist")
+    public ResponseEntity<List<Announcement>> getAllAnnouncement(@RequestParam(name = "courseId") String courseId) {
         List<Announcement> announcementList = announcementRepository.findAllByCourseId(courseId);
         if (announcementList.size() == 0) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
