@@ -26,10 +26,7 @@ class LabTool extends Component {
   state = {
     image: null,
     interactedTool: null,
-    inter: {
-      Description: "Type how much you want pour to another Beaker",
-      Name: "Pour"
-    },
+    currentTool: null,
     showPop: false,
     showTooltip: false,
     toolx: 0,
@@ -216,15 +213,30 @@ class LabTool extends Component {
     console.log("Tool: ", e.target.attrs);
     console.log("mouse: ", mousePosition);
 
-    this.setState({
-      showTooltip: true,
-      toolx: e.target.attrs.x,
-      tooly: e.target.attrs.y
+    let id = e.target.attrs.name;
+    let stageNum = this.props.stageNum;
+    let data = JSON.stringify({
+      stageNum,
+      id
     });
-
-    console.log(this.state.toolx, this.state.tooly);
+    axios
+      .post("http://localhost:8080/gettool", data, {
+        headers: { "Content-Type": "application/json;charset=UTF-8" },
+        params: {
+          stageNum: stageNum,
+          ID: id
+        }
+      })
+      .then(res => {
+        this.setState({
+          currentTool: res.data,
+          showTooltip: true,
+          toolx: e.target.attrs.x,
+          tooly: e.target.attrs.y
+        });
+        console.log(this.state.toolx, this.state.tooly);
+      });
   };
-
   //right click show property form
   handleClickTool = e => {
     this.setState({ showTooltip: false });
@@ -274,17 +286,18 @@ class LabTool extends Component {
           onDragEnd={this.handleDragEnd}
           onContextMenu={this.handleContextMenu}
         />
-        {/*<Portal isOpened={this.state.showTooltip}>
-          <p
+        <Portal isOpened={this.state.showTooltip}>
+          <Form
             style={{
               position: "absolute",
               top: this.state.tooly,
               left: this.state.toolx
             }}
           >
-            FK U
-          </p>
-          </Portal>*/}
+            <Form.Label>Try</Form.Label>
+            <input type="text" />
+          </Form>
+        </Portal>
         <Portal isOpend={this.state.showPop}>
           {/*<InteractionModal
             interaction={this.state.inter}

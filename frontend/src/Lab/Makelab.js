@@ -25,6 +25,7 @@ import LabStageBar from "./LabStageBar";
 import LabTool from "./LabTool";
 import Tooltip from "./Tooltip";
 import "../App.css";
+import InteractionModal from "./InteractionModal";
 
 const stageW = window.innerWidth - window.innerWidth * 0.3;
 const stageH = window.innerHeight - 200;
@@ -134,6 +135,7 @@ class Makelab extends Component {
 
   setInteraction = inter => {
     console.log("pased:", inter);
+    //Pass me back the interaction tools like tool1, tool2
     this.setState({ inter: inter });
   };
   //add tool to whole lab
@@ -261,37 +263,11 @@ class Makelab extends Component {
     return (
       <React.Fragment>
         <p className="errmsg">{this.state.errMsg}</p>
-        <Modal
-          size="sm"
-          centered
+        <InteractionModal
+          interaction={this.state.inter}
           show={this.state.hasInter}
-          onHide={this.setShowInterModal}
-          dialogClassName="modal-90w"
-          aria-labelledby="example-custom-modal-styling-title"
-        >
-          <Modal.Header>
-            <Modal.Title id="example-custom-modal-styling-title">
-              {this.state.inter.Name}
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <Form>
-              <Form.Label column sm={2}>
-                {this.state.inter.Prams.PramName}
-              </Form.Label>
-              <Col sm={10}>
-                <Form.Control
-                  required
-                  type={this.state.inter.Prams.PramName}
-                  defaultValue={this.state.inter.Prams.Value}
-                  onChange={this.handleChangeProps}
-                />
-              </Col>
-            </Form>
-          </Modal.Body>
-          <Modal.Footer>{this.state.inter.Description}</Modal.Footer>
-        </Modal>
-
+          setShow={this.setShowInterModal}
+        />
         <ToolModal
           setTool={this.setCurrentTool}
           tool={this.state.currentTool}
