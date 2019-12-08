@@ -91,7 +91,7 @@ class App extends Component {
                             path="/labspage"
                             render={props => (
                                 <React.Fragment>
-                                    <LabsPage currentCourse={this.state.currentCourse} setLabID={this.setLabID}/>
+                                    <LabsPage setLabID={this.setLabID}/>
                                 </React.Fragment>
                             )}
                         />
