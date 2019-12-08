@@ -30,9 +30,6 @@ class Header extends Component {
             <LinkContainer to="/labspage">
               <Nav.Link>Lab</Nav.Link>
             </LinkContainer>
-            <LinkContainer to="/discussion">
-              <Nav.Link>Discussion</Nav.Link>
-            </LinkContainer>
             <LinkContainer to="/grade">
               <Nav.Link>Grade</Nav.Link>
             </LinkContainer>
