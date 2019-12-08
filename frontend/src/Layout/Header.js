@@ -10,14 +10,14 @@ import "./Header.css";
 
 class Header extends Component {
   showBar = () => {
-    this.props.showCourseContent(false);
+    sessionStorage.setItem("underCourse", "false");
     this.setState({ underCourse: false });
   };
 
   render() {
     let UserName = "User Name";
-    if (this.props.loggedIn) {
-      UserName = this.props.user.username;
+    if (sessionStorage.getItem("loggedin")) {
+      UserName = sessionStorage.getItem("username");
     }
     let BarContent = e => {
       let res = <Nav className="mr-auto"></Nav>;
@@ -94,10 +94,10 @@ class Header extends Component {
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
-            <BarContent under={this.props.underCourse} />
+            <BarContent under={sessionStorage.getItem("underCourse")} />
           </Navbar.Collapse>
           <ButtonGroup>
-            <UserInfo login={this.props.loggedIn} />
+            <UserInfo login={sessionStorage.getItem("loggedin")} />
           </ButtonGroup>
         </Navbar>
         <br />

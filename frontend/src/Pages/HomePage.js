@@ -16,9 +16,9 @@ class HomePage extends Component {
         axios.get("http://localhost:8080/getcourselist", {
             headers: {"Content-Type": "application/json;charset=UTF-8"},
             params: {
-                id: this.props.user.id,
-                username: this.props.user.username,
-                userType: this.props.user.userType
+                id: sessionStorage.getItem("userID"),
+                username: sessionStorage.getItem("username"),
+                userType: sessionStorage.getItem("userType")
             }
         }).then(res => this.setState({courseList: res.data}))
     };
@@ -28,8 +28,8 @@ class HomePage extends Component {
     };
 
     showBar = id => {
-        this.props.underCourse(true);
-        this.props.currentCourse(id);
+        sessionStorage.setItem("underCourse", "true");
+        sessionStorage.setItem("currentCourse", id);
         this.props.history.push("/announcements");
     };
 
@@ -53,10 +53,10 @@ class HomePage extends Component {
                     </Card>
                 ))}
                 {
-                    this.props.user.userType==='Professor'?
-                        <AddCourse user={this.props.user} getCourseList={this.getCourseList}/>
+                    sessionStorage.getItem("userType")==='Professor'?
+                        <AddCourse getCourseList={this.getCourseList}/>
                         :
-                        <EnrollCourse user={this.props.user} getCourseList={this.getCourseList}/>
+                        <EnrollCourse getCourseList={this.getCourseList}/>
                 }
             </ListGroup>
         );

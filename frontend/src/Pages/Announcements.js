@@ -61,7 +61,12 @@ class Announcements extends Component {
               </Card.Title>
             </Col>
             <Col>
-              <AddAnnouncement />
+              {
+                sessionStorage.getItem("userType")==='Professor'?
+                    <AddAnnouncement />
+                    :
+                    null
+              }
             </Col>
           </Row>
           {Announcements}

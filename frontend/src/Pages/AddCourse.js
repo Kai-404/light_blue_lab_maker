@@ -21,7 +21,7 @@ class AddCourse extends Component {
     };
 
     addCourse() {
-        axios.post("http://localhost:8080/addcourse", {title: this.state.courseName, term: this.state.term, professor: this.props.user.username})
+        axios.post("http://localhost:8080/addcourse", {title: this.state.courseName, term: this.state.term, professor: sessionStorage.getItem("username")})
             .then(res => {this.props.getCourseList();})
             .catch((err => {console.log("error")}));
         this.setState({

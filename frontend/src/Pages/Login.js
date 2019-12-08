@@ -48,8 +48,10 @@ class Login extends Component {
             if (!res.data.active) {
               this.setState({ errmsg: "Please verify your email"});
             } else {
-              this.props.login(res.data);
-              this.props.showbar(true);
+              sessionStorage.setItem("username", res.data.username);
+              sessionStorage.setItem("userType", res.data.userType);
+              sessionStorage.setItem("userID", res.data.id);
+              sessionStorage.setItem("loggedin", "true");
               this.setState({
                 email: "",
                 password: "",

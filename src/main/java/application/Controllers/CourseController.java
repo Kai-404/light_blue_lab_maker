@@ -24,9 +24,9 @@ public class CourseController {
 
     @PostMapping("/addcourse")
     @ResponseBody
-    public Course addCourse(@RequestBody Course course, HttpSession session) {
+    public Course addCourse(@RequestBody Course course) {
         courseRepository.save(course);
-        User user = userRepository.findByUsername((String) session.getAttribute("user"));
+        User user = userRepository.findByUsername(course.getProfessor());
         Professor professor = professorRepository.findByUserId(user.getId());
         professor.getCourse_list().add(course.getId());
         professorRepository.save(professor);
