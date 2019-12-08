@@ -25,7 +25,7 @@ class LabsPage extends Component {
             .get("http://localhost:8080/getlablist", {
                 headers: {"Content-Type": "application/json;charset=UTF-8"},
                 params: {
-                    professor: this.props.currentCourse
+                    courseID: sessionStorage.getItem("currentCourse")
                 }
             })
             .then(res => {
@@ -145,6 +145,13 @@ class LabsPage extends Component {
                         <Button variant="info" onClick={() => this.deleteLab(lab.id)}>Delete</Button>
                     </ButtonGroup>
                 );
+                if (sessionStorage.getItem("userType")==="Student") {
+                    buttonGroup = (
+                        <ButtonGroup>
+                            <Button variant="info" onClick={() => {this.dolab(lab.id)}}>Do</Button>
+                        </ButtonGroup>
+                    )
+                }
                 if (lab.published) {
                     buttonGroup = (
                         <ButtonGroup>
@@ -164,7 +171,7 @@ class LabsPage extends Component {
                         </Card.Body>
                     </Card>
                 );
-            });
+            }); 
         }
         return (
             <React.Fragment>
@@ -181,7 +188,12 @@ class LabsPage extends Component {
                 <>
                     <CardColumns>{labs}</CardColumns>
                 </>
-                <Addlab user={this.props.user} his={this.props.history}/>
+                {
+                    sessionStorage.getItem("userType")==="Professor"?
+                    <Addlab his={this.props.history}/>
+                    :
+                    null
+                }
             </React.Fragment>
         );
     }

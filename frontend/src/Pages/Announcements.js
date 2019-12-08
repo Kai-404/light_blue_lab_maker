@@ -67,6 +67,12 @@ class Announcements extends Component {
               </Card.Title>
             </Col>
             <Col>
+              {
+                sessionStorage.getItem("userType")==='Professor'?
+                    <AddAnnouncement />
+                    :
+                    null
+              }
               <AddAnnouncement courseId={this.props.currentCourse} />
             </Col>
           </Row>

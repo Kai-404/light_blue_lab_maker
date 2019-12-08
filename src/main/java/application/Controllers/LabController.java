@@ -26,6 +26,9 @@ public class LabController {
     private UserRepository userRepository;
     @Autowired
     private ProfessorRepository professorRepository;
+    @Autowired
+    private CourseRepository courseRepository;
+
     //Lab object that gets modified when creating a lab
     Lab lab;
     int currentStage = 0;
@@ -140,14 +143,13 @@ public class LabController {
 
     @GetMapping("/savelab")
     @ResponseBody
-    public boolean saveLab(HttpSession session) {
+    public boolean saveLab(@RequestParam(name="couresID") String courseID) {
         try {
-            User user = userRepository.findByUsername((String) session.getAttribute("user"));
             labRepository.save(lab);
-            Professor professor = professorRepository.findByUserId(user.getId());
-            if (!professor.getLab_list().contains(lab.getId())) {
-                professor.getLab_list().add(lab.getId());
-                professorRepository.save(professor);
+            Course course = courseRepository.getById(courseID);
+            if (!course.getLab_list().contains(lab.getId())) {
+                course.getLab_list().add(lab.getId());
+                courseRepository.save(course);
             }
         } catch (Error e) {
             e.printStackTrace();
@@ -158,8 +160,13 @@ public class LabController {
 
     @GetMapping("/getlablist")
     @ResponseBody
-    public List<Lab> getLabList(String professor) {
-        return labRepository.findAllByAuthor(professor);
+    public List<Lab> getLabList(String courseID) {
+        Course course = courseRepository.getById(courseID);
+        ArrayList<Lab> labList = new ArrayList<Lab>();
+        for (String labID : course.getLab_list()) {
+            labList.add(labRepository.getById(labID));
+        }
+        return labList;
     }
 
     @GetMapping("/publishlab")
