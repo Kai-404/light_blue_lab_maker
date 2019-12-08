@@ -46,7 +46,7 @@ class HomePage extends Component {
                         <Card.Body>
                             <Card.Title>{course.title}</Card.Title>
                             <Card.Text>{course.professor}</Card.Text>
-                            <Button variant="primary" onClick={() => this.showBar(course.professor)}>
+                            <Button variant="primary" onClick={() => this.showBar(course.id)}>
                                 Go to the course
                             </Button>
                         </Card.Body>

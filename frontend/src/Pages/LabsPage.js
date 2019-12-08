@@ -25,7 +25,7 @@ class LabsPage extends Component {
             .get("http://localhost:8080/getlablist", {
                 headers: {"Content-Type": "application/json;charset=UTF-8"},
                 params: {
-                    professor: sessionStorage.getItem("currentCourse")
+                    courseID: sessionStorage.getItem("currentCourse")
                 }
             })
             .then(res => {
@@ -171,7 +171,7 @@ class LabsPage extends Component {
                         </Card.Body>
                     </Card>
                 );
-            });
+            }); 
         }
         return (
             <React.Fragment>
