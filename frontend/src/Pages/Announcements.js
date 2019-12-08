@@ -15,7 +15,6 @@ class Announcements extends Component {
   };
 
   getAnnounList = () => {
-
     axios
       .get("http://localhost:8080/getannounlist", {
         headers: { "Content-Type": "application/json;charset=UTF-8" },
@@ -67,13 +66,9 @@ class Announcements extends Component {
               </Card.Title>
             </Col>
             <Col>
-              {
-                sessionStorage.getItem("userType")==='Professor'?
-                    <AddAnnouncement />
-                    :
-                    null
-              }
-              <AddAnnouncement courseId={this.props.currentCourse} />
+              {sessionStorage.getItem("userType") === "Professor" ? (
+                <AddAnnouncement courseId={this.props.currentCourse} />
+              ) : null}
             </Col>
           </Row>
           {Announcements}
