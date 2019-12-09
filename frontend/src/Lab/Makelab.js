@@ -26,7 +26,7 @@ import LabTool from "./LabTool";
 import InteractionModal from "./InteractionModal";
 import "../App.css";
 
-const stageW = window.innerWidth - window.innerWidth * 0.4;
+const stageW = window.innerWidth - window.innerWidth * 0.3;
 const stageH = window.innerHeight - 400;
 
 class Makelab extends Component {
@@ -195,7 +195,12 @@ class Makelab extends Component {
 
     publishLab = () => {
         axios
-            .get("http://localhost:8080/publishlab")
+            .get("http://localhost:8080/publishlab",
+                {
+                    params: {
+                        courseID: sessionStorage.getItem("currentCourse"),
+                    }
+                })
             .then(res => {
                 if (res.data) {
                     this.saveLab();
@@ -330,8 +335,7 @@ class Makelab extends Component {
                             </Layer>
                         </Stage>
                     </Col>
-
-                    <Card border="secondary" className="col-md-2">
+                    <Card border="secondary" className="col-md-2" id="labStageComponent">
                         <Card.Body>
                             <Card.Title>Lab Stages</Card.Title>
                             <Modal.Body
@@ -340,38 +344,36 @@ class Makelab extends Component {
                                     "overflow-y": "auto"
                                 }}
                             >
-                                <ButtonGroup vertical>
-                                    <LabStageBar
-                                        totalStage={this.state.getTotalStage}
-                                        currentStageNum={this.state.currentStage.stageNum}
-                                        setCurrentStage={this.setCurrentStage}
-                                    />
-                                    <Button
-                                        onClick={() => this.addStage()}
-                                        className="addtoolButton"
-                                    >
-                                        New
-                                    </Button>
-                                    <Button
-                                        onClick={() => this.duplicateStage()}
-                                        className="addtoolButton"
-                                        disabled={this.state.currentStage.stageNum === -1}
-                                    >
-                                        Duplicate
-                                    </Button>
-                                    <Button
-                                        className="addtoolButton"
-                                        onClick={() => this.deleteStage()}
-                                        disabled={this.state.currentStage.stageNum === -1}
-                                    >
-                                        Delete
-                                    </Button>
-                                </ButtonGroup>
+                                <LabStageBar
+                                    totalStage={this.state.getTotalStage}
+                                    currentStageNum={this.state.currentStage.stageNum}
+                                    setCurrentStage={this.setCurrentStage}
+                                />
                             </Modal.Body>
                         </Card.Body>
+
+                        <Button
+                            onClick={() => this.addStage()}
+                            className="addtoolButton"
+                        >
+                            New
+                        </Button>
+                        <Button
+                            onClick={() => this.duplicateStage()}
+                            className="addtoolButton"
+                            disabled={this.state.currentStage.stageNum === -1}
+                        >
+                            Duplicate
+                        </Button>
+                        <Button
+                            className="addtoolButton"
+                            onClick={() => this.deleteStage()}
+                            disabled={this.state.currentStage.stageNum === -1}
+                        >
+                            Delete
+                        </Button>
                     </Card>
                 </Row>
-
                 <br/>
                 <ButtonGroup>
                     <Button className="submitButton" onClick={this.saveLab}>

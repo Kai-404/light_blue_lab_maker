@@ -9,6 +9,7 @@ import application.Tools.PHPaper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.cdi.Eager;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +30,8 @@ public class LabController {
     private UserRepository userRepository;
     @Autowired
     private ProfessorRepository professorRepository;
+    @Autowired
+    private StudentRepository studentRepository;
     @Autowired
     private CourseRepository courseRepository;
 
@@ -162,21 +165,49 @@ public class LabController {
 
     @GetMapping("/getlablist")
     @ResponseBody
-    public List<Lab> getLabList(String courseID) {
+    public List<Lab> getLabList(String courseID, String userType) {
         Course course = courseRepository.getById(courseID);
         ArrayList<Lab> labList = new ArrayList<Lab>();
         for (String labID : course.getLab_list()) {
-            labList.add(labRepository.getById(labID));
+            Lab lab = labRepository.getById(labID);
+            if (userType.equals("Student")) {
+                if (lab.isPublished()) {
+                    labList.add(lab);
+                }
+            }
+            else {
+                labList.add(lab);
+            }
         }
         return labList;
     }
 
+    @GetMapping("/getstudentprogress")
+    @ResponseBody
+    public HashMap<String,Integer> getStudentProgress(String id) {
+        Student student = studentRepository.findByUserId(id);
+        System.out.println(student.getLabProgress());
+        return student.getLabProgress();
+    }
+
     @GetMapping("/publishlab")
     @ResponseBody
-    public boolean publishLab() {
+    public boolean publishLab(@RequestParam(name="courseID") String courseID) {
         try {
             lab.setPublished(true);
             labRepository.save(lab);
+            //Update student's lab list
+            Course course = courseRepository.getById(courseID);
+            for (String id : course.getStudent_list()) {
+                Student student = studentRepository.findByUserId(id);
+                student.getLabProgress().put(lab.getId(), 0); //set current progress to 0
+                HashMap<Integer, Integer> grade = new HashMap<>();
+                for (int i=0; i<lab.getTotalStage(); i++) {
+                    grade.put(i,0);
+                }
+                student.getGrade().put(lab.getId(), grade); //create grades for a lab
+                studentRepository.save(student);
+            }
         } catch (Error e) {
             e.printStackTrace();
             return false;
