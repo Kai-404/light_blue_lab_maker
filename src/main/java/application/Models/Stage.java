@@ -63,7 +63,7 @@ public class Stage {
         UUID uuid = UUID.randomUUID();
         String toolID = uuid.toString();
 
-        System.out.println( toolID );
+        //System.out.println( toolID );
 
         tool.setId( toolID );
 

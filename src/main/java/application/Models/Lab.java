@@ -75,7 +75,7 @@ public class Lab {
 
         byte[] bdata = FileCopyUtils.copyToByteArray(inputStream);
         String data = new String(bdata, StandardCharsets.UTF_8);
-        System.out.println(data);
+        //System.out.println(data);
         String[] tools = data.split("[\r\n]+");
 
         for (String tool : tools) {

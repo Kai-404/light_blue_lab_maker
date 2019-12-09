@@ -5,14 +5,12 @@ import application.Services.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
 @CrossOrigin
+@RestController
 public class AnnouncementController {
     @Autowired
     private AnnouncementRepository announcementRepository;
@@ -23,13 +21,13 @@ public class AnnouncementController {
     @Autowired
     private MailService mailService;
 
+    @PostMapping("/newAnnouncement")
     @ResponseBody
-
     public boolean createAnnouncement(String title, String content, String author, String courseId) {
         try {
             Announcement announcement = new Announcement(title, content, author, courseId);
             announcementRepository.save(announcement);
-            Course course = courseRepository.getById(courseId);
+/*            Course course = courseRepository.getById(courseId);
             StringBuilder stringBuilder = new StringBuilder();
             for (String id : course.getStudent_list()) {
                 User user = userRepository.getById(id);
@@ -38,11 +36,11 @@ public class AnnouncementController {
                 }
             }
             String emails = stringBuilder.toString();
-            System.out.println(emails);
+            //System.out.println(emails);
             if (!emails.equals("")) {
                 // send notification email
                 mailService.sendNotificationEmail(title, emails);
-            }
+            }*/
         } catch (Error e) {
             e.printStackTrace();
             return false;
@@ -50,13 +48,10 @@ public class AnnouncementController {
         return true;
     }
 
+    @GetMapping("/getannounlist")
     @ResponseBody
-    public ResponseEntity<List<Announcement>> getAllAnnouncement(String courseId) {
-        List<Announcement> announcementList = announcementRepository.findAllByCourseId(courseId);
-        if (announcementList.size() == 0) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        } else {
-            return new ResponseEntity<>(announcementList, HttpStatus.OK);
-        }
+    public List<Announcement> getAllAnnouncement(String courseId) {
+        List<Announcement> announcementList = announcementRepository.findAllByCourseIdOrderByDateDesc(courseId);
+        return announcementList;
     }
 }
