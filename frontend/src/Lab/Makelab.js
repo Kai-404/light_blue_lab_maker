@@ -295,6 +295,7 @@ class Makelab extends Component {
           sourceTool={this.state.sourceTool}
           destinationTool={this.state.destinationTool}
           eventTool={this.state.eventTool}
+          setCurrentStage={this.setCurrentStage}
         />
 
         <ToolModal

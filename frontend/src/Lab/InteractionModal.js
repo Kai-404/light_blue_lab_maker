@@ -28,9 +28,10 @@ class InteractionModal extends Component {
     let data = JSON.stringify({
       stageNum,
       id,
-      id,
+      id2,
       interaction
     });
+    console.log("Stupid Kai Look here for do interaction:", data);
     axios
       .post("http://localhost:8080/doInteraction", data, {
         headers: { "Content-Type": "application/json;charset=UTF-8" },
@@ -41,9 +42,11 @@ class InteractionModal extends Component {
           interaction
         }
       })
-      .then(res => {})
+      .then(res => {
+        this.props.setCurrentStage(stageNum);
+      })
       .catch(err => {
-        console.log("err: ", this.props.eventTool);
+        console.log("err: ");
       });
   };
 
