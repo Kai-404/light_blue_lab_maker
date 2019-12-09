@@ -4,7 +4,7 @@ import Konva from "konva";
 import { Image, Layer } from "react-konva";
 import Portal from "react-portal";
 import InteractionModal from "./InteractionModal";
-import Tooltip from "./Tooltip";
+import ToolContextMenu from "./ToolContextMenu";
 import { Button, Form, Modal, Row, Col } from "react-bootstrap";
 /**
  * Props:
@@ -29,8 +29,7 @@ class LabTool extends Component {
     currentTool: null,
     showPop: false,
     showTooltip: false,
-    toolx: 0,
-    tooly: 0
+    mousePosition: { x: null, y: null }
   };
   componentDidMount() {
     this.loadImage();
@@ -231,10 +230,8 @@ class LabTool extends Component {
         this.setState({
           currentTool: res.data,
           showTooltip: true,
-          toolx: e.target.attrs.x,
-          tooly: e.target.attrs.y
+          mousePosition: mousePosition
         });
-        console.log(this.state.toolx, this.state.tooly);
       });
   };
   //right click show property form
@@ -287,23 +284,10 @@ class LabTool extends Component {
           onContextMenu={this.handleContextMenu}
         />
         <Portal isOpened={this.state.showTooltip}>
-          <Form
-            style={{
-              position: "absolute",
-              top: this.state.tooly,
-              left: this.state.toolx
-            }}
-          >
-            <Form.Label>Try</Form.Label>
-            <input type="text" />
-          </Form>
-        </Portal>
-        <Portal isOpend={this.state.showPop}>
-          {/*<InteractionModal
-            interaction={this.state.inter}
-            show={this.state.showPop}
-            setShow={this.showTooltip}
-          />*/}
+          <ToolContextMenu
+            mousePosition={this.state.mousePosition}
+            tool={this.state.currentTool}
+          />
         </Portal>
       </>
     );
