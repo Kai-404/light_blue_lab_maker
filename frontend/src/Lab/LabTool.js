@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
 import Konva from "konva";
-import { Image, Layer } from "react-konva";
+import { Image, Layer, Rect } from "react-konva";
 import Portal from "react-portal";
 import InteractionModal from "./InteractionModal";
 import ToolContextMenu from "./ToolContextMenu";
@@ -266,6 +266,16 @@ class LabTool extends Component {
           onDragStart={this.handleDragStart}
           onDragEnd={this.handleDragEnd}
           onContextMenu={this.handleContextMenu}
+          fillLinearGradientStartPoint={{ x: 20, y: 0 }}
+          fillLinearGradientEndPoint={{ x: 20, y: this.props.y }}
+          fillLinearGradientColorStops={[
+            0,
+            "white",
+            0.45,
+            "white",
+            0.5,
+            "lightblue"
+          ]}
         />
         <Portal isOpened={this.state.showTooltip}>
           <ToolContextMenu

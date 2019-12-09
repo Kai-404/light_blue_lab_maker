@@ -124,7 +124,7 @@ class InteractionModal extends Component {
           size="sm"
           centered
           show={this.props.show}
-          onHide={this.props.setShow}
+          onHide={this.onClose}
           dialogClassName="modal-90w"
           aria-labelledby="example-custom-modal-styling-title"
         >
