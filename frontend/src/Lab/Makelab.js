@@ -23,7 +23,7 @@ import Addtool from "./Addtool";
 import ToolModal from "./Toolmodal";
 import LabStageBar from "./LabStageBar";
 import LabTool from "./LabTool";
-import Tooltip from "./Tooltip";
+import InteractionModal from "./InteractionModal";
 import "../App.css";
 
 const stageW = window.innerWidth - window.innerWidth * 0.3;
@@ -52,7 +52,10 @@ class Makelab extends Component {
         PramName: "",
         Value: ""
       }
-    }
+    },
+    sourceTool: { Prop: [] },
+    destinationTool: { Prop: [] },
+    eventTool: {}
   };
 
   componentDidMount() {
@@ -133,7 +136,6 @@ class Makelab extends Component {
   }
 
   setInteraction = inter => {
-    console.log("pased:", inter);
     this.setState({ inter: inter });
   };
   //add tool to whole lab
@@ -176,13 +178,21 @@ class Makelab extends Component {
   };
 
   saveLab = () => {
-    axios.get("http://localhost:8080/savelab").then(res => {
-      if (res.data) {
-        alert("successfully saved lab");
-      } else {
-        alert("fail to save the lab");
-      }
-    });
+    axios
+      .get("http://localhost:8080/savelab", {
+        headers: { "Content-Type": "application/json;charset=UTF-8" },
+        params: {
+          courseID: sessionStorage.getItem("currentCourse"),
+          username: sessionStorage.getItem("username")
+        }
+      })
+      .then(res => {
+        if (res.data) {
+          alert("successfully saved lab");
+        } else {
+          alert("fail to save the lab");
+        }
+      });
   };
 
   publishLab = () => {
@@ -209,8 +219,23 @@ class Makelab extends Component {
     this.setState({ showPop: !this.state.showPop });
   };
 
-  setShowInterModal = () => {
-    this.setState({ hasInter: !this.state.hasInter });
+  setShowInterModal = (source, destination, e) => {
+    this.setState({
+      hasInter: !this.state.hasInter
+    });
+    if (source && destination && e) {
+      this.setState({
+        sourceTool: source,
+        destinationTool: destination,
+        eventTool: e
+      });
+    } else {
+      this.setState({
+        sourceTool: { Prop: [] },
+        destinationTool: { Prop: [] },
+        eventTool: {}
+      });
+    }
   };
 
   showEditInstructions() {
@@ -261,36 +286,17 @@ class Makelab extends Component {
     return (
       <React.Fragment>
         <p className="errmsg">{this.state.errMsg}</p>
-        <Modal
-          size="sm"
-          centered
+        <InteractionModal
+          interaction={this.state.inter}
+          setInteraction={this.setInteraction}
           show={this.state.hasInter}
-          onHide={this.setShowInterModal}
-          dialogClassName="modal-90w"
-          aria-labelledby="example-custom-modal-styling-title"
-        >
-          <Modal.Header>
-            <Modal.Title id="example-custom-modal-styling-title">
-              {this.state.inter.Name}
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <Form>
-              <Form.Label column sm={2}>
-                {this.state.inter.Prams.PramName}
-              </Form.Label>
-              <Col sm={10}>
-                <Form.Control
-                  required
-                  type={this.state.inter.Prams.PramName}
-                  defaultValue={this.state.inter.Prams.Value}
-                  onChange={this.handleChangeProps}
-                />
-              </Col>
-            </Form>
-          </Modal.Body>
-          <Modal.Footer>{this.state.inter.Description}</Modal.Footer>
-        </Modal>
+          setShow={this.setShowInterModal}
+          stageNum={this.state.currentStage.stageNum}
+          sourceTool={this.state.sourceTool}
+          destinationTool={this.state.destinationTool}
+          eventTool={this.state.eventTool}
+          setCurrentStage={this.setCurrentStage}
+        />
 
         <ToolModal
           setTool={this.setCurrentTool}

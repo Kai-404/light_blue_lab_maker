@@ -36,9 +36,9 @@ class EnrollCourse extends Component {
                 {
                     headers: {"Content-Type": "application/json;charset=UTF-8"},
                     params: {
-                        id: this.props.user.id,
-                        username: this.props.user.username,
-                        userType: this.props.user.userType
+                        id: sessionStorage.getItem("userID"),
+                        username: sessionStorage.getItem("username"),
+                        userType: sessionStorage.getItem("userType")
                     }
                 }
             )
@@ -83,7 +83,7 @@ class EnrollCourse extends Component {
                 {
                     headers: {"Content-Type": "application/json;charset=UTF-8"},
                     params: {
-                        userID: this.props.user.id,
+                        userID: sessionStorage.getItem("userID"),
                         courseID: id
                     }
                 }
@@ -103,7 +103,7 @@ class EnrollCourse extends Component {
                 {
                     headers: {"Content-Type": "application/json;charset=UTF-8"},
                     params: {
-                        userID: this.props.user.id,
+                        userID: sessionStorage.getItem("userID"),
                         courseID: id
                     }
                 }

@@ -123,21 +123,21 @@ public class Stage {
         return  stageJSONObject;
     }
 
-    public JSONObject updateToolProp(String toolID, String toolProps){
+        public boolean updateToolProp(String toolID, String toolProps){
 
-        JSONObject toReturn = null;
+        boolean updateSuccess = true;
         for (Tool tool : stageToolList) {
             if (tool.getId().equals( toolID )) {
                 int index = stageToolList.indexOf( tool );
                 if (tool.getName().equals( "Beaker" )){
                     Beaker beaker = (Beaker) tool;
-                    beaker.updateProp( toolProps );
-                    toReturn = beaker.getToolAsJSON();
+                    updateSuccess = beaker.updateProp( toolProps );
+                    //toReturn = beaker.getToolAsJSON();
                     stageToolList.set( index,beaker );
                 }else if (tool.getName().equals( "PHPaper" )){
                     PHPaper phpaper = (PHPaper) tool;
-                    phpaper.updateProp( toolProps );
-                    toReturn = phpaper.getToolAsJSON();
+                    updateSuccess = phpaper.updateProp( toolProps );
+                    //toReturn = phpaper.getToolAsJSON();
                     stageToolList.set( index,phpaper );
                 }
 //                else if (tool.getName().equals( "AlcoholBurner" )){
@@ -149,7 +149,31 @@ public class Stage {
 //                }
             }
         }
-        return toReturn;
+        return updateSuccess;
+
+    }
+
+    public void doInteraction(String id, String id2, String prams){
+
+        Tool tool1 = this.getToolByID( id );
+        Tool tool2 = this.getToolByID( id2 );
+
+        JSONObject interactionPrams = new JSONObject(prams);
+
+        if (interactionPrams.get( "Name" ).equals( "Pour" )){
+
+            if (tool1.getName().equals( "Beaker" )){
+
+                Beaker beaker = (Beaker) tool1;
+                JSONObject amount = (JSONObject) interactionPrams.get( "Prams" );
+                beaker.pour( tool2, Double.parseDouble( String.valueOf( amount.get( "Value" ) ) ));
+            }
+
+        }
+
+
+
+
 
     }
 

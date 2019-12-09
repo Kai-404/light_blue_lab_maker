@@ -19,7 +19,7 @@ class Addlab extends Component {
     let title = this.state.labTitle;
     //for testing
     let author = "kai";
-    if (this.props.user) author = this.props.user.username;
+    if (sessionStorage.getItem("username")) author = sessionStorage.getItem("username");
     let description = this.state.description;
     let data = JSON.stringify({
       author,

@@ -142,12 +142,16 @@ public class PHPaper extends Tool {
 
     }
 
-    public void updateProp(String toolProps){
+    public boolean updateProp(String toolProps){
 
         JSONObject jsonObject = new JSONObject(toolProps);
         JSONObject cTool = jsonObject.getJSONObject( "ctool" );
         this.x = (int)cTool.get( "x" );
-        this.y = (int)cTool.get( "y" );
+        if (cTool.get( "y" ) instanceof Double){
+            this.y = (int)((double) cTool.get( "y" ));
+        }else {
+            this.y = (int) cTool.get( "y" );
+        }
 
         JSONArray propArray = cTool.getJSONArray( "Prop" );
 
@@ -174,9 +178,18 @@ public class PHPaper extends Tool {
             }
         } );
 
+        return true;
+
     }
 
-    public boolean measurePh(Beaker toMeasure){
+    public boolean measurePh(Tool tool){
+
+//        if (tool.getName().equals( "Beaker" )){
+//
+//        }
+
+        Beaker toMeasure = (Beaker) tool;
+
         this.setPhStatus( toMeasure.getPhStatus() );
         return true;
     }
@@ -188,7 +201,7 @@ public class PHPaper extends Tool {
             interactionJSONObject.put( "Name",interactionName );
             interactionJSONObject.put( "Description","Measure chemical PH status" );
             //JSONObject pourPrams = new JSONObject();
-            interactionJSONObject.put( "Prams","None" );
+            interactionJSONObject.put( "Prams",this.phStatus );
         }
 
         return interactionJSONObject;

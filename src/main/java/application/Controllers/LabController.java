@@ -6,6 +6,7 @@ import application.Models.Lab;
 //import net.minidev.json.JSONArray;
 import application.Tools.Beaker;
 import application.Tools.PHPaper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 @CrossOrigin
@@ -26,6 +29,9 @@ public class LabController {
     private UserRepository userRepository;
     @Autowired
     private ProfessorRepository professorRepository;
+    @Autowired
+    private CourseRepository courseRepository;
+
     //Lab object that gets modified when creating a lab
     Lab lab;
     int currentStage = 0;
@@ -55,7 +61,6 @@ public class LabController {
     }
 
 
-    //TODO: deletes stage currentStage
     @PostMapping("/deletestage")
     @ResponseBody
     public void deleteStage(@RequestBody int stageNum) {
@@ -77,10 +82,10 @@ public class LabController {
     @ResponseBody
     public String getAllTools() {
         //lab = new Lab("Kai's test lab","Kai");
-        System.out.println( lab.getToolWarehouse().toString() );
+        //System.out.println( lab.getToolWarehouse().toString() );
 
 //        Beaker b = new Beaker();
-//        System.out.println(b.getToolAsJSON().toString());
+//        //System.out.println(b.getToolAsJSON().toString());
         return  lab.getToolWarehouse().toString();
 
     }
@@ -127,27 +132,29 @@ public class LabController {
 
     @PostMapping("/updatetoolprop")
     @ResponseBody
-    public String updateStageToolProp(@RequestBody String toolProps, @RequestParam int stageNum, @RequestParam String ID){
-        System.out.println( "Stage Num: "+stageNum+"\nTool ID: "+ ID+"\n prop: "+toolProps);
-        lab.getStage( stageNum ).updateToolProp( ID, toolProps );
-        return lab.getStage( stageNum ).getStageAsJSON().toString();
+    public ResponseEntity<String> updateStageToolProp(@RequestBody String toolProps, @RequestParam int stageNum, @RequestParam String ID){
+        //System.out.println( "Stage Num: "+stageNum+"\nTool ID: "+ ID+"\n prop: "+toolProps);
+
+
+        if (! lab.getStage( stageNum ).updateToolProp( ID, toolProps )){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }else {
+            return new ResponseEntity<>(lab.getStage( stageNum ).getStageAsJSON().toString(), HttpStatus.OK);
+
+        }
+
+        //return lab.getStage( stageNum ).getStageAsJSON().toString();
     }
-//    public void updateStageToolProp(@RequestParam int stageNum, @RequestParam String ID, @RequestBody String toolProps){
-//        System.out.println( "Stage Num: "+stageNum+"Tool ID: "+ ID+" prop: "+toolProps);
-////        lab.getStage( stageNum ).updateToolProp( ID, toolProps );
-////        return lab.getStage( stageNum ).getStageAsJSON().toString();
-//    }
 
     @GetMapping("/savelab")
     @ResponseBody
-    public boolean saveLab(HttpSession session) {
+    public boolean saveLab(@RequestParam(name="courseID") String courseID) {
         try {
-            User user = userRepository.findByUsername((String) session.getAttribute("user"));
             labRepository.save(lab);
-            Professor professor = professorRepository.findByUserId(user.getId());
-            if (!professor.getLab_list().contains(lab.getId())) {
-                professor.getLab_list().add(lab.getId());
-                professorRepository.save(professor);
+            Course course = courseRepository.getById(courseID);
+            if (!course.getLab_list().contains(lab.getId())) {
+                course.getLab_list().add(lab.getId());
+                courseRepository.save(course);
             }
         } catch (Error e) {
             e.printStackTrace();
@@ -158,8 +165,13 @@ public class LabController {
 
     @GetMapping("/getlablist")
     @ResponseBody
-    public List<Lab> getLabList(String professor) {
-        return labRepository.findAllByAuthor(professor);
+    public List<Lab> getLabList(String courseID) {
+        Course course = courseRepository.getById(courseID);
+        ArrayList<Lab> labList = new ArrayList<Lab>();
+        for (String labID : course.getLab_list()) {
+            labList.add(labRepository.getById(labID));
+        }
+        return labList;
     }
 
     @GetMapping("/publishlab")
@@ -196,11 +208,11 @@ public class LabController {
 
     @GetMapping("/searchlab")
     @ResponseBody
-    public ResponseEntity<List<Lab>> searchLab(@RequestParam(name = "id") String name, HttpSession session) {
+    public ResponseEntity<List<Lab>> searchLab(@RequestParam(name = "id") String name, @RequestParam(name="courseID") String courseID, HttpSession session) {
         List<Lab> labList = new ArrayList<>();
         User user = userRepository.findByUsername((String) session.getAttribute("user"));
-        Professor professor = professorRepository.findByUserId(user.getId());
-        for (String id : professor.getLab_list()) {
+        Course course = courseRepository.getById(courseID);
+        for (String id : course.getLab_list()) {
             Lab lab = labRepository.getById(id);
             if (lab != null && lab.getTitle().contains(name))
                 labList.add(lab);
@@ -243,12 +255,29 @@ public class LabController {
                 return new ResponseEntity<>(tool.getInteractionDetail(interActionName).toString(), HttpStatus.OK);
             }else if (tool1.getName().equals( "PHPaper" )) {
                 PHPaper tool = (PHPaper) tool1;
+                tool.measurePh( tool2 );
+                System.out.println( tool.getPhStatus() );
                 return new ResponseEntity<>(tool.getInteractionDetail(interActionName).toString(), HttpStatus.OK);
             }else {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
 
         }
+    }
+
+    @PostMapping("/doInteraction")
+    @ResponseBody
+    public void doInteraction(@RequestParam(name="stageNum") int stageNum,
+                                                   @RequestParam(name="id") String id,
+                                                   @RequestParam(name="id2") String id2,
+                                                   @RequestParam(name="interaction") String interaction) {
+
+
+        System.out.println( "Get From Zoe: "+"\n"+stageNum+"\n"+id+"\n"+id2+"\n"+ interaction);
+        Stage stage = lab.getStage( stageNum );
+        stage.doInteraction( id,id2,interaction );
+
+
     }
 
 ////    for test only
@@ -283,8 +312,19 @@ public class LabController {
 
     @GetMapping("/getnextstage")
     @ResponseBody
-    public void getNextStage() {
+    public boolean getNextStage() throws IOException {
+        ArrayList<Tool> toolList = lab.getStage(currentStage).getStageToolList();
+        for (Tool tool: toolList) {
+            HashMap result = new ObjectMapper().readValue(tool.getToolAsJSON().toString(), HashMap.class);
+            List initialProperties = (List) result.get("Prop");
+            List finalProperties = (List) result.get("FinalProp");
+            for (int i=0; i<initialProperties.size();i++) {
+                if (!((LinkedHashMap) (initialProperties).get(i)).get("Value").equals(((LinkedHashMap) (finalProperties).get(i)).get("Value"))) {
+                    return false;
+                }
+            }
+        }
         ++currentStage;
+        return true;
     }
-
 }

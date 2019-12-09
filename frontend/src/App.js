@@ -18,33 +18,11 @@ import ResetPassword from "./Pages/ResetPassword";
 
 class App extends Component {
     state = {
-        user: null,
-        currentCourse: null,
-        loggedIn: false,
-        underCourse: false,
         labID: ""
     };
 
-    login = user => {
-        this.setState({user: user});
-        //sessionStorage.setItem("user", JSON.stringify(user));
-    };
-
     logout = () => {
-        this.setState({user: null, loggedIn: false, underCourse: false});
-        //sessionStorage.clear();
-    };
-
-    showbar = val => {
-        this.setState({loggedIn: val});
-    };
-
-    currentCourse = id => {
-      this.setState({currentCourse: id});
-    };
-
-    showCourseContent = val => {
-        this.setState({underCourse: val});
+        sessionStorage.clear();
     };
 
     setLabID = id => {
@@ -58,11 +36,7 @@ class App extends Component {
                     <Route
                         render={props => (
                             <Header
-                                user={this.state.user}
-                                showCourseContent={this.showCourseContent}
-                                loggedIn={this.state.loggedIn}
                                 logout={this.logout}
-                                underCourse={this.state.underCourse}
                             />
                         )}
                     />
@@ -72,7 +46,7 @@ class App extends Component {
                             path="/"
                             render={props => (
                                 <React.Fragment>
-                                    <Login login={this.login} showbar={this.showbar}/>
+                                    <Login/>
                                 </React.Fragment>
                             )}
                         />
@@ -81,7 +55,7 @@ class App extends Component {
                             path="/login"
                             render={props => (
                                 <React.Fragment>
-                                    <Login login={this.login}/>
+                                    <Login/>
                                 </React.Fragment>
                             )}
                         />
@@ -108,11 +82,7 @@ class App extends Component {
                             path="/home"
                             render={props => (
                                 <React.Fragment>
-                                    <HomePage
-                                        user={this.state.user}
-                                        underCourse={this.showCourseContent}
-                                        currentCourse={this.currentCourse}
-                                    />
+                                    <HomePage/>
                                 </React.Fragment>
                             )}
                         />
@@ -121,7 +91,7 @@ class App extends Component {
                             path="/labspage"
                             render={props => (
                                 <React.Fragment>
-                                    <LabsPage user={this.state.user} currentCourse={this.state.currentCourse} setLabID={this.setLabID}/>
+                                    <LabsPage setLabID={this.setLabID}/>
                                 </React.Fragment>
                             )}
                         />
