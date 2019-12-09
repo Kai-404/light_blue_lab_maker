@@ -123,21 +123,21 @@ public class Stage {
         return  stageJSONObject;
     }
 
-    public JSONObject updateToolProp(String toolID, String toolProps){
+        public boolean updateToolProp(String toolID, String toolProps){
 
-        JSONObject toReturn = null;
+        boolean updateSuccess = true;
         for (Tool tool : stageToolList) {
             if (tool.getId().equals( toolID )) {
                 int index = stageToolList.indexOf( tool );
                 if (tool.getName().equals( "Beaker" )){
                     Beaker beaker = (Beaker) tool;
-                    beaker.updateProp( toolProps );
-                    toReturn = beaker.getToolAsJSON();
+                    updateSuccess = beaker.updateProp( toolProps );
+                    //toReturn = beaker.getToolAsJSON();
                     stageToolList.set( index,beaker );
                 }else if (tool.getName().equals( "PHPaper" )){
                     PHPaper phpaper = (PHPaper) tool;
-                    phpaper.updateProp( toolProps );
-                    toReturn = phpaper.getToolAsJSON();
+                    updateSuccess = phpaper.updateProp( toolProps );
+                    //toReturn = phpaper.getToolAsJSON();
                     stageToolList.set( index,phpaper );
                 }
 //                else if (tool.getName().equals( "AlcoholBurner" )){
@@ -149,7 +149,7 @@ public class Stage {
 //                }
             }
         }
-        return toReturn;
+        return updateSuccess;
 
     }
 

@@ -132,16 +132,19 @@ public class LabController {
 
     @PostMapping("/updatetoolprop")
     @ResponseBody
-    public String updateStageToolProp(@RequestBody String toolProps, @RequestParam int stageNum, @RequestParam String ID){
+    public ResponseEntity<String> updateStageToolProp(@RequestBody String toolProps, @RequestParam int stageNum, @RequestParam String ID){
         //System.out.println( "Stage Num: "+stageNum+"\nTool ID: "+ ID+"\n prop: "+toolProps);
-        lab.getStage( stageNum ).updateToolProp( ID, toolProps );
-        return lab.getStage( stageNum ).getStageAsJSON().toString();
+
+
+        if (! lab.getStage( stageNum ).updateToolProp( ID, toolProps )){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }else {
+            return new ResponseEntity<>(lab.getStage( stageNum ).getStageAsJSON().toString(), HttpStatus.OK);
+
+        }
+
+        //return lab.getStage( stageNum ).getStageAsJSON().toString();
     }
-//    public void updateStageToolProp(@RequestParam int stageNum, @RequestParam String ID, @RequestBody String toolProps){
-//        System.out.println( "Stage Num: "+stageNum+"Tool ID: "+ ID+" prop: "+toolProps);
-////        lab.getStage( stageNum ).updateToolProp( ID, toolProps );
-////        return lab.getStage( stageNum ).getStageAsJSON().toString();
-//    }
 
     @GetMapping("/savelab")
     @ResponseBody

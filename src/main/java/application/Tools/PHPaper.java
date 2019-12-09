@@ -142,7 +142,7 @@ public class PHPaper extends Tool {
 
     }
 
-    public void updateProp(String toolProps){
+    public boolean updateProp(String toolProps){
 
         JSONObject jsonObject = new JSONObject(toolProps);
         JSONObject cTool = jsonObject.getJSONObject( "ctool" );
@@ -177,6 +177,8 @@ public class PHPaper extends Tool {
                 this.finalPhStatus= (String) prop.get( "Value" );
             }
         } );
+
+        return true;
 
     }
 
