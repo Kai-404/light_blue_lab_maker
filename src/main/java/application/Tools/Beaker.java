@@ -226,9 +226,6 @@ public class Beaker extends Tool {
             else if (((String)prop.get("Name")).equals( "Chemicals List" )){
                 this.currentChemicalsList = chemicalStringToList((String) prop.get( "Value" ) );
             }
-
-
-
         } );
 
 

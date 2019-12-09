@@ -239,7 +239,7 @@ class LabTool extends Component {
         .then(res => {
           console.log(res.data);
           this.props.setTool(res.data);
-          this.props.setShowModal();
+          if (this.props.setShowModal) {this.props.setShowModal()};
         });
     }
   };

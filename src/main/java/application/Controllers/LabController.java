@@ -299,7 +299,7 @@ public class LabController {
             List initialProperties = (List) result.get("Prop");
             List finalProperties = (List) result.get("FinalProp");
             for (int i=0; i<initialProperties.size();i++) {
-                if (((LinkedHashMap) (initialProperties).get(i)).get("Value").equals(((LinkedHashMap) (finalProperties).get(i)).get("Value"))) {
+                if (!((LinkedHashMap) (initialProperties).get(i)).get("Value").equals(((LinkedHashMap) (finalProperties).get(i)).get("Value"))) {
                     return false;
                 }
             }
@@ -307,5 +307,4 @@ public class LabController {
         ++currentStage;
         return true;
     }
-
 }
