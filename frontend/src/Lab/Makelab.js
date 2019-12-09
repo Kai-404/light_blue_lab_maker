@@ -54,7 +54,8 @@ class Makelab extends Component {
       }
     },
     sourceTool: { Prop: [] },
-    destinationTool: { Prop: [] }
+    destinationTool: { Prop: [] },
+    eventTool: {}
   };
 
   componentDidMount() {
@@ -135,7 +136,6 @@ class Makelab extends Component {
   }
 
   setInteraction = inter => {
-    console.log("pased:", inter);
     this.setState({ inter: inter });
   };
   //add tool to whole lab
@@ -219,14 +219,15 @@ class Makelab extends Component {
     this.setState({ showPop: !this.state.showPop });
   };
 
-  setShowInterModal = (source, destination) => {
+  setShowInterModal = (source, destination, e) => {
     this.setState({
       hasInter: !this.state.hasInter
     });
-    if (source || destination) {
+    if (source && destination && e) {
       this.setState({
         sourceTool: source,
-        destinationTool: destination
+        destinationTool: destination,
+        eventTool: e
       });
     }
   };
@@ -281,10 +282,13 @@ class Makelab extends Component {
         <p className="errmsg">{this.state.errMsg}</p>
         <InteractionModal
           interaction={this.state.inter}
+          setInteraction={this.setInteraction}
           show={this.state.hasInter}
           setShow={this.setShowInterModal}
+          stageNum={this.state.currentStage.stageNum}
           sourceTool={this.state.sourceTool}
           destinationTool={this.state.destinationTool}
+          eventTool={this.state.eventTool}
         />
 
         <ToolModal
