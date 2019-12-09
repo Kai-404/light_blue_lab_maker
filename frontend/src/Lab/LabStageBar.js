@@ -40,7 +40,7 @@ class LabStageBar extends Component {
         </ListGroup.Item>);
 
     let SortableContainer = sortableContainer(({children}) => {
-      return <ListGroup>{children}</ListGroup>;
+      return <ListGroup id="stageGroup">{children}</ListGroup>;
     });
 
     let Stages = () => {

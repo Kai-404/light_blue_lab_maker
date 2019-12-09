@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import {withRouter} from "react-router";
 import {LinkContainer} from "react-router-bootstrap";
-import {Card, CardColumns, Button, ButtonGroup, Form} from "react-bootstrap";
+import {Card, CardColumns, Button, ButtonGroup, Form, ProgressBar, Modal} from "react-bootstrap";
 import Addlab from "../Lab/Addlab";
 import Dolab from "../Lab/Dolab"
 import axios from "axios";
@@ -13,11 +13,13 @@ class LabsPage extends Component {
         currentLab: [],
         message: "",
         searchInput: "", //lab name for search
-        labID: "test"
+        labID: "test",
+        studentProgress: {}
     };
 
     componentDidMount() {
         this.getLabsList();
+        if (sessionStorage.getItem("userType")==="Student") { this.getStudentProgress(); }
     }
 
     getLabsList = () => {
@@ -25,14 +27,32 @@ class LabsPage extends Component {
             .get("http://localhost:8080/getlablist", {
                 headers: {"Content-Type": "application/json;charset=UTF-8"},
                 params: {
-                    courseID: sessionStorage.getItem("currentCourse")
+                    courseID: sessionStorage.getItem("currentCourse"),
+                    userType: sessionStorage.getItem("userType")
                 }
             })
             .then(res => {
+                console.log("------")
+                console.log(res.data);
                 this.setState({labList: res.data});
                 //console.log("lab list: ", this.state.labList);
             });
     };
+
+    getStudentProgress() {
+        axios
+            .get("http://localhost:8080/getstudentprogress", {
+                headers: {"Content-Type": "application/json;charset=UTF-8"},
+                params: {
+                    id: sessionStorage.getItem("userID")
+                }
+            })
+            .then(res => {
+                console.log("++++++")
+                console.log(res.data);
+                this.setState({studentProgress: res.data})
+            });
+    }
 
     dolab = id => {
         this.setState(
@@ -164,12 +184,21 @@ class LabsPage extends Component {
                         </ButtonGroup>
                     );
                 }
-
+                let progressBar = null;
+                if (sessionStorage.getItem("userType")==="Student") {
+                    progressBar = (
+                        <ProgressBar
+                            now={Math.round(100 * (this.state.studentProgress[lab.id] / lab.stageList.length))}
+                            label={Math.round(100 * (this.state.studentProgress[lab.id] / lab.stageList.length))}
+                        />
+                    )
+                }
                 labs.push(
                     <Card style={{width: "18rem"}}>
                         <Card.Body>
                             <Card.Title>{lab.title}</Card.Title>
                             <Card.Text>{lab.description}</Card.Text>
+                            {progressBar}
                             {buttonGroup}
                         </Card.Body>
                     </Card>
