@@ -74,7 +74,7 @@ class Announcements extends Component {
                         </Col>
                         <Col>
                             {sessionStorage.getItem("userType") === "Professor" ?
-                                (<AddAnnouncement/>)
+                                (<AddAnnouncement updateAnnouncements={this.getAnnounList}/>)
                                 :
                                 null
                             }

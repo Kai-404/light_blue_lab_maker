@@ -41,7 +41,7 @@ class AddAnnouncement extends Component {
                     }
                 })
                 .then(res => {
-                    this.props.his.push("/announcements");
+                    this.props.updateAnnouncements();
                 })
                 .catch(err => {
                     alert("Fail to add a new announcement");

@@ -26,8 +26,8 @@ import LabTool from "./LabTool";
 import Tooltip from "./Tooltip";
 import "../App.css";
 
-const stageW = window.innerWidth - window.innerWidth * 0.3;
-const stageH = window.innerHeight - 200;
+const stageW = window.innerWidth - window.innerWidth * 0.4;
+const stageH = window.innerHeight - 400;
 
 class Dolab extends Component {
 
@@ -74,8 +74,7 @@ class Dolab extends Component {
             if (res.data === true) {
                 this.getCurrentStage();
                 this.getStage();
-            }
-            else {
+            } else {
                 alert("Wrong");
             }
         });
@@ -85,8 +84,7 @@ class Dolab extends Component {
         axios.get("http://localhost:8080/getnextstage").then(res => {
             if (res.data === true) {
                 this.back();
-            }
-            else {
+            } else {
                 alert("Wrong");
             }
         });
@@ -175,35 +173,35 @@ class Dolab extends Component {
                     <Modal.Footer>{this.state.inter.Description}</Modal.Footer>
                 </Modal>
                 <Row>
-                    <Stage width={stageW} height={stageH} className="stage">
-                        <Layer>
-                            {this.state.stage.stageTool.map((tool, key) => (
-                                <LabTool
-                                    key={key}
-                                    src={tool.Img}
-                                    x={tool.x}
-                                    y={tool.y}
-                                    id={tool.id}
-                                    stageNum={this.state.stage.stageNum}
-                                    stageTool={this.state.stage.stageTool}
-                                    setCurrentStage={this.setCurrentStage}
-                                    setTool={this.setCurrentTool}
-                                    setShowModal={null}
-                                    setInteraction={this.setInteraction}
-                                    setShowInterModal={this.setShowInterModal}
-                                />
-                            ))}
-
-                            <Text
-                                text={this.state.stage.instructions}
-                                fontSize={20}
-                                x={0.1 * stageW}
-                                y={0.05 * stageH}
-                                width={0.8 * stageW}
-                                align="center"
-                            />
-                        </Layer>
-                    </Stage>
+                    <Col>
+                        <div className="stage" id="stageInstructions">
+                             <textarea
+                                 readOnly={true}
+                                 id="stageInstructionsText"
+                                 value={this.state.stage.instructions}
+                             />
+                        </div>
+                        <Stage width={stageW} height={stageH} className="stage">
+                            <Layer>
+                                {this.state.stage.stageTool.map((tool, key) => (
+                                    <LabTool
+                                        key={key}
+                                        src={tool.Img}
+                                        x={tool.x}
+                                        y={tool.y}
+                                        id={tool.id}
+                                        stageNum={this.state.stage.stageNum}
+                                        stageTool={this.state.stage.stageTool}
+                                        setCurrentStage={this.setCurrentStage}
+                                        setTool={this.setCurrentTool}
+                                        setShowModal={null}
+                                        setInteraction={this.setInteraction}
+                                        setShowInterModal={this.setShowInterModal}
+                                    />
+                                ))}
+                            </Layer>
+                        </Stage>
+                    </Col>
 
                     <Card border="secondary" className="col-md-2">
                         <Card.Body>
@@ -215,12 +213,12 @@ class Dolab extends Component {
                                 }}
                             >
                                 <ProgressBar
-                                    now={Math.round(100*(this.state.currentStage/this.state.getTotalStage))}
-                                    label={Math.round(100*(this.state.currentStage/this.state.getTotalStage))}
+                                    now={Math.round(100 * (this.state.currentStage / this.state.getTotalStage))}
+                                    label={Math.round(100 * (this.state.currentStage / this.state.getTotalStage))}
                                 />
                                 <br/>
                                 {
-                                    this.state.currentStage+1===this.state.getTotalStage?
+                                    this.state.currentStage + 1 === this.state.getTotalStage ?
                                         <Button onClick={this.finishLab}>Finish</Button>
                                         :
                                         <Button onClick={this.getNextStage}>Next</Button>
@@ -235,4 +233,5 @@ class Dolab extends Component {
         );
     }
 }
+
 export default withRouter(Dolab);

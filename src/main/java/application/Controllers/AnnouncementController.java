@@ -27,7 +27,7 @@ public class AnnouncementController {
         try {
             Announcement announcement = new Announcement(title, content, author, courseId);
             announcementRepository.save(announcement);
-/*            Course course = courseRepository.getById(courseId);
+            Course course = courseRepository.getById(courseId);
             StringBuilder stringBuilder = new StringBuilder();
             for (String id : course.getStudent_list()) {
                 User user = userRepository.getById(id);
@@ -40,7 +40,7 @@ public class AnnouncementController {
             if (!emails.equals("")) {
                 // send notification email
                 mailService.sendNotificationEmail(title, emails);
-            }*/
+            }
         } catch (Error e) {
             e.printStackTrace();
             return false;

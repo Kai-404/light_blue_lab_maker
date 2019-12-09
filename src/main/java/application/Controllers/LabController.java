@@ -199,8 +199,9 @@ public class LabController {
 
     @PostMapping("/saveinstructions")
     @ResponseBody
-    public void saveInstructions(@RequestParam(name="stageNum") int stageNum, @RequestParam(name="instructions") String instructions) {
+    public String saveInstructions(@RequestParam(name="stageNum") int stageNum, @RequestParam(name="instructions") String instructions) {
         lab.saveInstructions(stageNum, instructions);
+        return instructions;
     }
 
     @GetMapping("/searchlab")
