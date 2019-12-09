@@ -153,5 +153,29 @@ public class Stage {
 
     }
 
+    public void doInteraction(String id, String id2, String prams){
+
+        Tool tool1 = this.getToolByID( id );
+        Tool tool2 = this.getToolByID( id2 );
+
+        JSONObject interactionPrams = new JSONObject(prams);
+
+        if (interactionPrams.get( "Name" ).equals( "Pour" )){
+
+            if (tool1.getName().equals( "Beaker" )){
+
+                Beaker beaker = (Beaker) tool1;
+                JSONObject amount = (JSONObject) interactionPrams.get( "Prams" );
+                beaker.pour( tool2, Double.parseDouble( String.valueOf( amount.get( "Value" ) ) ));
+            }
+
+        }
+
+
+
+
+
+    }
+
 
 }

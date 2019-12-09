@@ -197,7 +197,7 @@ public class Beaker extends Tool {
         JSONObject jsonObject = new JSONObject(toolProps);
 
         JSONObject cTool = jsonObject.getJSONObject( "ctool" );
-        System.out.println( "X:" +cTool.get( "x" )+" \n Y"+cTool.get( "y" ));
+        //System.out.println( "X:" +cTool.get( "x" )+" \n Y"+cTool.get( "y" ));
 
         this.x = (int)cTool.get( "x" );
         if (cTool.get( "y" ) instanceof Double){
@@ -298,14 +298,20 @@ public class Beaker extends Tool {
         return clone;
     }
 
-    public boolean pour(Beaker pourTo, Double amount){
+    public boolean pour(Tool tool, Double amount){
+//        if (pourTo.getName().equals( "Beaker" )){
+//
+//        }
+
+        Beaker pourTo = (Beaker) tool;
+
         if(amount>this.currentVolume){
             return false;
         }else if((pourTo.getCurrentVolume()+amount) > pourTo.getMaxVolume()){
             return false;
         }else {
             this.currentVolume = this.currentVolume - amount;
-            pourTo.currentVolume = pourTo.currentVolume - amount;
+            pourTo.currentVolume = pourTo.currentVolume + amount;
             return true;
         }
     }

@@ -263,6 +263,21 @@ public class LabController {
         }
     }
 
+    @PostMapping("/doInteraction")
+    @ResponseBody
+    public void doInteraction(@RequestParam(name="stageNum") int stageNum,
+                                                   @RequestParam(name="id") String id,
+                                                   @RequestParam(name="id2") String id2,
+                                                   @RequestParam(name="interaction") String interaction) {
+
+
+        System.out.println( "Get From Zoe: "+"\n"+stageNum+"\n"+id+"\n"+id2+"\n"+ interaction);
+        Stage stage = lab.getStage( stageNum );
+        stage.doInteraction( id,id2,interaction );
+
+
+    }
+
 ////    for test only
 //    @GetMapping("/getbeaker")
 //    @ResponseBody
