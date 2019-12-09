@@ -4,7 +4,7 @@ import Konva from "konva";
 import { Image, Layer } from "react-konva";
 import Portal from "react-portal";
 import InteractionModal from "./InteractionModal";
-import Tooltip from "./Tooltip";
+import ToolContextMenu from "./ToolContextMenu";
 import { Button, Form, Modal, Row, Col } from "react-bootstrap";
 /**
  * Props:
@@ -29,8 +29,16 @@ class LabTool extends Component {
     currentTool: null,
     showPop: false,
     showTooltip: false,
-    toolx: 0,
-    tooly: 0
+    mousePosition: { x: null, y: null },
+    hasInter: false,
+    inter: {
+      Description: "Some description",
+      Name: "Name of interaction",
+      Prams: {
+        PramName: "",
+        Value: ""
+      }
+    }
   };
   componentDidMount() {
     this.loadImage();
@@ -60,30 +68,6 @@ class LabTool extends Component {
     // this.imageNode.getLayer().batchDraw();
   };
 
-  /*
-    //not working!!!!!!!!
-    setShowTooltip = () => {
-      this.setState({ showTooltip: !this.state.showTooltip });
-    };
-    timer = () => {
-      this.setState({
-        countForTooltip: this.state.countForTooltip - 1
-      });
-      console.log(this.intervalId);
-      if (this.state.countForTooltip < 1) {
-        clearInterval(this.intervalId);
-      }
-    };
-    handleMouseOver = e => {
-      this.intervalId = setInterval(this.timer, 1000);
-    };
-    handleMouseOut = () => {
-      console.log("out!!!!");
-      clearInterval(this.intervalId);
-      this.setState({ countForTooltip: 3 });
-    };
-  */
-
   haveIntersection = (r1, r2) => {
     let width = (stageW * 0.1) / 2;
     let height = (stageH * 0.2) / 2;
@@ -110,8 +94,14 @@ class LabTool extends Component {
 
   //while dragging the tool, detection collision and perform interaction if any
   checkInteraction = (e, stageNum, id) => {
-    const targetTool = e.target.getClientRect();
-
+    let targetTool = e.target.getClientRect();
+    let sourceTool;
+    this.props.stageTool.forEach(tool => {
+      let id2 = tool.id;
+      if (id2 == e.target.attrs.name) {
+        sourceTool = tool;
+      }
+    });
     this.props.stageTool.forEach(tool => {
       let id2 = tool.id;
       if (id2 != e.target.attrs.name) {
@@ -143,8 +133,8 @@ class LabTool extends Component {
               if (res.status == 200) {
                 //animation, goes to the top of interacted tool and rotate 40 degree
                 this.props.setInteraction(res.data);
-                this.props.setShowInterModal();
-                console.log(res.data);
+                //param: (sourceTool, destinationTool)
+                this.props.setShowInterModal(sourceTool, tool);
                 e.target.setAttrs({ rotation: 45 });
               }
             })
@@ -201,18 +191,10 @@ class LabTool extends Component {
       });
   };
 
-  handleOptionSelected = option => {
-    console.log(option);
-    this.setState({ selectedContextMenu: null });
-  };
-
   //left click show property read only form
   handleContextMenu = e => {
     e.evt.preventDefault(true);
     const mousePosition = e.target.getStage().getPointerPosition();
-    console.log("Tool: ", e.target.attrs);
-    console.log("mouse: ", mousePosition);
-
     let id = e.target.attrs.name;
     let stageNum = this.props.stageNum;
     let data = JSON.stringify({
@@ -231,12 +213,11 @@ class LabTool extends Component {
         this.setState({
           currentTool: res.data,
           showTooltip: true,
-          toolx: e.target.attrs.x,
-          tooly: e.target.attrs.y
+          mousePosition: mousePosition
         });
-        console.log(this.state.toolx, this.state.tooly);
       });
   };
+
   //right click show property form
   handleClickTool = e => {
     this.setState({ showTooltip: false });
@@ -263,8 +244,8 @@ class LabTool extends Component {
     }
   };
 
-  setShowModal = () => {
-    this.setState({ showPop: !this.state.showPop });
+  setShowInterModal = () => {
+    this.setState({ hasInter: !this.state.hasInter });
   };
 
   render() {
@@ -287,23 +268,10 @@ class LabTool extends Component {
           onContextMenu={this.handleContextMenu}
         />
         <Portal isOpened={this.state.showTooltip}>
-          <Form
-            style={{
-              position: "absolute",
-              top: this.state.tooly,
-              left: this.state.toolx
-            }}
-          >
-            <Form.Label>Try</Form.Label>
-            <input type="text" />
-          </Form>
-        </Portal>
-        <Portal isOpend={this.state.showPop}>
-          {/*<InteractionModal
-            interaction={this.state.inter}
-            show={this.state.showPop}
-            setShow={this.showTooltip}
-          />*/}
+          <ToolContextMenu
+            mousePosition={this.state.mousePosition}
+            tool={this.state.currentTool}
+          />
         </Portal>
       </>
     );

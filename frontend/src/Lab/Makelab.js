@@ -52,7 +52,9 @@ class Makelab extends Component {
         PramName: "",
         Value: ""
       }
-    }
+    },
+    sourceTool: { Prop: [] },
+    destinationTool: { Prop: [] }
   };
 
   componentDidMount() {
@@ -217,8 +219,16 @@ class Makelab extends Component {
     this.setState({ showPop: !this.state.showPop });
   };
 
-  setShowInterModal = () => {
-    this.setState({ hasInter: !this.state.hasInter });
+  setShowInterModal = (source, destination) => {
+    this.setState({
+      hasInter: !this.state.hasInter
+    });
+    if (source || destination) {
+      this.setState({
+        sourceTool: source,
+        destinationTool: destination
+      });
+    }
   };
 
   showEditInstructions() {
@@ -273,6 +283,8 @@ class Makelab extends Component {
           interaction={this.state.inter}
           show={this.state.hasInter}
           setShow={this.setShowInterModal}
+          sourceTool={this.state.sourceTool}
+          destinationTool={this.state.destinationTool}
         />
 
         <ToolModal
