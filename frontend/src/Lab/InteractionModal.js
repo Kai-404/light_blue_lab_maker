@@ -8,16 +8,21 @@ class InteractionModal extends Component {
   };
 
   onChange = e => this.setState({ [e.target.name]: e.target.value });
-
+  onClose = e => {
+    if (this.props.eventTool.target) {
+      this.props.eventTool.target.to({
+        rotation: 0
+      });
+    }
+    this.props.setShow();
+  };
   onSubmit = e => {
     e.preventDefault();
     let interaction = this.props.interaction,
       stageNum = this.props.stageNum,
       id = this.props.sourceTool.id,
       id2 = this.props.destinationTool.id;
-    //need?
     interaction.Prams.Value = this.state.Value;
-    this.props.setInteraction({ interaction });
 
     //interaction
     let data = JSON.stringify({
@@ -36,18 +41,13 @@ class InteractionModal extends Component {
           interaction
         }
       })
-      .then(res => {
-        if (this.props.eventTool.target) {
-          this.props.eventTool.target.setAttrs({
-            rotation: 0
-          });
-        }
-        this.props.setShow();
+      .then(res => {})
+      .catch(err => {
+        console.log("err: ", this.props.eventTool);
       });
   };
 
   render() {
-    console.log(this.props.sourceTool);
     let maxValue;
     this.props.sourceTool.Prop.forEach(prop => {
       if (prop.Name == "Current Volume") {
@@ -96,6 +96,7 @@ class InteractionModal extends Component {
               </Col>
             </Row>
             <Button type="submit">Submit</Button>
+            <Button onClick={this.onClose}>Close</Button>
           </Form>
         );
         break;
@@ -106,12 +107,12 @@ class InteractionModal extends Component {
           </ListGroup>
         );
         break;
-      // default:
-      //   interactionForm = (
-      //     <ListGroup>
-      //       <ListGroup.Item>Fk U</ListGroup.Item>
-      //     </ListGroup>
-      //   );
+      default:
+        interactionForm = (
+          <ListGroup>
+            <ListGroup.Item>Fk U</ListGroup.Item>
+          </ListGroup>
+        );
     }
 
     return (

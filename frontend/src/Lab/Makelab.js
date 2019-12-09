@@ -229,6 +229,12 @@ class Makelab extends Component {
         destinationTool: destination,
         eventTool: e
       });
+    } else {
+      this.setState({
+        sourceTool: { Prop: [] },
+        destinationTool: { Prop: [] },
+        eventTool: {}
+      });
     }
   };
 
