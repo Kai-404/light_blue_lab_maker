@@ -182,7 +182,14 @@ public class PHPaper extends Tool {
 
     }
 
-    public boolean measurePh(Beaker toMeasure){
+    public boolean measurePh(Tool tool){
+
+//        if (tool.getName().equals( "Beaker" )){
+//
+//        }
+
+        Beaker toMeasure = (Beaker) tool;
+
         this.setPhStatus( toMeasure.getPhStatus() );
         return true;
     }
@@ -194,7 +201,7 @@ public class PHPaper extends Tool {
             interactionJSONObject.put( "Name",interactionName );
             interactionJSONObject.put( "Description","Measure chemical PH status" );
             //JSONObject pourPrams = new JSONObject();
-            interactionJSONObject.put( "Prams","None" );
+            interactionJSONObject.put( "Prams",this.phStatus );
         }
 
         return interactionJSONObject;
