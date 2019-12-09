@@ -10,6 +10,7 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Getter
 @Setter
@@ -191,7 +192,7 @@ public class Beaker extends Tool {
 
     }
 
-    public void updateProp(String toolProps){
+    public boolean updateProp(String toolProps){
 
         JSONObject jsonObject = new JSONObject(toolProps);
 
@@ -210,14 +211,29 @@ public class Beaker extends Tool {
 
         //System.out.println( propArray );
 
+        AtomicReference<Boolean> updateSuccess = new AtomicReference<>( true );
+
         propArray.forEach( e->{
             JSONObject prop = (JSONObject) e;
             if ( ((String)prop.get("Name")).equals( "Max Volume" ) ){
-                this.maxVolume = Double.parseDouble( String.valueOf( prop.get( "Value" ) ) );
+                double temp = Double.parseDouble( String.valueOf( prop.get( "Value" ) ) );
+
+                if (temp  <0){
+                    updateSuccess.set( false );
+                }else {
+                    this.maxVolume = temp;
+                }
 
             }
             else if (((String)prop.get("Name")).equals( "Current Volume" )){
-                this.currentVolume = Double.parseDouble( String.valueOf( prop.get( "Value" ) ) );
+                double temp =  Double.parseDouble( String.valueOf( prop.get( "Value" ) ) );
+
+                if (temp > this.maxVolume || temp <0){
+                    updateSuccess.set( false );
+                }else {
+                    this.currentVolume = temp;
+                }
+
 
             }
             else if (((String)prop.get("Name")).equals( "PH Status" )){
@@ -236,10 +252,25 @@ public class Beaker extends Tool {
         finalPropArray.forEach( e->{
             JSONObject prop = (JSONObject) e;
             if ( ((String)prop.get("Name")).equals( "Max Volume" ) ){
-                this.finalMaxVolume = Double.parseDouble( String.valueOf( prop.get( "Value" ) ) );
+
+                double temp = Double.parseDouble( String.valueOf( prop.get( "Value" ) ) );
+
+                if (temp  != this.maxVolume){
+                    updateSuccess.set( false );
+                }else {
+                    this.finalMaxVolume = temp;
+                }
+
             }
             else if (((String)prop.get("Name")).equals( "Current Volume" )){
-                this.finalCurrentVolume = Double.parseDouble( String.valueOf( prop.get( "Value" ) ) );
+
+                double temp =  Double.parseDouble( String.valueOf( prop.get( "Value" ) ) );
+
+                if (temp > this.maxVolume || temp <0){
+                    updateSuccess.set( false );
+                }else {
+                    this.finalCurrentVolume = temp;
+                }
             }
             else if (((String)prop.get("Name")).equals( "PH Status" )){
                 this.finalPhStatus= (String) prop.get( "Value" );
@@ -248,6 +279,8 @@ public class Beaker extends Tool {
                 this.finalCurrentChemicalsList = chemicalStringToList((String) prop.get( "Value" ) );
             }
         } );
+
+        return updateSuccess.get();
 
     }
 
@@ -265,14 +298,20 @@ public class Beaker extends Tool {
         return clone;
     }
 
-    public boolean pour(Beaker pourTo, Double amount){
+    public boolean pour(Tool tool, Double amount){
+//        if (pourTo.getName().equals( "Beaker" )){
+//
+//        }
+
+        Beaker pourTo = (Beaker) tool;
+
         if(amount>this.currentVolume){
             return false;
         }else if((pourTo.getCurrentVolume()+amount) > pourTo.getMaxVolume()){
             return false;
         }else {
             this.currentVolume = this.currentVolume - amount;
-            pourTo.currentVolume = pourTo.currentVolume - amount;
+            pourTo.currentVolume = pourTo.currentVolume + amount;
             return true;
         }
     }
