@@ -196,8 +196,15 @@ public class Beaker extends Tool {
         JSONObject jsonObject = new JSONObject(toolProps);
 
         JSONObject cTool = jsonObject.getJSONObject( "ctool" );
+        System.out.println( "X:" +cTool.get( "x" )+" \n Y"+cTool.get( "y" ));
+
         this.x = (int)cTool.get( "x" );
-        this.y = (int)cTool.get( "y" );
+        if (cTool.get( "y" ) instanceof Double){
+            this.y = (int)((double) cTool.get( "y" ));
+        }else {
+            this.y = (int) cTool.get( "y" );
+        }
+
 
         JSONArray propArray = cTool.getJSONArray( "Prop" );
 

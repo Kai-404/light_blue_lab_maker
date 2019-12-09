@@ -6,9 +6,10 @@ class InteractionModal extends Component {
     return (
       <React.Fragment>
         <Modal
+          size="sm"
           centered
           show={this.props.show}
-          onHide={this.props.setShowM}
+          onHide={this.props.setShow}
           dialogClassName="modal-90w"
           aria-labelledby="example-custom-modal-styling-title"
         >
@@ -18,7 +19,19 @@ class InteractionModal extends Component {
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <Form></Form>
+            <Form>
+              <Form.Label>{this.props.interaction.Prams.PramName}</Form.Label>
+              <Col sm={10}>
+                <input
+                  type="range"
+                  className="custom-range"
+                  min="0"
+                  //max will be the current volume of the beaker
+                  max="100"
+                  defaultValue={this.props.interaction.Prams.Value}
+                />
+              </Col>
+            </Form>
           </Modal.Body>
           <Modal.Footer>{this.props.interaction.Description}</Modal.Footer>
         </Modal>
