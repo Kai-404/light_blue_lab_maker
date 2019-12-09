@@ -229,6 +229,12 @@ class Makelab extends Component {
         destinationTool: destination,
         eventTool: e
       });
+    } else {
+      this.setState({
+        sourceTool: { Prop: [] },
+        destinationTool: { Prop: [] },
+        eventTool: {}
+      });
     }
   };
 
@@ -289,6 +295,7 @@ class Makelab extends Component {
           sourceTool={this.state.sourceTool}
           destinationTool={this.state.destinationTool}
           eventTool={this.state.eventTool}
+          setCurrentStage={this.setCurrentStage}
         />
 
         <ToolModal

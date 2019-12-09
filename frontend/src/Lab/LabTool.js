@@ -131,7 +131,6 @@ class LabTool extends Component {
             .then(res => {
               //rotate the tool to the top of another
               if (res.status == 200) {
-                console.log(200);
                 //animation, goes to the top of interacted tool
                 this.props.setInteraction(res.data);
                 //param: (sourceTool, destinationTool)
