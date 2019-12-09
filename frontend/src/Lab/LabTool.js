@@ -27,6 +27,7 @@ class LabTool extends Component {
     image: null,
     interactedTool: null,
     currentTool: null,
+    targetTool: null,
     showPop: false,
     showTooltip: false,
     mousePosition: { x: null, y: null },
@@ -82,6 +83,7 @@ class LabTool extends Component {
 
   //dragging a tool animation, show the boundingBox
   handleDragStart = e => {
+    this.setState({ targetTool: e.target.getClientRect() });
     e.target.setAttrs({
       shadowOffset: {
         x: 2,
@@ -106,12 +108,10 @@ class LabTool extends Component {
       let id2 = tool.id;
       if (id2 != e.target.attrs.name) {
         if (this.haveIntersection(tool, targetTool)) {
-          console.log("Hit! rotate the tool to the top of another");
           this.setState({ interactedTool: tool });
           e.target.setAttrs({
             x: this.state.interactedTool.x,
-            y: this.state.interactedTool.y - stageH * 0.2,
-            rotation: 45
+            y: this.state.interactedTool.y - stageH * 0.2
           });
           let data = JSON.stringify({
             stageNum,
@@ -131,15 +131,15 @@ class LabTool extends Component {
             .then(res => {
               //rotate the tool to the top of another
               if (res.status == 200) {
-                //animation, goes to the top of interacted tool and rotate 40 degree
+                console.log(200);
+                //animation, goes to the top of interacted tool
                 this.props.setInteraction(res.data);
                 //param: (sourceTool, destinationTool)
-                this.props.setShowInterModal(sourceTool, tool);
-                e.target.setAttrs({ rotation: 45 });
+                this.props.setShowInterModal(sourceTool, tool, e);
               }
             })
             .catch(err => {
-              console.log(err);
+              console.log("no interaction");
             });
         }
       }
@@ -162,7 +162,6 @@ class LabTool extends Component {
       }
     });
     e.target.to({
-      rotation: 0,
       duration: 4,
       easing: Konva.Easings.ElasticEaseOut,
       scaleX: 1,
@@ -239,7 +238,9 @@ class LabTool extends Component {
         .then(res => {
           console.log(res.data);
           this.props.setTool(res.data);
-          if (this.props.setShowModal) {this.props.setShowModal()};
+          if (this.props.setShowModal) {
+            this.props.setShowModal();
+          }
         });
     }
   };
