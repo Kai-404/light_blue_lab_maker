@@ -35,11 +35,19 @@ class Dolab extends Component {
         getTotalStage: -1,
         currentStage: -1,
         currentTool: [],
-        showPop: false,
         stage: {
             stageNum: -1,
             stageTool: [],
             instructions: ""
+        },
+        hasInter: false,
+        inter: {
+            Description: "Some description",
+            Name: "Name of interaction",
+            Prams: {
+                PramName: "",
+                Value: ""
+            }
         }
     };
 
@@ -55,14 +63,32 @@ class Dolab extends Component {
 
     getCurrentStage() {
         axios.get("http://localhost:8080/getcurrentstage").then(res => {
+            console.log("test2");
+            console.log(res.data);
             this.setState({currentStage: res.data});
         });
     }
 
     getNextStage = () => {
         axios.get("http://localhost:8080/getnextstage").then(res => {
-            this.getCurrentStage();
-            this.getStage();
+            if (res.data === true) {
+                this.getCurrentStage();
+                this.getStage();
+            }
+            else {
+                alert("Wrong");
+            }
+        });
+    };
+
+    finishLab = () => {
+        axios.get("http://localhost:8080/getnextstage").then(res => {
+            if (res.data === true) {
+                this.back();
+            }
+            else {
+                alert("Wrong");
+            }
         });
     };
 
@@ -84,10 +110,6 @@ class Dolab extends Component {
         this.getCurrentStage();
     }
 
-    setShowModal = () => {
-        this.setState({showPop: !this.state.showPop});
-    };
-
     setCurrentTool = tool => {
         this.setState({currentTool: tool});
     };
@@ -101,24 +123,57 @@ class Dolab extends Component {
                     params: {stageNum: i}
                 })
                 .then(res => {
-                    this.setState({currentStage: res.data});
+                    console.log("test1");
+                    console.log(res.data);
+                    this.setState({currentStage: res.data.stageNum});
                 });
         } else {
-            this.setState({currentStage: {stageNum: -1, stageTool: []}});
+            this.setState({stage: {stageNum: -1, stageTool: []}});
         }
+    };
+
+    setInteraction = inter => {
+        console.log("pased:", inter);
+        this.setState({inter: inter});
+    };
+
+    setShowInterModal = () => {
+        this.setState({hasInter: !this.state.hasInter});
     };
 
     render() {
         return (
             <React.Fragment>
-                <ToolModal
-                    setTool={this.setCurrentTool}
-                    tool={this.state.currentTool}
-                    stageNum={this.state.stage.stageNum}
-                    showPop={this.state.showPop}
-                    setShow={this.setShowModal}
-                    setCurrentStage={this.setCurrentStage}
-                />
+                <Modal
+                    size="sm"
+                    centered
+                    show={this.state.hasInter}
+                    onHide={this.setShowInterModal}
+                    dialogClassName="modal-90w"
+                    aria-labelledby="example-custom-modal-styling-title"
+                >
+                    <Modal.Header>
+                        <Modal.Title id="example-custom-modal-styling-title">
+                            {this.state.inter.Name}
+                        </Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <Form>
+                            <Form.Label column sm={2}>
+                                {this.state.inter.Prams.PramName}
+                            </Form.Label>
+                            <Col sm={10}>
+                                <Form.Control
+                                    required
+                                    type={this.state.inter.Prams.PramName}
+                                    defaultValue={this.state.inter.Prams.Value}
+                                    onChange={this.handleChangeProps}
+                                />
+                            </Col>
+                        </Form>
+                    </Modal.Body>
+                    <Modal.Footer>{this.state.inter.Description}</Modal.Footer>
+                </Modal>
                 <Row>
                     <Stage width={stageW} height={stageH} className="stage">
                         <Layer>
@@ -133,7 +188,9 @@ class Dolab extends Component {
                                     stageTool={this.state.stage.stageTool}
                                     setCurrentStage={this.setCurrentStage}
                                     setTool={this.setCurrentTool}
-                                    setShowModal={this.setShowModal}
+                                    setShowModal={null}
+                                    setInteraction={this.setInteraction}
+                                    setShowInterModal={this.setShowInterModal}
                                 />
                             ))}
 
@@ -164,10 +221,11 @@ class Dolab extends Component {
                                 <br/>
                                 {
                                     this.state.currentStage+1===this.state.getTotalStage?
-                                        <Button onClick={this.back}>Finish</Button>
+                                        <Button onClick={this.finishLab}>Finish</Button>
                                         :
                                         <Button onClick={this.getNextStage}>Next</Button>
                                 }
+                                <Button onClick={this.back}>Leave</Button>
                             </Modal.Body>
                         </Card.Body>
                     </Card>

@@ -201,7 +201,7 @@ public class Beaker extends Tool {
 
         JSONArray propArray = cTool.getJSONArray( "Prop" );
 
-        System.out.println( propArray );
+        //System.out.println( propArray );
 
         propArray.forEach( e->{
             JSONObject prop = (JSONObject) e;
@@ -227,7 +227,7 @@ public class Beaker extends Tool {
 
         JSONArray finalPropArray = cTool.getJSONArray( "FinalProp" );
 
-        System.out.println( finalPropArray );
+        //System.out.println( finalPropArray );
 
         finalPropArray.forEach( e->{
             JSONObject prop = (JSONObject) e;

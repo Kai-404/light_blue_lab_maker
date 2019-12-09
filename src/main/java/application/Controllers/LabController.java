@@ -6,6 +6,7 @@ import application.Models.Lab;
 //import net.minidev.json.JSONArray;
 import application.Tools.Beaker;
 import application.Tools.PHPaper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 @CrossOrigin
@@ -58,7 +61,6 @@ public class LabController {
     }
 
 
-    //TODO: deletes stage currentStage
     @PostMapping("/deletestage")
     @ResponseBody
     public void deleteStage(@RequestBody int stageNum) {
@@ -80,10 +82,10 @@ public class LabController {
     @ResponseBody
     public String getAllTools() {
         //lab = new Lab("Kai's test lab","Kai");
-        System.out.println( lab.getToolWarehouse().toString() );
+        //System.out.println( lab.getToolWarehouse().toString() );
 
 //        Beaker b = new Beaker();
-//        System.out.println(b.getToolAsJSON().toString());
+//        //System.out.println(b.getToolAsJSON().toString());
         return  lab.getToolWarehouse().toString();
 
     }
@@ -131,7 +133,7 @@ public class LabController {
     @PostMapping("/updatetoolprop")
     @ResponseBody
     public String updateStageToolProp(@RequestBody String toolProps, @RequestParam int stageNum, @RequestParam String ID){
-        System.out.println( "Stage Num: "+stageNum+"\nTool ID: "+ ID+"\n prop: "+toolProps);
+        //System.out.println( "Stage Num: "+stageNum+"\nTool ID: "+ ID+"\n prop: "+toolProps);
         lab.getStage( stageNum ).updateToolProp( ID, toolProps );
         return lab.getStage( stageNum ).getStageAsJSON().toString();
     }
@@ -143,7 +145,7 @@ public class LabController {
 
     @GetMapping("/savelab")
     @ResponseBody
-    public boolean saveLab(@RequestParam(name="couresID") String courseID) {
+    public boolean saveLab(@RequestParam(name="courseID") String courseID) {
         try {
             labRepository.save(lab);
             Course course = courseRepository.getById(courseID);
@@ -203,11 +205,11 @@ public class LabController {
 
     @GetMapping("/searchlab")
     @ResponseBody
-    public ResponseEntity<List<Lab>> searchLab(@RequestParam(name = "id") String name, HttpSession session) {
+    public ResponseEntity<List<Lab>> searchLab(@RequestParam(name = "id") String name, @RequestParam(name="courseID") String courseID, HttpSession session) {
         List<Lab> labList = new ArrayList<>();
         User user = userRepository.findByUsername((String) session.getAttribute("user"));
-        Professor professor = professorRepository.findByUserId(user.getId());
-        for (String id : professor.getLab_list()) {
+        Course course = courseRepository.getById(courseID);
+        for (String id : course.getLab_list()) {
             Lab lab = labRepository.getById(id);
             if (lab != null && lab.getTitle().contains(name))
                 labList.add(lab);
@@ -290,8 +292,20 @@ public class LabController {
 
     @GetMapping("/getnextstage")
     @ResponseBody
-    public void getNextStage() {
+    public boolean getNextStage() throws IOException {
+        ArrayList<Tool> toolList = lab.getStage(currentStage).getStageToolList();
+        for (Tool tool: toolList) {
+            HashMap result = new ObjectMapper().readValue(tool.getToolAsJSON().toString(), HashMap.class);
+            List initialProperties = (List) result.get("Prop");
+            List finalProperties = (List) result.get("FinalProp");
+            for (int i=0; i<initialProperties.size();i++) {
+                if (((LinkedHashMap) (initialProperties).get(i)).get("Value").equals(((LinkedHashMap) (finalProperties).get(i)).get("Value"))) {
+                    return false;
+                }
+            }
+        }
         ++currentStage;
+        return true;
     }
 
 }

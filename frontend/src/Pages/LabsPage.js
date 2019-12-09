@@ -107,7 +107,10 @@ class LabsPage extends Component {
                 axios
                     .get("http://localhost:8080/searchlab", {
                         headers: {"Content-Type": "application/json;charset=UTF-8"},
-                        params: {id: this.state.searchInput}
+                        params: {
+                            id: this.state.searchInput,
+                            courseID: sessionStorage.getItem("currentCourse")
+                        }
                     })
                     .then(res => {
                         //console.log("status: ", res.status);
