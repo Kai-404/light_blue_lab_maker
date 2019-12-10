@@ -134,16 +134,19 @@ public class LabController {
 
     @PostMapping("/updatetoolprop")
     @ResponseBody
-    public String updateStageToolProp(@RequestBody String toolProps, @RequestParam int stageNum, @RequestParam String ID){
+    public ResponseEntity<String> updateStageToolProp(@RequestBody String toolProps, @RequestParam int stageNum, @RequestParam String ID){
         //System.out.println( "Stage Num: "+stageNum+"\nTool ID: "+ ID+"\n prop: "+toolProps);
-        lab.getStage( stageNum ).updateToolProp( ID, toolProps );
-        return lab.getStage( stageNum ).getStageAsJSON().toString();
+
+
+        if (! lab.getStage( stageNum ).updateToolProp( ID, toolProps )){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }else {
+            return new ResponseEntity<>(lab.getStage( stageNum ).getStageAsJSON().toString(), HttpStatus.OK);
+
+        }
+
+        //return lab.getStage( stageNum ).getStageAsJSON().toString();
     }
-//    public void updateStageToolProp(@RequestParam int stageNum, @RequestParam String ID, @RequestBody String toolProps){
-//        System.out.println( "Stage Num: "+stageNum+"Tool ID: "+ ID+" prop: "+toolProps);
-////        lab.getStage( stageNum ).updateToolProp( ID, toolProps );
-////        return lab.getStage( stageNum ).getStageAsJSON().toString();
-//    }
 
     @GetMapping("/savelab")
     @ResponseBody
@@ -289,12 +292,29 @@ public class LabController {
                 return new ResponseEntity<>(tool.getInteractionDetail(interActionName).toString(), HttpStatus.OK);
             }else if (tool1.getName().equals( "PHPaper" )) {
                 PHPaper tool = (PHPaper) tool1;
+                tool.measurePh( tool2 );
+                System.out.println( tool.getPhStatus() );
                 return new ResponseEntity<>(tool.getInteractionDetail(interActionName).toString(), HttpStatus.OK);
             }else {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
 
         }
+    }
+
+    @PostMapping("/doInteraction")
+    @ResponseBody
+    public void doInteraction(@RequestParam(name="stageNum") int stageNum,
+                                                   @RequestParam(name="id") String id,
+                                                   @RequestParam(name="id2") String id2,
+                                                   @RequestParam(name="interaction") String interaction) {
+
+
+        System.out.println( "Get From Zoe: "+"\n"+stageNum+"\n"+id+"\n"+id2+"\n"+ interaction);
+        Stage stage = lab.getStage( stageNum );
+        stage.doInteraction( id,id2,interaction );
+
+
     }
 
 ////    for test only
