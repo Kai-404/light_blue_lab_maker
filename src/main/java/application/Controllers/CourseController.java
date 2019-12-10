@@ -76,9 +76,20 @@ public class CourseController {
     @ResponseBody
     public void enrollCourse(@RequestParam(name="userID") String userID, @RequestParam(name="courseID") String courseID) {
         Student student = studentRepository.findByUserId(userID);
-        student.getCourse_list().add(courseID);
-        studentRepository.save(student);
         Course course = courseRepository.getById(courseID);
+        student.getCourse_list().add(courseID);
+        for (String labID : course.getLab_list()) {
+            Lab lab = labRepository.getById(labID);
+            if (lab.isPublished()) {
+                student.getLabProgress().put(labID, 0);
+                HashMap<Integer, Integer> grades = new HashMap<>();
+                for (int i=0; i<lab.getTotalStage();i++) {
+                    grades.put(i, 0);
+                }
+                student.getGrade().put(labID, grades);
+            }
+        }
+        studentRepository.save(student);
         course.getStudent_list().add(userID);
         courseRepository.save(course);
     }
@@ -87,9 +98,16 @@ public class CourseController {
     @ResponseBody
     public void unenrollCourse(@RequestParam(name="userID") String userID, @RequestParam(name="courseID") String courseID) {
         Student student = studentRepository.findByUserId(userID);
-        student.getCourse_list().remove(courseID);
-        studentRepository.save(student);
         Course course = courseRepository.getById(courseID);
+        student.getCourse_list().remove(courseID);
+        for (String labID : course.getLab_list()) {
+            Lab lab = labRepository.getById(labID);
+            if (lab.isPublished()) {
+                student.getGrade().remove(labID);
+                student.getLabProgress().remove(labID);
+            }
+        }
+        studentRepository.save(student);
         course.getStudent_list().remove(userID);
         courseRepository.save(course);
     }

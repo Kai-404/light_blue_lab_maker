@@ -52,6 +52,17 @@ class Discussion extends Component {
     }
 
     render() {
+
+        let header = null;
+        if (this.state.studentGrades[0]) {
+            header =
+                this.state.studentGrades[0].map((item, i) =>
+                    <th>
+                        {this.getLabel(i)}
+                    </th>
+                )
+        }
+
         return (
             <React.Fragment>
                 <DropdownButton
@@ -74,13 +85,7 @@ class Discussion extends Component {
                 <Table striped bordered>
                     <thead>
                         <tr>
-                            {
-                                this.state.studentGrades[0].map((item, i) =>
-                                    <th>
-                                        {this.getLabel(i)}
-                                    </th>
-                                )
-                            }
+                            {header}
                         </tr>
                     </thead>
                     <tbody>
