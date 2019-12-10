@@ -116,6 +116,11 @@ class InteractionModal extends Component {
         );
         break;
       default:
+        if (this.props.eventTool.target) {
+          this.props.eventTool.target.setAttrs({
+            rotation: 45
+          });
+        }
         interactionForm = (
           <ListGroup>
             <ListGroup.Item>Fk U</ListGroup.Item>
