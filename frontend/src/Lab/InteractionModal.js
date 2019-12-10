@@ -4,7 +4,8 @@ import { Button, Form, Modal, Row, Col, ListGroup } from "react-bootstrap";
 
 class InteractionModal extends Component {
   state = {
-    Value: 0
+    Value: 0,
+    maxValue: null
   };
 
   onChange = e => this.setState({ [e.target.name]: e.target.value });
@@ -43,6 +44,7 @@ class InteractionModal extends Component {
         }
       })
       .then(res => {
+        this.props.updateTools(id, id2, stageNum);
         this.props.setCurrentStage(stageNum);
       })
       .catch(err => {
@@ -51,15 +53,9 @@ class InteractionModal extends Component {
   };
 
   render() {
-    let maxValue;
     this.props.sourceTool.Prop.forEach(prop => {
       if (prop.Name == "Current Volume") {
-        maxValue = prop.Value;
-      }
-    });
-    this.props.destinationTool.Prop.forEach(prop => {
-      if (prop.Name == "Current Volume" && maxValue < prop.Value) {
-        maxValue = prop.Value;
+        this.state.maxValue = prop.Value;
       }
     });
 
@@ -87,14 +83,14 @@ class InteractionModal extends Component {
                   name="Value"
                   min="0"
                   //max will be the current volume of the beaker
-                  max={maxValue}
+                  max={this.state.maxValue}
                   value={this.state.Value}
                   onChange={this.onChange}
                 />
               </Col>
               <Col sm={2}>
                 <span className="font-weight-bold indigo-text ml-2">
-                  {maxValue}
+                  {this.state.maxValue}
                 </span>
               </Col>
             </Row>
@@ -106,7 +102,7 @@ class InteractionModal extends Component {
       case "Measure":
         interactionForm = (
           <ListGroup>
-            <ListGroup.Item>Measured PH</ListGroup.Item>
+            <ListGroup.Item>{this.props.interaction.Prams}</ListGroup.Item>
           </ListGroup>
         );
         break;
