@@ -78,7 +78,11 @@ class LabsPage extends Component {
         axios
             .get("http://localhost:8080/deletelab", {
                 headers: {"Content-Type": "application/json;charset=UTF-8"},
-                params: {id: id}
+                params: {
+                    labID: id,
+                    userID: sessionStorage.getItem("userID"),
+                    courseID: sessionStorage.getItem("currentCourse")
+                }
             })
             .then(res => {
                 if (res.data) {

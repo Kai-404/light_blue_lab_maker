@@ -45,7 +45,7 @@ public class LabController {
     public Lab newLab(@RequestParam String title, @RequestParam String author, @RequestParam String description) throws IOException {
         //System.out.println( "a:"+title+"\n"+"b:"+author );
         lab = new Lab(title, author);
-        lab.setDescription( description );
+        lab.setDescription(description);
         return lab;
     }
 
@@ -89,61 +89,60 @@ public class LabController {
 
 //        Beaker b = new Beaker();
 //        //System.out.println(b.getToolAsJSON().toString());
-        return  lab.getToolWarehouse().toString();
+        return lab.getToolWarehouse().toString();
 
     }
 
     @PostMapping("/updatetoollist")
     @ResponseBody
-    public String updateToolList(@RequestBody String toolList){
+    public String updateToolList(@RequestBody String toolList) {
         lab.updateToolWareHouse(toolList);
-        return  lab.getToolWarehouse().toString();
+        return lab.getToolWarehouse().toString();
     }
 
 
     @PostMapping("/stageaddtool")
     @ResponseBody
-    public boolean stageAddTool(@RequestParam int stageNum, @RequestParam String toolName){
-        return lab.getStage( stageNum ).addTool(toolName);
+    public boolean stageAddTool(@RequestParam int stageNum, @RequestParam String toolName) {
+        return lab.getStage(stageNum).addTool(toolName);
     }
 
     @PostMapping("/stagedeletetool")
     @ResponseBody
-    public String stagedeleteTool(@RequestParam int stageNum, @RequestParam String ID){
-        lab.getStage( stageNum ).deleteTool( ID );
-        return getStage( stageNum );
+    public String stagedeleteTool(@RequestParam int stageNum, @RequestParam String ID) {
+        lab.getStage(stageNum).deleteTool(ID);
+        return getStage(stageNum);
     }
 
 
     @PostMapping("/getstage")
     @ResponseBody
-    public String getStage(@RequestBody int stageNum){
-        return lab.getStage( stageNum ).getStageAsJSON().toString();
+    public String getStage(@RequestBody int stageNum) {
+        return lab.getStage(stageNum).getStageAsJSON().toString();
     }
 
     @PostMapping("/gettool")
     @ResponseBody
-    public String getTool(@RequestParam int stageNum, @RequestParam String ID){
-        System.out.println( lab.getStage( stageNum ).getTool( ID ).toString() );
-        return lab.getStage( stageNum ).getTool( ID ).toString();
+    public String getTool(@RequestParam int stageNum, @RequestParam String ID) {
+        return lab.getStage(stageNum).getTool(ID).toString();
     }
 
     @GetMapping("/gettotalstage")
     @ResponseBody
-    public int getTotalStage(){
+    public int getTotalStage() {
         return lab.getTotalStage();
     }
 
     @PostMapping("/updatetoolprop")
     @ResponseBody
-    public ResponseEntity<String> updateStageToolProp(@RequestBody String toolProps, @RequestParam int stageNum, @RequestParam String ID){
+    public ResponseEntity<String> updateStageToolProp(@RequestBody String toolProps, @RequestParam int stageNum, @RequestParam String ID) {
         //System.out.println( "Stage Num: "+stageNum+"\nTool ID: "+ ID+"\n prop: "+toolProps);
 
 
-        if (! lab.getStage( stageNum ).updateToolProp( ID, toolProps )){
+        if (!lab.getStage(stageNum).updateToolProp(ID, toolProps)) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }else {
-            return new ResponseEntity<>(lab.getStage( stageNum ).getStageAsJSON().toString(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(lab.getStage(stageNum).getStageAsJSON().toString(), HttpStatus.OK);
 
         }
 
@@ -152,7 +151,7 @@ public class LabController {
 
     @GetMapping("/savelab")
     @ResponseBody
-    public boolean saveLab(@RequestParam(name="courseID") String courseID) {
+    public boolean saveLab(@RequestParam(name = "courseID") String courseID) {
         try {
             labRepository.save(lab);
             Course course = courseRepository.getById(courseID);
@@ -178,8 +177,7 @@ public class LabController {
                 if (lab.isPublished()) {
                     labList.add(lab);
                 }
-            }
-            else {
+            } else {
                 labList.add(lab);
             }
         }
@@ -188,7 +186,7 @@ public class LabController {
 
     @GetMapping("/getallstudentprogress")
     @ResponseBody
-    public HashMap<String,Integer> getAllStudentProgress(String id) {
+    public HashMap<String, Integer> getAllStudentProgress(String id) {
         Student student = studentRepository.findByUserId(id);
         return student.getLabProgress();
     }
@@ -202,7 +200,7 @@ public class LabController {
 
     @GetMapping("/publishlab")
     @ResponseBody
-    public boolean publishLab(@RequestParam(name="courseID") String courseID) {
+    public boolean publishLab(@RequestParam(name = "courseID") String courseID) {
         try {
             lab.setPublished(true);
             labRepository.save(lab);
@@ -212,8 +210,8 @@ public class LabController {
                 Student student = studentRepository.findByUserId(id);
                 student.getLabProgress().put(lab.getId(), 0); //set current progress to 0
                 HashMap<Integer, Integer> grade = new HashMap<>();
-                for (int i=0; i<lab.getTotalStage(); i++) {
-                    grade.put(i,0);
+                for (int i = 0; i < lab.getTotalStage(); i++) {
+                    grade.put(i, 0);
                 }
                 student.getGrade().put(lab.getId(), grade); //create grades for a lab
                 studentRepository.save(student);
@@ -224,30 +222,28 @@ public class LabController {
         }
         return true;
     }
+
     @GetMapping("/deletelab")
     @ResponseBody
-    public boolean deleteLab(@RequestParam(name = "id") String id, HttpSession session) {
-        Lab lab = labRepository.getById(id);
-        if (id != null) {
-            labRepository.delete(lab);
-            User user = userRepository.findByUsername((String) session.getAttribute("user"));
-            Professor professor = professorRepository.findByUserId(user.getId());
-            professor.getLab_list().remove(lab.getId());
-            return true;
-        }
-        return false;
+    public boolean deleteLab(@RequestParam(name = "labID") String labID, @RequestParam(name = "userID") String userID, @RequestParam(name = "courseID") String courseID) {
+        Lab lab = labRepository.getById(labID);
+        labRepository.delete(lab);
+        Course course = courseRepository.getById(courseID);
+        course.getLab_list().remove(labID);
+        courseRepository.save(course);
+        return true;
     }
 
     @PostMapping("/saveinstructions")
     @ResponseBody
-    public String saveInstructions(@RequestParam(name="stageNum") int stageNum, @RequestParam(name="instructions") String instructions) {
+    public String saveInstructions(@RequestParam(name = "stageNum") int stageNum, @RequestParam(name = "instructions") String instructions) {
         lab.saveInstructions(stageNum, instructions);
         return instructions;
     }
 
     @GetMapping("/searchlab")
     @ResponseBody
-    public ResponseEntity<List<Lab>> searchLab(@RequestParam(name = "id") String name, @RequestParam(name="courseID") String courseID, HttpSession session) {
+    public ResponseEntity<List<Lab>> searchLab(@RequestParam(name = "id") String name, @RequestParam(name = "courseID") String courseID, HttpSession session) {
         List<Lab> labList = new ArrayList<>();
         User user = userRepository.findByUsername((String) session.getAttribute("user"));
         Course course = courseRepository.getById(courseID);
@@ -265,31 +261,31 @@ public class LabController {
     //ADD DRAGGABLE POSTMAPPING
     @PostMapping("/swapstages")
     @ResponseBody
-    public void swapstages(@RequestParam(name="oldIndex") int oldIndex, @RequestParam(name="newIndex") int newIndex) {
+    public void swapstages(@RequestParam(name = "oldIndex") int oldIndex, @RequestParam(name = "newIndex") int newIndex) {
         lab.swapStages(oldIndex, newIndex);
     }
 
     @GetMapping("/editlab")
     @ResponseBody
-    public void editlab(@RequestParam(name="id") String id) {
+    public void editlab(@RequestParam(name = "id") String id) {
         lab = labRepository.getById(id);
     }
 
     @PostMapping("/checkInteraction")
     @ResponseBody
-    public ResponseEntity<String> checkInteraction(@RequestParam(name="stageNum") int stageNum,
-                                                   @RequestParam(name="id") String id,
-                                                   @RequestParam(name="id2") String id2) {
+    public ResponseEntity<String> checkInteraction(@RequestParam(name = "stageNum") int stageNum,
+                                                   @RequestParam(name = "id") String id,
+                                                   @RequestParam(name = "id2") String id2) {
 
-        Stage stage = lab.getStage( stageNum );
-        Tool tool1 = stage.getToolByID( id );
-        Tool tool2 = stage.getToolByID( id2 );
+        Stage stage = lab.getStage(stageNum);
+        Tool tool1 = stage.getToolByID(id);
+        Tool tool2 = stage.getToolByID(id2);
 
-        if (! tool1.getCanInteractWith().containsKey( tool2.getName() )){
+        if (!tool1.getCanInteractWith().containsKey(tool2.getName())) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }else {
+        } else {
             String interActionName = tool1.getCanInteractWith().get(tool2.getName());
-            if (tool1.getName().equals( "Beaker" )){
+            if (tool1.getName().equals("Beaker")) {
                 Beaker tool = (Beaker) tool1;
                 return new ResponseEntity<>(tool.getInteractionDetail(interActionName).toString(), HttpStatus.OK);
             }else if(tool1.getName().equals( "Flask" )){
@@ -301,7 +297,7 @@ public class LabController {
 //                System.out.println( tool.getId() );
 //                System.out.println( tool.getToolAsJSON().toString() );
                 return new ResponseEntity<>(tool.getInteractionDetail(interActionName).toString(), HttpStatus.OK);
-            }else {
+            } else {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
 
@@ -310,15 +306,15 @@ public class LabController {
 
     @PostMapping("/doInteraction")
     @ResponseBody
-    public void doInteraction(@RequestParam(name="stageNum") int stageNum,
-                                                   @RequestParam(name="id") String id,
-                                                   @RequestParam(name="id2") String id2,
-                                                   @RequestParam(name="interaction") String interaction) {
+    public void doInteraction(@RequestParam(name = "stageNum") int stageNum,
+                              @RequestParam(name = "id") String id,
+                              @RequestParam(name = "id2") String id2,
+                              @RequestParam(name = "interaction") String interaction) {
 
 
-        System.out.println( "Get From Zoe: "+"\n"+stageNum+"\n"+id+"\n"+id2+"\n"+ interaction);
-        Stage stage = lab.getStage( stageNum );
-        stage.doInteraction( id,id2,interaction );
+        System.out.println("Get From Zoe: " + "\n" + stageNum + "\n" + id + "\n" + id2 + "\n" + interaction);
+        Stage stage = lab.getStage(stageNum);
+        stage.doInteraction(id, id2, interaction);
 
 
     }
@@ -336,13 +332,13 @@ public class LabController {
 
     @GetMapping("/setdolab")
     @ResponseBody
-    public void setDoLab(@RequestParam(name="labID") String labID) {
+    public void setDoLab(@RequestParam(name = "labID") String labID) {
         lab = labRepository.getById(labID);
     }
 
     @GetMapping("/getdolabstage")
     @ResponseBody
-    public String getDoLabStage(@RequestParam(name="id") String id, @RequestParam(name="userType") String userType) {
+    public String getDoLabStage(@RequestParam(name = "id") String id, @RequestParam(name = "userType") String userType) {
         if (userType.equals("Student")) {
             Student student = studentRepository.findByUserId(id);
             if (student.getLabProgress().get(lab.getId()) == lab.getTotalStage()) {
@@ -355,35 +351,37 @@ public class LabController {
 
     @GetMapping("/getnextstage")
     @ResponseBody
-    public String getNextStage(@RequestParam(name="stageNum") int stageNum) {
-        return lab.getStage(stageNum+1).getStageAsJSON().toString();
+    public String getNextStage(@RequestParam(name = "stageNum") int stageNum) {
+        return lab.getStage(stageNum + 1).getStageAsJSON().toString();
     }
 
     @GetMapping("/dolabcheckstage")
     @ResponseBody
-    public boolean doLabCheckStage(@RequestParam(name="stageNum") int stageNum, @RequestParam(name="id") String id, @RequestParam(name="userType") String userType) throws IOException {
+    public boolean doLabCheckStage(@RequestParam(name = "stageNum") int stageNum, @RequestParam(name = "id") String id, @RequestParam(name = "userType") String userType) throws IOException {
         Student student = null;
         if (userType.equals("Student")) {
             student = studentRepository.findByUserId(id);
         }
         ArrayList<Tool> toolList = lab.getStage(stageNum).getStageToolList();
-        for (Tool tool: toolList) {
+        for (Tool tool : toolList) {
             HashMap result = new ObjectMapper().readValue(tool.getToolAsJSON().toString(), HashMap.class);
             List initialProperties = (List) result.get("Prop");
             List finalProperties = (List) result.get("FinalProp");
-            for (int i=0; i<initialProperties.size();i++) {
-                if (((LinkedHashMap) (initialProperties).get(i)).get("Value").equals(((LinkedHashMap) (finalProperties).get(i)).get("Value"))) {
-                    if (student != null && stageNum==(student.getLabProgress().get(lab.getId()))) {
+            for (int i = 0; i < initialProperties.size(); i++) {
+                System.out.println(((LinkedHashMap) (initialProperties).get(i)).get("Value"));
+                System.out.println(((LinkedHashMap) (finalProperties).get(i)).get("Value"));
+                if (!((LinkedHashMap) (initialProperties).get(i)).get("Value").equals(((LinkedHashMap) (finalProperties).get(i)).get("Value"))) {
+                    if (student != null && stageNum == (student.getLabProgress().get(lab.getId()))) {
                         HashMap<Integer, Integer> labGrade = student.getGrade().get(lab.getId());
-                        labGrade.put(stageNum, labGrade.get(stageNum)+1);
+                        labGrade.put(stageNum, labGrade.get(stageNum) + 1);
                         studentRepository.save(student);
                     }
                     return false;
                 }
             }
         }
-        if (student != null &&  stageNum==(student.getLabProgress().get(lab.getId()))) {
-            student.getLabProgress().put(lab.getId(), student.getLabProgress().get(lab.getId())+1);
+        if (student != null && stageNum == (student.getLabProgress().get(lab.getId()))) {
+            student.getLabProgress().put(lab.getId(), student.getLabProgress().get(lab.getId()) + 1);
             studentRepository.save(student);
         }
         return true;
