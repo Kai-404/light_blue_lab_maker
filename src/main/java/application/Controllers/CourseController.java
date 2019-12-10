@@ -74,6 +74,9 @@ public class CourseController {
         Student student = studentRepository.findByUserId(userID);
         student.getCourse_list().add(courseID);
         studentRepository.save(student);
+        Course course = courseRepository.getById(courseID);
+        course.getStudent_list().add(userID);
+        courseRepository.save(course);
     }
 
     @GetMapping("/unenrollcourse")
@@ -82,5 +85,8 @@ public class CourseController {
         Student student = studentRepository.findByUserId(userID);
         student.getCourse_list().remove(courseID);
         studentRepository.save(student);
+        Course course = courseRepository.getById(courseID);
+        course.getStudent_list().remove(userID);
+        courseRepository.save(course);
     }
 }
