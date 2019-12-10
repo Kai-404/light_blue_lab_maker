@@ -102,6 +102,7 @@ class LabTool extends Component {
 
   //while dragging the tool, detection collision and perform interaction if any
   checkInteraction = (e, stageNum, id) => {
+    let inter = false;
     let targetTool = e.target.getClientRect();
     let sourceTool;
     this.props.stageTool.forEach(tool => {
@@ -114,6 +115,7 @@ class LabTool extends Component {
       let id2 = tool.id;
       if (id2 != e.target.attrs.name) {
         if (this.haveIntersection(tool, targetTool)) {
+          inter = true;
           this.setState({ interactedTool: tool });
           e.target.setAttrs({
             x: this.state.interactedTool.x,
@@ -150,7 +152,7 @@ class LabTool extends Component {
         }
       }
     });
-    return true;
+    return inter;
   };
 
   //drag tool end animation, boundingBox disappears
