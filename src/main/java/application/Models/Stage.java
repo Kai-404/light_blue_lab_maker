@@ -2,6 +2,7 @@ package application.Models;
 
 import application.Tools.AlcoholBurner;
 import application.Tools.Beaker;
+import application.Tools.Flask;
 import application.Tools.PHPaper;
 import com.mongodb.util.JSON;
 import lombok.Data;
@@ -139,6 +140,11 @@ public class Stage {
                     updateSuccess = phpaper.updateProp( toolProps );
                     //toReturn = phpaper.getToolAsJSON();
                     stageToolList.set( index,phpaper );
+                }else if (tool.getName().equals( "Flask" )){
+                    Flask flask = (Flask) tool;
+                    updateSuccess = flask.updateProp( toolProps );
+                    stageToolList.set( index,flask );
+
                 }
 //                else if (tool.getName().equals( "AlcoholBurner" )){
 //                    AlcoholBurner alcoholBurner = (AlcoholBurner) tool;
@@ -167,6 +173,12 @@ public class Stage {
                 Beaker beaker = (Beaker) tool1;
                 JSONObject amount = (JSONObject) interactionPrams.get( "Prams" );
                 beaker.pour( tool2, Double.parseDouble( String.valueOf( amount.get( "Value" ) ) ));
+            }else if (tool1.getName().equals( "Flask" )){
+
+                Flask flask = (Flask) tool1;
+                JSONObject amount = (JSONObject) interactionPrams.get( "Prams" );
+                flask.pour( tool2, Double.parseDouble( String.valueOf( amount.get( "Value" ) ) ));
+
             }
 
         }
