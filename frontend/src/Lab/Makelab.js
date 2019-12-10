@@ -353,6 +353,7 @@ class Makelab extends Component {
                   id="stageInstructionsText"
                   value={this.state.currentStage.instructions}
                   onChange={this.updateInstructions}
+                  disabled={this.state.currentStage.stageNum===-1}
               />
                         </div>
                         <Stage width={stageW} height={stageH} className="stage">
