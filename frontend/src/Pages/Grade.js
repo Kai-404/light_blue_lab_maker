@@ -48,12 +48,19 @@ class Discussion extends Component {
 
     getLabel(i) {
         if (i===0) { return "Name"}
-        return i-1;
+        else if (i===1) { return "Progress"}
+        return "Stage " + (i-2);
     }
 
     render() {
 
-        let header = null;
+        let header =
+            (
+                <div>
+                    <th>Name</th>
+                    <th>Progress</th>
+                </div>
+            );
         if (this.state.studentGrades[0]) {
             header =
                 this.state.studentGrades[0].map((item, i) =>
