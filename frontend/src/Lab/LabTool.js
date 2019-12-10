@@ -40,7 +40,8 @@ class LabTool extends Component {
         PramName: "",
         Value: ""
       }
-    }
+    },
+    sourceTool: null
   };
 
   componentDidMount() {
@@ -116,7 +117,7 @@ class LabTool extends Component {
       if (id2 != e.target.attrs.name) {
         if (this.haveIntersection(tool, targetTool)) {
           inter = true;
-          this.setState({ interactedTool: tool });
+          this.setState({ interactedTool: tool, sourceTool: sourceTool });
           e.target.setAttrs({
             x: this.state.interactedTool.x,
             y: this.state.interactedTool.y - stageH * 0.2
@@ -157,23 +158,24 @@ class LabTool extends Component {
 
   //drag tool end animation, boundingBox disappears
   handleDragEnd = e => {
-    let stageNum = this.props.stageNum;
-    let id = e.target.attrs.name;
-    let ctool;
-    if (this.checkInteraction(e, stageNum, id)) {
-      ctool = this.state.sourceTool;
-    } else {
-      this.props.stageTool.map(tool => {
-        // e.target.attrs.name is the id of img
-        if (tool.id === id) {
-          tool.x = e.target.attrs.x;
-          tool.y = e.target.attrs.y;
-          this.setState({ currentTool: tool });
-        }
-      });
+    let stageNum = this.props.stageNum,
+      id = e.target.attrs.name;
 
-      ctool = this.state.currentTool;
+    this.props.stageTool.map(tool => {
+      // e.target.attrs.name is the id of img
+      if (tool.id === id) {
+        tool.x = e.target.attrs.x;
+        tool.y = e.target.attrs.y;
+        this.setState({ currentTool: tool });
+      }
+    });
+
+    let ctool = this.state.currentTool;
+    if (this.checkInteraction(e, stageNum, id)) {
+      console.log(true);
+      ctool = this.state.sourceTool;
     }
+
     e.target.to({
       duration: 4,
       easing: Konva.Easings.ElasticEaseOut,
@@ -279,6 +281,7 @@ class LabTool extends Component {
           onDragStart={this.handleDragStart}
           onDragEnd={this.handleDragEnd}
           onContextMenu={this.handleContextMenu}
+          /*
           fillLinearGradientStartPoint={{ x: 20, y: 0 }}
           fillLinearGradientEndPoint={{ x: 20, y: this.props.y }}
           fillLinearGradientColorStops={[
@@ -289,6 +292,7 @@ class LabTool extends Component {
             0.5,
             "lightblue"
           ]}
+          */
         />
         <Portal isOpened={this.state.showTooltip}>
           <ToolContextMenu
