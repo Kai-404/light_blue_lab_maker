@@ -14,7 +14,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 @Getter
 @Setter
-public class Flask extends Beaker {
+public class Flask extends Tool {
     @Field("FlaskName")
     String name = "Flask";
     @Field("FlaskImageName")
@@ -300,25 +300,28 @@ public class Flask extends Beaker {
     }
 
     public boolean pour(Tool tool, Double amount){
-        Beaker pourTo;
         if (tool.getName().equals( "Beaker" )) {
-            System.out.println( "aaa" );
-            pourTo = (Beaker) tool;
+            Beaker pourTo = (Beaker) tool;
+            if(amount>this.currentVolume){
+                return false;
+            }else if((pourTo.getCurrentVolume()+amount) > pourTo.getMaxVolume()){
+                return false;
+            }else {
+                this.currentVolume = this.currentVolume - amount;
+                pourTo.currentVolume = pourTo.currentVolume + amount;
+                return true;
+            }
         }else {
-            pourTo = (Flask) tool;
-            System.out.println( "I am a Flask" );
-        }
-
-        if(amount>this.currentVolume){
-            return false;
-        }else if((pourTo.getCurrentVolume()+amount) > pourTo.getMaxVolume()){
-            return false;
-        }else {
-            this.currentVolume = this.currentVolume - amount;
-            pourTo.currentVolume = pourTo.currentVolume + amount;
-            System.out.println( pourTo.currentVolume + " "+pourTo.getId());
-            System.out.println( pourTo.getToolAsJSON().toString() );
-            return true;
+            Flask pourTo = (Flask) tool;
+            if(amount>this.currentVolume){
+                return false;
+            }else if((pourTo.getCurrentVolume()+amount) > pourTo.getMaxVolume()){
+                return false;
+            }else {
+                this.currentVolume = this.currentVolume - amount;
+                pourTo.currentVolume = pourTo.currentVolume + amount;
+                return true;
+            }
         }
     }
 

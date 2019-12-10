@@ -300,23 +300,33 @@ public class Beaker extends Tool {
     }
 
     public boolean pour(Tool tool, Double amount){
-        Beaker pourTo;
+
         if (tool.getName().equals( "Beaker" )) {
-            pourTo = (Beaker) tool;
+            Beaker pourTo = (Beaker) tool;
+            if(amount>this.currentVolume){
+                return false;
+            }else if((pourTo.getCurrentVolume()+amount) > pourTo.getMaxVolume()){
+                return false;
+            }else {
+                this.currentVolume = this.currentVolume - amount;
+                pourTo.currentVolume = pourTo.currentVolume + amount;
+                return true;
+            }
         }else {
-            pourTo = (Flask) tool;
+            Flask pourTo = (Flask) tool;
+            if(amount>this.currentVolume){
+                return false;
+            }else if((pourTo.getCurrentVolume()+amount) > pourTo.getMaxVolume()){
+                return false;
+            }else {
+                this.currentVolume = this.currentVolume - amount;
+                pourTo.currentVolume = pourTo.currentVolume + amount;
+                return true;
+            }
         }
 
 
-        if(amount>this.currentVolume){
-            return false;
-        }else if((pourTo.getCurrentVolume()+amount) > pourTo.getMaxVolume()){
-            return false;
-        }else {
-            this.currentVolume = this.currentVolume - amount;
-            pourTo.currentVolume = pourTo.currentVolume + amount;
-            return true;
-        }
+
     }
 
     public JSONObject getInteractionDetail(String interactionName){
