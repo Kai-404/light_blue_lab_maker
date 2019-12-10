@@ -1,237 +1,340 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import axios from "axios";
-import {withRouter} from "react-router";
+import { withRouter } from "react-router";
 import Konva from "konva";
-import {Stage, Layer, Star, Text, Image} from "react-konva";
+import { Stage, Layer, Star, Text, Image } from "react-konva";
 import useImage from "use-image";
 import Sidebar from "../Layout/Sidebar";
-import {LinkContainer} from "react-router-bootstrap";
+import { LinkContainer } from "react-router-bootstrap";
 import {
-    Button,
-    ButtonGroup,
-    Card,
-    Col,
-    Dropdown,
-    Form,
-    ListGroup,
-    Row,
-    Modal,
-    CardDeck,
-    ProgressBar
+  Button,
+  ButtonGroup,
+  Card,
+  Col,
+  Dropdown,
+  Form,
+  ListGroup,
+  Row,
+  Modal,
+  CardDeck,
+  ProgressBar
 } from "react-bootstrap";
 import Addtool from "./Addtool";
 import ToolModal from "./Toolmodal";
 import LabStageBar from "./LabStageBar";
 import LabTool from "./LabTool";
-import Tooltip from "./Tooltip";
+import InteractionModal from "./InteractionModal";
 import "../App.css";
 
 const stageW = window.innerWidth - window.innerWidth * 0.4;
 const stageH = window.innerHeight - 400;
 
 class Dolab extends Component {
+  state = {
+    getTotalStage: -1,
+    currentTool: [],
+    stage: {
+      stageNum: -1,
+      stageTool: [],
+      instructions: ""
+    },
+    studentProgress: -1,
+    hasInter: false,
+    inter: {
+      Description: "Some description",
+      Name: "Name of interaction",
+      Prams: {
+        PramName: "",
+        Value: ""
+      }
+    },
+    tempTool: {},
+    sourceTool: { Prop: [] },
+    destinationTool: { Prop: [] },
+    eventTool: {}
+  };
 
-    state = {
-        getTotalStage: -1,
-        currentStage: -1,
-        currentTool: [],
-        stage: {
-            stageNum: -1,
-            stageTool: [],
-            instructions: ""
-        },
-        hasInter: false,
-        inter: {
-            Description: "Some description",
-            Name: "Name of interaction",
-            Prams: {
-                PramName: "",
-                Value: ""
-            }
+  back = () => {
+    this.props.history.push("/labspage");
+  };
+
+  getStudentProgress() {
+    axios
+      .get("http://localhost:8080/getstudentprogress", {
+        headers: { "Content-Type": "application/json;charset=UTF-8" },
+        params: {
+          id: sessionStorage.getItem("userID")
         }
-    };
+      })
+      .then(res => {
+        console.log(res.data);
+        this.setState({ studentProgress: res.data });
+      });
+  }
 
-    back = () => {
-        this.props.history.push("/labspage");
-    };
+  getTotalStage() {
+    axios.get("http://localhost:8080/gettotalstage").then(res => {
+      this.setState({ getTotalStage: res.data });
+    });
+  }
 
-    getTotalStage() {
-        axios.get("http://localhost:8080/gettotalstage").then(res => {
-            this.setState({getTotalStage: res.data});
-        });
+  getStage = () => {
+    axios
+      .get("http://localhost:8080/getdolabstage", {
+        headers: { "Content-Type": "application/json;charset=UTF-8" },
+        params: {
+          id: sessionStorage.getItem("userID"),
+          userType: sessionStorage.getItem("userType")
+        }
+      })
+      .then(res => {
+        this.setState({ stage: res.data });
+      });
+  };
+
+  componentDidMount() {
+    if (sessionStorage.getItem("userType") === "Student") {
+      this.getStudentProgress();
     }
+    this.getTotalStage();
+    this.getStage();
+  }
 
-    getCurrentStage() {
-        axios.get("http://localhost:8080/getcurrentstage").then(res => {
-            console.log("test2");
-            console.log(res.data);
-            this.setState({currentStage: res.data});
+  setCurrentTool = tool => {
+    this.setState({ currentTool: tool });
+  };
+
+  setCurrentStage = i => {
+    let data = JSON.stringify(i);
+    if (i > -1) {
+      axios
+        .post("http://localhost:8080/getstage", data, {
+          headers: { "Content-Type": "application/json;charset=UTF-8" },
+          params: { stageNum: i }
+        })
+        .then(res => {
+          this.setState({ stage: res.data });
         });
+    } else {
+      this.setState({ stage: { stageNum: -1, stageTool: [] } });
     }
+  };
 
-    getNextStage = () => {
-        axios.get("http://localhost:8080/getnextstage").then(res => {
-            if (res.data === true) {
-                this.getCurrentStage();
-                this.getStage();
-            } else {
-                alert("Wrong");
-            }
-        });
-    };
+  setInteraction = inter => {
+    console.log("pased:", inter);
+    this.setState({ inter: inter });
+  };
 
-    finishLab = () => {
-        axios.get("http://localhost:8080/getnextstage").then(res => {
-            if (res.data === true) {
-                this.back();
-            } else {
-                alert("Wrong");
-            }
-        });
-    };
-
-    getStage = () => {
-        axios
-            .get(
-                "http://localhost:8080/getdolabstage"
-            )
-            .then(
-                res => {
-                    this.setState({stage: res.data})
-                }
-            )
-    };
-
-    componentDidMount() {
-        this.getStage();
-        this.getTotalStage();
-        this.getCurrentStage();
+  setShowInterModal = (source, destination, e) => {
+    this.setState({
+      hasInter: !this.state.hasInter
+    });
+    if (source && destination && e) {
+      this.setState({
+        sourceTool: source,
+        destinationTool: destination,
+        eventTool: e
+      });
+    } else {
+      this.setState({
+        sourceTool: { Prop: [] },
+        destinationTool: { Prop: [] },
+        eventTool: {}
+      });
     }
+  };
+  updateTools = (source, destination, stageNum) => {
+    let data = JSON.stringify({
+      stageNum,
+      source,
+      destination
+    });
+    axios
+      .post("http://localhost:8080/gettool", data, {
+        headers: { "Content-Type": "application/json;charset=UTF-8" },
+        params: {
+          stageNum: stageNum,
+          ID: source
+        }
+      })
+      .then(res => {
+        this.setState({ sourceTool: res.data });
+      });
+    axios
+      .post("http://localhost:8080/gettool", data, {
+        headers: { "Content-Type": "application/json;charset=UTF-8" },
+        params: {
+          stageNum: stageNum,
+          ID: destination
+        }
+      })
+      .then(res => {
+        this.setState({ destinationTool: res.data });
+      });
+  };
 
-    setCurrentTool = tool => {
-        this.setState({currentTool: tool});
-    };
-
-    setCurrentStage = i => {
-        let data = JSON.stringify(i);
-        if (i > -1) {
-            axios
-                .post("http://localhost:8080/getstage", data, {
-                    headers: {"Content-Type": "application/json;charset=UTF-8"},
-                    params: {stageNum: i}
-                })
-                .then(res => {
-                    console.log("test1");
-                    console.log(res.data);
-                    this.setState({currentStage: res.data.stageNum});
-                });
+  check = () => {
+    axios
+      .get("http://localhost:8080/dolabcheckstage", {
+        headers: { "Content-Type": "application/json;charset=UTF-8" },
+        params: {
+          stageNum: this.state.stage.stageNum,
+          id: sessionStorage.getItem("userID"),
+          userType: sessionStorage.getItem("userType")
+        }
+      })
+      .then(res => {
+        console.log(res.data);
+        if (res.data === true) {
+          alert("correct");
+          if (sessionStorage.getItem("userType") === "Student") {
+            this.getStudentProgress();
+          }
         } else {
-            this.setState({stage: {stageNum: -1, stageTool: []}});
+          alert("wrong");
         }
-    };
+      });
+  };
 
-    setInteraction = inter => {
-        console.log("pased:", inter);
-        this.setState({inter: inter});
-    };
+  getNextStage = () => {
+    console.log("test");
+    axios
+      .get("http://localhost:8080/getnextstage", {
+        headers: { "Content-Type": "application/json;charset=UTF-8" },
+        params: { stageNum: this.state.stage.stageNum }
+      })
+      .then(res => {
+        console.log(res.data);
+        this.setState({ stage: res.data });
+      });
+  };
 
-    setShowInterModal = () => {
-        this.setState({hasInter: !this.state.hasInter});
-    };
-
-    render() {
-        return (
-            <React.Fragment>
-                <Modal
-                    size="sm"
-                    centered
-                    show={this.state.hasInter}
-                    onHide={this.setShowInterModal}
-                    dialogClassName="modal-90w"
-                    aria-labelledby="example-custom-modal-styling-title"
-                >
-                    <Modal.Header>
-                        <Modal.Title id="example-custom-modal-styling-title">
-                            {this.state.inter.Name}
-                        </Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <Form>
-                            <Form.Label column sm={2}>
-                                {this.state.inter.Prams.PramName}
-                            </Form.Label>
-                            <Col sm={10}>
-                                <Form.Control
-                                    required
-                                    type={this.state.inter.Prams.PramName}
-                                    defaultValue={this.state.inter.Prams.Value}
-                                    onChange={this.handleChangeProps}
-                                />
-                            </Col>
-                        </Form>
-                    </Modal.Body>
-                    <Modal.Footer>{this.state.inter.Description}</Modal.Footer>
-                </Modal>
-                <Row>
-                    <Col>
-                        <div className="stage" id="stageInstructions">
-                             <textarea
-                                 readOnly={true}
-                                 id="stageInstructionsText"
-                                 value={this.state.stage.instructions}
-                             />
-                        </div>
-                        <Stage width={stageW} height={stageH} className="stage">
-                            <Layer>
-                                {this.state.stage.stageTool.map((tool, key) => (
-                                    <LabTool
-                                        key={key}
-                                        src={tool.Img}
-                                        x={tool.x}
-                                        y={tool.y}
-                                        id={tool.id}
-                                        stageNum={this.state.stage.stageNum}
-                                        stageTool={this.state.stage.stageTool}
-                                        setCurrentStage={this.setCurrentStage}
-                                        setTool={this.setCurrentTool}
-                                        setShowModal={null}
-                                        setInteraction={this.setInteraction}
-                                        setShowInterModal={this.setShowInterModal}
-                                    />
-                                ))}
-                            </Layer>
-                        </Stage>
-                    </Col>
-
-                    <Card border="secondary" className="col-md-2">
-                        <Card.Body>
-                            <Card.Title>Lab Progress</Card.Title>
-                            <Modal.Body
-                                style={{
-                                    "max-height": "calc(100vh - 310px)",
-                                    "overflow-y": "auto"
-                                }}
-                            >
-                                <ProgressBar
-                                    now={Math.round(100 * (this.state.currentStage / this.state.getTotalStage))}
-                                    label={Math.round(100 * (this.state.currentStage / this.state.getTotalStage))}
-                                />
-                                <br/>
-                                {
-                                    this.state.currentStage + 1 === this.state.getTotalStage ?
-                                        <Button onClick={this.finishLab}>Finish</Button>
-                                        :
-                                        <Button onClick={this.getNextStage}>Next</Button>
-                                }
-                                <Button onClick={this.back}>Leave</Button>
-                            </Modal.Body>
-                        </Card.Body>
-                    </Card>
-
-                </Row>
-            </React.Fragment>
-        );
+  disableNextButton = () => {
+    if (sessionStorage.getItem("userType") === "Student") {
+      return (
+        this.state.stage.stageNum >= this.state.studentProgress ||
+        this.state.stage.stageNum + 1 === this.state.getTotalStage
+      );
+    } else {
+      return this.state.stage.stageNum + 1 === this.state.getTotalStage;
     }
+  };
+
+  disableStageSelector = i => {
+    if (sessionStorage.getItem("userType") === "Student") {
+      return i > this.state.studentProgress;
+    }
+    return false;
+  };
+
+  render() {
+    let stageList = [];
+    for (let i = 0; i < this.state.getTotalStage; i++) {
+      stageList.push(
+        <ListGroup.Item
+          action
+          active={i === this.state.stage.stageNum}
+          disabled={this.disableStageSelector(i)}
+          onClick={() => this.setCurrentStage(i)}
+        >
+          {i}
+        </ListGroup.Item>
+      );
+    }
+
+    return (
+      <React.Fragment>
+        <InteractionModal
+          interaction={this.state.inter}
+          setInteraction={this.setInteraction}
+          show={this.state.hasInter}
+          setShow={this.setShowInterModal}
+          stageNum={this.state.stage.stageNum}
+          updateTools={this.updateTools}
+          sourceTool={this.state.sourceTool}
+          destinationTool={this.state.destinationTool}
+          eventTool={this.state.eventTool}
+          setCurrentStage={this.setCurrentStage}
+          getToolById={this.getToolById}
+        />
+        <Row>
+          <Col>
+            <div className="stage" id="stageInstructions">
+              <textarea
+                readOnly={true}
+                id="stageInstructionsText"
+                value={this.state.stage.instructions}
+              />
+            </div>
+            <Stage width={stageW} height={stageH} className="stage">
+              <Layer>
+                {this.state.stage.stageTool.map((tool, key) => (
+                  <LabTool
+                    key={key}
+                    src={tool.Img}
+                    x={tool.x}
+                    y={tool.y}
+                    id={tool.id}
+                    stageNum={this.state.stage.stageNum}
+                    stageTool={this.state.stage.stageTool}
+                    setCurrentStage={this.setCurrentStage}
+                    setTool={this.setCurrentTool}
+                    setShowModal={null}
+                    setInteraction={this.setInteraction}
+                    setShowInterModal={this.setShowInterModal}
+                  />
+                ))}
+              </Layer>
+            </Stage>
+          </Col>
+
+          <Card border="secondary" className="col-md-2" id="labStageComponent">
+            <Card.Body>
+              <Card.Title>Lab Progress</Card.Title>
+              {sessionStorage.getItem("userType") === "Student" ? (
+                <ProgressBar
+                  now={Math.round(
+                    100 *
+                      (this.state.studentProgress / this.state.getTotalStage)
+                  )}
+                  label={
+                    Math.round(
+                      100 *
+                        (this.state.studentProgress / this.state.getTotalStage)
+                    ) + "%"
+                  }
+                />
+              ) : (
+                <ProgressBar now={100} label={"100%"} />
+              )}
+              <br />
+              <Modal.Body
+                style={{
+                  "max-height": "calc(100vh - 310px)",
+                  "overflow-y": "auto"
+                }}
+              >
+                <ListGroup id="stageGroup">{stageList}</ListGroup>
+              </Modal.Body>
+            </Card.Body>
+            <Button className="addtoolButton" onClick={this.check}>
+              Check
+            </Button>
+            <Button
+              className="addtoolButton"
+              onClick={this.getNextStage}
+              disabled={this.disableNextButton()}
+            >
+              Next
+            </Button>
+            <Button className="addtoolButton" onClick={this.back}>
+              Leave
+            </Button>
+          </Card>
+        </Row>
+      </React.Fragment>
+    );
+  }
 }
 
 export default withRouter(Dolab);

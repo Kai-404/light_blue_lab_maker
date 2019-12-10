@@ -5,6 +5,7 @@ import application.Models.Lab;
 // Not the real JSON Library!!!
 //import net.minidev.json.JSONArray;
 import application.Tools.Beaker;
+import application.Tools.Flask;
 import application.Tools.PHPaper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonObject;
@@ -37,7 +38,6 @@ public class LabController {
 
     //Lab object that gets modified when creating a lab
     Lab lab;
-    int currentStage = 0;
 
     //sets lab to a new lab object
     @PostMapping("/newlab")
@@ -124,6 +124,7 @@ public class LabController {
     @PostMapping("/gettool")
     @ResponseBody
     public String getTool(@RequestParam int stageNum, @RequestParam String ID){
+        System.out.println( lab.getStage( stageNum ).getTool( ID ).toString() );
         return lab.getStage( stageNum ).getTool( ID ).toString();
     }
 
@@ -185,12 +186,18 @@ public class LabController {
         return labList;
     }
 
+    @GetMapping("/getallstudentprogress")
+    @ResponseBody
+    public HashMap<String,Integer> getAllStudentProgress(String id) {
+        Student student = studentRepository.findByUserId(id);
+        return student.getLabProgress();
+    }
+
     @GetMapping("/getstudentprogress")
     @ResponseBody
-    public HashMap<String,Integer> getStudentProgress(String id) {
+    public int getStudentProgress(String id) {
         Student student = studentRepository.findByUserId(id);
-        System.out.println(student.getLabProgress());
-        return student.getLabProgress();
+        return student.getLabProgress().get(lab.getId());
     }
 
     @GetMapping("/publishlab")
@@ -285,10 +292,14 @@ public class LabController {
             if (tool1.getName().equals( "Beaker" )){
                 Beaker tool = (Beaker) tool1;
                 return new ResponseEntity<>(tool.getInteractionDetail(interActionName).toString(), HttpStatus.OK);
+            }else if(tool1.getName().equals( "Flask" )){
+                Flask tool = (Flask) tool1;
+                return new ResponseEntity<>(tool.getInteractionDetail(interActionName).toString(), HttpStatus.OK);
             }else if (tool1.getName().equals( "PHPaper" )) {
                 PHPaper tool = (PHPaper) tool1;
                 tool.measurePh( tool2 );
-                System.out.println( tool.getPhStatus() );
+//                System.out.println( tool.getId() );
+//                System.out.println( tool.getToolAsJSON().toString() );
                 return new ResponseEntity<>(tool.getInteractionDetail(interActionName).toString(), HttpStatus.OK);
             }else {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -325,38 +336,56 @@ public class LabController {
 
     @GetMapping("/setdolab")
     @ResponseBody
-    public void setDoLab(@RequestParam(name="id") String id) {
-        lab = labRepository.getById(id);
-        currentStage = 0;
+    public void setDoLab(@RequestParam(name="labID") String labID) {
+        lab = labRepository.getById(labID);
     }
 
     @GetMapping("/getdolabstage")
     @ResponseBody
-    public String getDoLabStage() {
-        return lab.getStage(currentStage).getStageAsJSON().toString();
-    }
-
-    @GetMapping("/getcurrentstage")
-    @ResponseBody
-    public int getCurrentStage(){
-        return currentStage;
+    public String getDoLabStage(@RequestParam(name="id") String id, @RequestParam(name="userType") String userType) {
+        if (userType.equals("Student")) {
+            Student student = studentRepository.findByUserId(id);
+            if (student.getLabProgress().get(lab.getId()) == lab.getTotalStage()) {
+                return lab.getStage(lab.getTotalStage() - 1).getStageAsJSON().toString();
+            }
+            return lab.getStage(student.getLabProgress().get(lab.getId())).getStageAsJSON().toString();
+        }
+        return lab.getStage(0).getStageAsJSON().toString();
     }
 
     @GetMapping("/getnextstage")
     @ResponseBody
-    public boolean getNextStage() throws IOException {
-        ArrayList<Tool> toolList = lab.getStage(currentStage).getStageToolList();
+    public String getNextStage(@RequestParam(name="stageNum") int stageNum) {
+        return lab.getStage(stageNum+1).getStageAsJSON().toString();
+    }
+
+    @GetMapping("/dolabcheckstage")
+    @ResponseBody
+    public boolean doLabCheckStage(@RequestParam(name="stageNum") int stageNum, @RequestParam(name="id") String id, @RequestParam(name="userType") String userType) throws IOException {
+        Student student = null;
+        if (userType.equals("Student")) {
+            student = studentRepository.findByUserId(id);
+        }
+        ArrayList<Tool> toolList = lab.getStage(stageNum).getStageToolList();
         for (Tool tool: toolList) {
             HashMap result = new ObjectMapper().readValue(tool.getToolAsJSON().toString(), HashMap.class);
             List initialProperties = (List) result.get("Prop");
             List finalProperties = (List) result.get("FinalProp");
             for (int i=0; i<initialProperties.size();i++) {
-                if (!((LinkedHashMap) (initialProperties).get(i)).get("Value").equals(((LinkedHashMap) (finalProperties).get(i)).get("Value"))) {
+                if (((LinkedHashMap) (initialProperties).get(i)).get("Value").equals(((LinkedHashMap) (finalProperties).get(i)).get("Value"))) {
+                    if (student != null && stageNum==(student.getLabProgress().get(lab.getId()))) {
+                        HashMap<Integer, Integer> labGrade = student.getGrade().get(lab.getId());
+                        labGrade.put(stageNum, labGrade.get(stageNum)+1);
+                        studentRepository.save(student);
+                    }
                     return false;
                 }
             }
         }
-        ++currentStage;
+        if (student != null &&  stageNum==(student.getLabProgress().get(lab.getId()))) {
+            student.getLabProgress().put(lab.getId(), student.getLabProgress().get(lab.getId())+1);
+            studentRepository.save(student);
+        }
         return true;
     }
 }

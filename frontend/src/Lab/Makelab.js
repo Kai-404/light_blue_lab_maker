@@ -51,8 +51,10 @@ class Makelab extends Component {
                 Value: ""
             }
         },
+        tempTool: {},
         sourceTool: {Prop: []},
-        destinationTool: {Prop: []}
+        destinationTool: {Prop: []},
+        eventTool: {}
     };
 
     componentDidMount() {
@@ -195,12 +197,11 @@ class Makelab extends Component {
 
     publishLab = () => {
         axios
-            .get("http://localhost:8080/publishlab",
-                {
-                    params: {
-                        courseID: sessionStorage.getItem("currentCourse"),
-                    }
-                })
+            .get("http://localhost:8080/publishlab", {
+                params: {
+                    courseID: sessionStorage.getItem("currentCourse")
+                }
+            })
             .then(res => {
                 if (res.data) {
                     this.saveLab();
@@ -222,31 +223,65 @@ class Makelab extends Component {
         this.setState({showPop: !this.state.showPop});
     };
 
-    setShowInterModal = (source, destination) => {
+    setShowInterModal = (source, destination, e) => {
         this.setState({
             hasInter: !this.state.hasInter
         });
-        if (source || destination) {
+        if (source && destination && e) {
             this.setState({
                 sourceTool: source,
-                destinationTool: destination
+                destinationTool: destination,
+                eventTool: e
+            });
+        } else {
+            this.setState({
+                sourceTool: {Prop: []},
+                destinationTool: {Prop: []},
+                eventTool: {}
             });
         }
     };
+    updateTools = (source, destination, stageNum) => {
+        let data = JSON.stringify({
+            stageNum,
+            source,
+            destination
+        });
+        axios
+            .post("http://localhost:8080/gettool", data, {
+                headers: {"Content-Type": "application/json;charset=UTF-8"},
+                params: {
+                    stageNum: stageNum,
+                    ID: source
+                }
+            })
+            .then(res => {
+                this.setState({sourceTool: res.data});
+            });
+        axios
+            .post("http://localhost:8080/gettool", data, {
+                headers: {"Content-Type": "application/json;charset=UTF-8"},
+                params: {
+                    stageNum: stageNum,
+                    ID: destination
+                }
+            })
+            .then(res => {
+                this.setState({destinationTool: res.data});
+            });
+    };
 
     dataChanged(data) {
-
     }
 
     updateInstructions = event => {
-        axios
-            .post("http://localhost:8080/saveinstructions", null, {
-                headers: {"Content-Type": "application/json;charset=UTF-8"},
-                params: {
-                    stageNum: this.state.currentStage.stageNum,
-                    instructions: event.target.value
-                }
-            });
+        axios.post("http://localhost:8080/saveinstructions", null, {
+            headers: {"Content-Type": "application/json;charset=UTF-8"},
+            params: {
+                stageNum: this.state.currentStage.stageNum,
+                instructions: event.target.value
+            }
+        });
         this.setState({
             currentStage: {
                 stageNum: this.state.currentStage.stageNum,
@@ -279,10 +314,16 @@ class Makelab extends Component {
                 <p className="errmsg">{this.state.errMsg}</p>
                 <InteractionModal
                     interaction={this.state.inter}
+                    setInteraction={this.setInteraction}
                     show={this.state.hasInter}
                     setShow={this.setShowInterModal}
+                    stageNum={this.state.currentStage.stageNum}
+                    updateTools={this.updateTools}
                     sourceTool={this.state.sourceTool}
                     destinationTool={this.state.destinationTool}
+                    eventTool={this.state.eventTool}
+                    setCurrentStage={this.setCurrentStage}
+                    getToolById={this.getToolById}
                 />
 
                 <ToolModal
@@ -308,11 +349,11 @@ class Makelab extends Component {
                     {/* append tools to the stageTool and rerender */}
                     <Col>
                         <div className="stage" id="stageInstructions">
-                            <textarea
-                                id="stageInstructionsText"
-                                value={this.state.currentStage.instructions}
-                                onChange={this.updateInstructions}
-                            />
+              <textarea
+                  id="stageInstructionsText"
+                  value={this.state.currentStage.instructions}
+                  onChange={this.updateInstructions}
+              />
                         </div>
                         <Stage width={stageW} height={stageH} className="stage">
                             <Layer>
@@ -352,10 +393,7 @@ class Makelab extends Component {
                             </Modal.Body>
                         </Card.Body>
 
-                        <Button
-                            onClick={() => this.addStage()}
-                            className="addtoolButton"
-                        >
+                        <Button onClick={() => this.addStage()} className="addtoolButton">
                             New
                         </Button>
                         <Button
