@@ -382,6 +382,7 @@ public class LabController {
         }
         if (student != null && stageNum == (student.getLabProgress().get(lab.getId()))) {
             student.getLabProgress().put(lab.getId(), student.getLabProgress().get(lab.getId()) + 1);
+            student.getGrade().get(lab.getId()).put(stageNum, student.getGrade().get(lab.getId()).get(stageNum)+1);
             studentRepository.save(student);
         }
         return true;
