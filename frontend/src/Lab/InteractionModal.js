@@ -109,6 +109,11 @@ class InteractionModal extends Component {
         );
         break;
       case "Measure":
+        interactionForm = (
+          <ListGroup>
+            <ListGroup.Item>{this.props.interaction.Prams}</ListGroup.Item>
+          </ListGroup>
+        );
         break;
       default:
         interactionForm = (
