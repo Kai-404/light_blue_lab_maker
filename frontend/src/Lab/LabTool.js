@@ -1,11 +1,12 @@
 import React, { Component } from "react";
 import axios from "axios";
 import Konva from "konva";
-import { Image, Layer } from "react-konva";
+import { Image, Layer, Rect } from "react-konva";
 import Portal from "react-portal";
 import InteractionModal from "./InteractionModal";
 import ToolContextMenu from "./ToolContextMenu";
 import { Button, Form, Modal, Row, Col } from "react-bootstrap";
+
 /**
  * Props:
  *  Img //image of the tool
@@ -41,23 +42,28 @@ class LabTool extends Component {
       }
     }
   };
+
   componentDidMount() {
     this.loadImage();
   }
+
   componentDidUpdate(oldProps) {
     if (oldProps.src !== this.props.src) {
       this.loadImage();
     }
   }
+
   componentWillUnmount() {
     this.image.removeEventListener("load", this.handleLoad);
   }
+
   loadImage() {
     // save to "this" to remove "load" handler on unmount
     this.image = new window.Image();
     this.image.src = this.props.src;
     this.image.addEventListener("load", this.handleLoad);
   }
+
   handleLoad = () => {
     // after setState react-konva will update canvas and redraw the layer
     // because "image" property is changed
@@ -96,6 +102,7 @@ class LabTool extends Component {
 
   //while dragging the tool, detection collision and perform interaction if any
   checkInteraction = (e, stageNum, id) => {
+    let inter = false;
     let targetTool = e.target.getClientRect();
     let sourceTool;
     this.props.stageTool.forEach(tool => {
@@ -108,6 +115,7 @@ class LabTool extends Component {
       let id2 = tool.id;
       if (id2 != e.target.attrs.name) {
         if (this.haveIntersection(tool, targetTool)) {
+          inter = true;
           this.setState({ interactedTool: tool });
           e.target.setAttrs({
             x: this.state.interactedTool.x,
@@ -134,7 +142,8 @@ class LabTool extends Component {
                 //animation, goes to the top of interacted tool
                 this.props.setInteraction(res.data);
                 //param: (sourceTool, destinationTool)
-                this.props.setShowInterModal(sourceTool, tool, e);
+                if (res.data.Name == "Pour")
+                  this.props.setShowInterModal(sourceTool, tool, e);
               }
             })
             .catch(err => {
@@ -143,23 +152,28 @@ class LabTool extends Component {
         }
       }
     });
+    return inter;
   };
 
   //drag tool end animation, boundingBox disappears
   handleDragEnd = e => {
     let stageNum = this.props.stageNum;
     let id = e.target.attrs.name;
+    let ctool;
+    if (this.checkInteraction(e, stageNum, id)) {
+      ctool = this.state.sourceTool;
+    } else {
+      this.props.stageTool.map(tool => {
+        // e.target.attrs.name is the id of img
+        if (tool.id === id) {
+          tool.x = e.target.attrs.x;
+          tool.y = e.target.attrs.y;
+          this.setState({ currentTool: tool });
+        }
+      });
 
-    this.checkInteraction(e, stageNum, id);
-
-    this.props.stageTool.map(tool => {
-      // e.target.attrs.name is the id of img
-      if (tool.id === id) {
-        tool.x = e.target.attrs.x;
-        tool.y = e.target.attrs.y;
-        this.setState({ currentTool: tool });
-      }
-    });
+      ctool = this.state.currentTool;
+    }
     e.target.to({
       duration: 4,
       easing: Konva.Easings.ElasticEaseOut,
@@ -168,7 +182,6 @@ class LabTool extends Component {
       shadowOffsetX: 0,
       shadowOffsetY: 0
     });
-    let ctool = this.state.currentTool;
     let data = JSON.stringify({
       stageNum,
       id,
@@ -266,6 +279,16 @@ class LabTool extends Component {
           onDragStart={this.handleDragStart}
           onDragEnd={this.handleDragEnd}
           onContextMenu={this.handleContextMenu}
+          fillLinearGradientStartPoint={{ x: 20, y: 0 }}
+          fillLinearGradientEndPoint={{ x: 20, y: this.props.y }}
+          fillLinearGradientColorStops={[
+            0,
+            "white",
+            0.45,
+            "white",
+            0.5,
+            "lightblue"
+          ]}
         />
         <Portal isOpened={this.state.showTooltip}>
           <ToolContextMenu

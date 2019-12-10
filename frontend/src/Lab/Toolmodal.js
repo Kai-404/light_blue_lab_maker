@@ -1,5 +1,13 @@
 import React, { Component } from "react";
-import { Button, Form, Modal, Row, Col } from "react-bootstrap";
+import {
+  Button,
+  Dropdown,
+  DropdownButton,
+  Form,
+  Modal,
+  Row,
+  Col
+} from "react-bootstrap";
 import "../App.css";
 import axios from "axios";
 
@@ -21,7 +29,10 @@ class Toolmodal extends Component {
     let value = e.target.value;
     let type = e.target.id; //init or final
     if (type == "init") {
+      console.log("name", name);
+      console.log(value);
       tool.Prop.map(prop => {
+        console.log(prop.Name);
         if (prop.Name == name) {
           prop.Value = value;
         }
@@ -168,6 +179,36 @@ class Toolmodal extends Component {
                   />
                 );
               }
+              if (prop.Name == "Color") {
+                control = (
+                  <Form.Control
+                    as="select"
+                    id={"init"}
+                    name={prop.Name}
+                    defaultValue={prop.Value}
+                    onChange={this.handleChangeProps}
+                  >
+                    {prop.ValidColor.map(s => {
+                      return <option>{s}</option>;
+                    })}
+                  </Form.Control>
+                );
+              }
+              if (prop.Name == "PH Status") {
+                control = (
+                  <Form.Control
+                    as="select"
+                    id={"init"}
+                    name={prop.Name}
+                    defaultValue={prop.Value}
+                    onChange={this.handleChangeProps}
+                  >
+                    {prop.ValidStatus.map(s => {
+                      return <option>{s}</option>;
+                    })}
+                  </Form.Control>
+                );
+              }
               return (
                 <React.Fragment>
                   <Form.Group as={Row}>
@@ -194,6 +235,34 @@ class Toolmodal extends Component {
                   onChange={this.handleChangeProps}
                 />
               );
+              if (prop.Name == "PH Status") {
+                control = (
+                  <Form.Control
+                    as="select"
+                    name={prop.Name}
+                    defaultValue={prop.Value}
+                    onChange={this.handleChangeProps}
+                  >
+                    {prop.ValidStatus.map(s => {
+                      return <option>{s}</option>;
+                    })}
+                  </Form.Control>
+                );
+              }
+              if (prop.Name == "Color") {
+                control = (
+                  <Form.Control
+                    as="select"
+                    name={prop.Name}
+                    defaultValue={prop.Value}
+                    onChange={this.handleChangeProps}
+                  >
+                    {prop.ValidColor.map(s => {
+                      return <option>{s}</option>;
+                    })}
+                  </Form.Control>
+                );
+              }
               if (!prop.Editable) {
                 control = (
                   <Form.Control

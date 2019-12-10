@@ -25,7 +25,7 @@ public class UserController {
 
     @PostMapping("/register")
     public int createUser(@RequestBody User user) {
-        System.out.println(user);
+        //System.out.println(user);
         if (userRepository.findByEmail(user.getEmail()) != null) { return 1; }
         if (userRepository.findByUsername(user.getUsername()) != null) { return 2; }
         user.setPassword(encryptPassword(user.getPassword()));

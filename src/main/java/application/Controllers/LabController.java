@@ -10,6 +10,7 @@ import application.Tools.PHPaper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.cdi.Eager;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,11 +32,12 @@ public class LabController {
     @Autowired
     private ProfessorRepository professorRepository;
     @Autowired
+    private StudentRepository studentRepository;
+    @Autowired
     private CourseRepository courseRepository;
 
     //Lab object that gets modified when creating a lab
     Lab lab;
-    int currentStage = 0;
 
     //sets lab to a new lab object
     @PostMapping("/newlab")
@@ -167,21 +169,55 @@ public class LabController {
 
     @GetMapping("/getlablist")
     @ResponseBody
-    public List<Lab> getLabList(String courseID) {
+    public List<Lab> getLabList(String courseID, String userType) {
         Course course = courseRepository.getById(courseID);
         ArrayList<Lab> labList = new ArrayList<Lab>();
         for (String labID : course.getLab_list()) {
-            labList.add(labRepository.getById(labID));
+            Lab lab = labRepository.getById(labID);
+            if (userType.equals("Student")) {
+                if (lab.isPublished()) {
+                    labList.add(lab);
+                }
+            }
+            else {
+                labList.add(lab);
+            }
         }
         return labList;
     }
 
+    @GetMapping("/getallstudentprogress")
+    @ResponseBody
+    public HashMap<String,Integer> getAllStudentProgress(String id) {
+        Student student = studentRepository.findByUserId(id);
+        return student.getLabProgress();
+    }
+
+    @GetMapping("/getstudentprogress")
+    @ResponseBody
+    public int getStudentProgress(String id) {
+        Student student = studentRepository.findByUserId(id);
+        return student.getLabProgress().get(lab.getId());
+    }
+
     @GetMapping("/publishlab")
     @ResponseBody
-    public boolean publishLab() {
+    public boolean publishLab(@RequestParam(name="courseID") String courseID) {
         try {
             lab.setPublished(true);
             labRepository.save(lab);
+            //Update student's lab list
+            Course course = courseRepository.getById(courseID);
+            for (String id : course.getStudent_list()) {
+                Student student = studentRepository.findByUserId(id);
+                student.getLabProgress().put(lab.getId(), 0); //set current progress to 0
+                HashMap<Integer, Integer> grade = new HashMap<>();
+                for (int i=0; i<lab.getTotalStage(); i++) {
+                    grade.put(i,0);
+                }
+                student.getGrade().put(lab.getId(), grade); //create grades for a lab
+                studentRepository.save(student);
+            }
         } catch (Error e) {
             e.printStackTrace();
             return false;
@@ -204,8 +240,9 @@ public class LabController {
 
     @PostMapping("/saveinstructions")
     @ResponseBody
-    public void saveInstructions(@RequestParam(name="stageNum") int stageNum, @RequestParam(name="instructions") String instructions) {
+    public String saveInstructions(@RequestParam(name="stageNum") int stageNum, @RequestParam(name="instructions") String instructions) {
         lab.saveInstructions(stageNum, instructions);
+        return instructions;
     }
 
     @GetMapping("/searchlab")
@@ -299,38 +336,56 @@ public class LabController {
 
     @GetMapping("/setdolab")
     @ResponseBody
-    public void setDoLab(@RequestParam(name="id") String id) {
-        lab = labRepository.getById(id);
-        currentStage = 0;
+    public void setDoLab(@RequestParam(name="labID") String labID) {
+        lab = labRepository.getById(labID);
     }
 
     @GetMapping("/getdolabstage")
     @ResponseBody
-    public String getDoLabStage() {
-        return lab.getStage(currentStage).getStageAsJSON().toString();
-    }
-
-    @GetMapping("/getcurrentstage")
-    @ResponseBody
-    public int getCurrentStage(){
-        return currentStage;
+    public String getDoLabStage(@RequestParam(name="id") String id, @RequestParam(name="userType") String userType) {
+        if (userType.equals("Student")) {
+            Student student = studentRepository.findByUserId(id);
+            if (student.getLabProgress().get(lab.getId()) == lab.getTotalStage()) {
+                return lab.getStage(lab.getTotalStage() - 1).getStageAsJSON().toString();
+            }
+            return lab.getStage(student.getLabProgress().get(lab.getId())).getStageAsJSON().toString();
+        }
+        return lab.getStage(0).getStageAsJSON().toString();
     }
 
     @GetMapping("/getnextstage")
     @ResponseBody
-    public boolean getNextStage() throws IOException {
-        ArrayList<Tool> toolList = lab.getStage(currentStage).getStageToolList();
+    public String getNextStage(@RequestParam(name="stageNum") int stageNum) {
+        return lab.getStage(stageNum+1).getStageAsJSON().toString();
+    }
+
+    @GetMapping("/dolabcheckstage")
+    @ResponseBody
+    public boolean doLabCheckStage(@RequestParam(name="stageNum") int stageNum, @RequestParam(name="id") String id, @RequestParam(name="userType") String userType) throws IOException {
+        Student student = null;
+        if (userType.equals("Student")) {
+            student = studentRepository.findByUserId(id);
+        }
+        ArrayList<Tool> toolList = lab.getStage(stageNum).getStageToolList();
         for (Tool tool: toolList) {
             HashMap result = new ObjectMapper().readValue(tool.getToolAsJSON().toString(), HashMap.class);
             List initialProperties = (List) result.get("Prop");
             List finalProperties = (List) result.get("FinalProp");
             for (int i=0; i<initialProperties.size();i++) {
-                if (!((LinkedHashMap) (initialProperties).get(i)).get("Value").equals(((LinkedHashMap) (finalProperties).get(i)).get("Value"))) {
+                if (((LinkedHashMap) (initialProperties).get(i)).get("Value").equals(((LinkedHashMap) (finalProperties).get(i)).get("Value"))) {
+                    if (student != null && stageNum==(student.getLabProgress().get(lab.getId()))) {
+                        HashMap<Integer, Integer> labGrade = student.getGrade().get(lab.getId());
+                        labGrade.put(stageNum, labGrade.get(stageNum)+1);
+                        studentRepository.save(student);
+                    }
                     return false;
                 }
             }
         }
-        ++currentStage;
+        if (student != null &&  stageNum==(student.getLabProgress().get(lab.getId()))) {
+            student.getLabProgress().put(lab.getId(), student.getLabProgress().get(lab.getId())+1);
+            studentRepository.save(student);
+        }
         return true;
     }
 }

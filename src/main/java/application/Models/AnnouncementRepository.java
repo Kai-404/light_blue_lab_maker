@@ -5,5 +5,5 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.List;
 
 public interface AnnouncementRepository extends MongoRepository<Announcement, String> {
-    List<Announcement> findAllByCourseId(String courseId);
+    List<Announcement> findAllByCourseIdOrderByDateDesc(String courseId);
 }

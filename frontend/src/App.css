@@ -158,3 +158,22 @@ link:active {
   margin-bottom: 10px;
   overflow:scroll;
 }
+
+#labStageComponent {
+  padding-bottom: 35px;
+}
+
+#stageGroup {
+  max-height: 400px;
+}
+
+#stageInstructions {
+  height: 100px;
+  display: flex;
+  padding: 10px;
+}
+
+#stageInstructionsText {
+  width: 100%;
+  resize: none;
+}

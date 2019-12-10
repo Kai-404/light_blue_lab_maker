@@ -67,7 +67,7 @@ public class MailService {
             // send
             t.sendMessage(msg, msg.getAllRecipients());
 
-            System.out.println("Response: " + t.getLastServerResponse());
+            //System.out.println("Response: " + t.getLastServerResponse());
 
             t.close();
         } catch (MessagingException e) {

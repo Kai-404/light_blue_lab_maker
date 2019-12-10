@@ -19,11 +19,13 @@ public class Student {
     private ArrayList<String> course_list;
     private ArrayList<String> lab_list;
     private HashMap<String,Integer> labProgress;
+    private HashMap<String,HashMap<Integer,Integer>> grade;
 
     public Student(String userId) {
         this.userId = userId;
         this.course_list = new ArrayList<>();
         this.lab_list = new ArrayList<>();
         this.labProgress = new HashMap<>();
+        this.grade = new HashMap<>();
     }
 }

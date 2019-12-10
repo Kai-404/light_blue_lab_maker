@@ -1,10 +1,13 @@
 import React, { Component } from "react";
 import axios from "axios";
 import { Button, Form, Modal, Row, Col, ListGroup } from "react-bootstrap";
+import "../App.css";
 
 class InteractionModal extends Component {
   state = {
-    Value: 0
+    errMsg: "",
+    Value: 0,
+    maxValue: null
   };
 
   onChange = e => this.setState({ [e.target.name]: e.target.value });
@@ -22,7 +25,8 @@ class InteractionModal extends Component {
       stageNum = this.props.stageNum,
       id = this.props.sourceTool.id,
       id2 = this.props.destinationTool.id;
-    interaction.Prams.Value = this.state.Value;
+    if (this.props.interaction.Name == "Pour")
+      interaction.Prams.Value = this.state.Value;
 
     //interaction
     let data = JSON.stringify({
@@ -43,23 +47,23 @@ class InteractionModal extends Component {
         }
       })
       .then(res => {
-        this.props.setCurrentStage(stageNum);
+        if (res.status == 200) {
+          this.props.updateTools(id, id2, stageNum);
+          this.props.setCurrentStage(stageNum);
+        } else {
+          this.setState({ errMsg: "wrong action try again" });
+        }
       })
       .catch(err => {
         console.log("err: ");
+        this.setState({ errMsg: "wrong action try again" });
       });
   };
 
   render() {
-    let maxValue;
     this.props.sourceTool.Prop.forEach(prop => {
       if (prop.Name == "Current Volume") {
-        maxValue = prop.Value;
-      }
-    });
-    this.props.destinationTool.Prop.forEach(prop => {
-      if (prop.Name == "Current Volume" && maxValue < prop.Value) {
-        maxValue = prop.Value;
+        this.state.maxValue = prop.Value;
       }
     });
 
@@ -73,6 +77,7 @@ class InteractionModal extends Component {
         }
         interactionForm = (
           <Form onSubmit={this.onSubmit}>
+            <p className="errmsg">{this.state.errMsg}</p>
             <Form.Label>
               {this.props.interaction.Prams.PramName} : {this.state.Value}
             </Form.Label>
@@ -87,14 +92,14 @@ class InteractionModal extends Component {
                   name="Value"
                   min="0"
                   //max will be the current volume of the beaker
-                  max={maxValue}
+                  max={this.state.maxValue}
                   value={this.state.Value}
                   onChange={this.onChange}
                 />
               </Col>
               <Col sm={2}>
                 <span className="font-weight-bold indigo-text ml-2">
-                  {maxValue}
+                  {this.state.maxValue}
                 </span>
               </Col>
             </Row>
@@ -106,7 +111,7 @@ class InteractionModal extends Component {
       case "Measure":
         interactionForm = (
           <ListGroup>
-            <ListGroup.Item>Measured PH</ListGroup.Item>
+            <ListGroup.Item>{this.props.interaction.Prams}</ListGroup.Item>
           </ListGroup>
         );
         break;
@@ -124,7 +129,7 @@ class InteractionModal extends Component {
           size="sm"
           centered
           show={this.props.show}
-          onHide={this.props.setShow}
+          onHide={this.onClose}
           dialogClassName="modal-90w"
           aria-labelledby="example-custom-modal-styling-title"
         >
