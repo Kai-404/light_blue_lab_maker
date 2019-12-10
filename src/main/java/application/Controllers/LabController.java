@@ -363,7 +363,9 @@ public class LabController {
             List initialProperties = (List) result.get("Prop");
             List finalProperties = (List) result.get("FinalProp");
             for (int i = 0; i < initialProperties.size(); i++) {
-                if (((LinkedHashMap) (initialProperties).get(i)).get("Value").equals(((LinkedHashMap) (finalProperties).get(i)).get("Value"))) {
+                System.out.println(((LinkedHashMap) (initialProperties).get(i)).get("Value"));
+                System.out.println(((LinkedHashMap) (finalProperties).get(i)).get("Value"));
+                if (!((LinkedHashMap) (initialProperties).get(i)).get("Value").equals(((LinkedHashMap) (finalProperties).get(i)).get("Value"))) {
                     if (student != null && stageNum == (student.getLabProgress().get(lab.getId()))) {
                         HashMap<Integer, Integer> labGrade = student.getGrade().get(lab.getId());
                         labGrade.put(stageNum, labGrade.get(stageNum) + 1);
