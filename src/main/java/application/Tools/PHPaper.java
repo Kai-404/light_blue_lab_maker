@@ -144,6 +144,8 @@ public class PHPaper extends Tool {
 
     public boolean updateProp(String toolProps){
 
+       // System.out.println( "called"+this.phStatus );
+
         JSONObject jsonObject = new JSONObject(toolProps);
         JSONObject cTool = jsonObject.getJSONObject( "ctool" );
         this.x = (int)cTool.get( "x" );
@@ -162,6 +164,7 @@ public class PHPaper extends Tool {
            }
            else if (((String)prop.get("Name")).equals( "PH Status" )){
                this.phStatus= (String) prop.get( "Value" );
+               //System.out.println( "aaaaa: "+ prop.get( "Value" ) );
            }
 
         } );
@@ -190,7 +193,13 @@ public class PHPaper extends Tool {
 
         Beaker toMeasure = (Beaker) tool;
 
-        this.setPhStatus( toMeasure.getPhStatus() );
+        //System.out.println( toMeasure.phStatus );
+
+        this.phStatus = toMeasure.getPhStatus();
+
+        //System.out.println( "emmmmm:   \n"+this.getToolAsJSON().toString() );
+
+        //this.setPhStatus( );
         return true;
     }
 

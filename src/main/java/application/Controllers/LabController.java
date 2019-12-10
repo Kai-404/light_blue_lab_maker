@@ -5,6 +5,7 @@ import application.Models.Lab;
 // Not the real JSON Library!!!
 //import net.minidev.json.JSONArray;
 import application.Tools.Beaker;
+import application.Tools.Flask;
 import application.Tools.PHPaper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonObject;
@@ -287,10 +288,14 @@ public class LabController {
             if (tool1.getName().equals("Beaker")) {
                 Beaker tool = (Beaker) tool1;
                 return new ResponseEntity<>(tool.getInteractionDetail(interActionName).toString(), HttpStatus.OK);
-            } else if (tool1.getName().equals("PHPaper")) {
+            }else if(tool1.getName().equals( "Flask" )){
+                Flask tool = (Flask) tool1;
+                return new ResponseEntity<>(tool.getInteractionDetail(interActionName).toString(), HttpStatus.OK);
+            }else if (tool1.getName().equals( "PHPaper" )) {
                 PHPaper tool = (PHPaper) tool1;
-                tool.measurePh(tool2);
-                System.out.println(tool.getPhStatus());
+                tool.measurePh( tool2 );
+//                System.out.println( tool.getId() );
+//                System.out.println( tool.getToolAsJSON().toString() );
                 return new ResponseEntity<>(tool.getInteractionDetail(interActionName).toString(), HttpStatus.OK);
             } else {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

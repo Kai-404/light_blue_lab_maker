@@ -29,6 +29,12 @@ class Login extends Component {
     this.props.history.push("/resetpassword");
   };
 
+  componentDidMount() {
+    if (sessionStorage.getItem("loggedin") != null) {
+      this.routeHome();
+    }
+  };
+
   onChange = e => this.setState({ [e.target.name]: e.target.value });
 
   /* When login button is clicked, retrieve user info from database */

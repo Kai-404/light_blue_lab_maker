@@ -1,9 +1,11 @@
 import React, { Component } from "react";
 import axios from "axios";
 import { Button, Form, Modal, Row, Col, ListGroup } from "react-bootstrap";
+import "../App.css";
 
 class InteractionModal extends Component {
   state = {
+    errMsg: "",
     Value: 0,
     maxValue: null
   };
@@ -23,7 +25,8 @@ class InteractionModal extends Component {
       stageNum = this.props.stageNum,
       id = this.props.sourceTool.id,
       id2 = this.props.destinationTool.id;
-    interaction.Prams.Value = this.state.Value;
+    if (this.props.interaction.Name == "Pour")
+      interaction.Prams.Value = this.state.Value;
 
     //interaction
     let data = JSON.stringify({
@@ -44,11 +47,16 @@ class InteractionModal extends Component {
         }
       })
       .then(res => {
-        this.props.updateTools(id, id2, stageNum);
-        this.props.setCurrentStage(stageNum);
+        if (res.status == 200) {
+          this.props.updateTools(id, id2, stageNum);
+          this.props.setCurrentStage(stageNum);
+        } else {
+          this.setState({ errMsg: "wrong action try again" });
+        }
       })
       .catch(err => {
         console.log("err: ");
+        this.setState({ errMsg: "wrong action try again" });
       });
   };
 
@@ -69,6 +77,7 @@ class InteractionModal extends Component {
         }
         interactionForm = (
           <Form onSubmit={this.onSubmit}>
+            <p className="errmsg">{this.state.errMsg}</p>
             <Form.Label>
               {this.props.interaction.Prams.PramName} : {this.state.Value}
             </Form.Label>
