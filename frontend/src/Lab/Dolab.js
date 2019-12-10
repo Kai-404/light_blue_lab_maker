@@ -33,7 +33,6 @@ class Dolab extends Component {
 
     state = {
         getTotalStage: -1,
-        currentStage: -1,
         currentTool: [],
         stage: {
             stageNum: -1,
@@ -48,12 +47,27 @@ class Dolab extends Component {
                 PramName: "",
                 Value: ""
             }
-        }
+        },
+        studentProgress: -1
     };
 
     back = () => {
         this.props.history.push("/labspage");
     };
+
+    getStudentProgress() {
+        axios
+            .get("http://localhost:8080/getstudentprogress", {
+                headers: {"Content-Type": "application/json;charset=UTF-8"},
+                params: {
+                    id: sessionStorage.getItem("userID")
+                }
+            })
+            .then(res => {
+                console.log(res.data);
+                this.setState({studentProgress: res.data})
+            });
+    }
 
     getTotalStage() {
         axios.get("http://localhost:8080/gettotalstage").then(res => {
@@ -61,39 +75,13 @@ class Dolab extends Component {
         });
     }
 
-    getCurrentStage() {
-        axios.get("http://localhost:8080/getcurrentstage").then(res => {
-            console.log("test2");
-            console.log(res.data);
-            this.setState({currentStage: res.data});
-        });
-    }
-
-    getNextStage = () => {
-        axios.get("http://localhost:8080/getnextstage").then(res => {
-            if (res.data === true) {
-                this.getCurrentStage();
-                this.getStage();
-            } else {
-                alert("Wrong");
-            }
-        });
-    };
-
-    finishLab = () => {
-        axios.get("http://localhost:8080/getnextstage").then(res => {
-            if (res.data === true) {
-                this.back();
-            } else {
-                alert("Wrong");
-            }
-        });
-    };
-
     getStage = () => {
         axios
-            .get(
-                "http://localhost:8080/getdolabstage"
+            .get("http://localhost:8080/getdolabstage",
+                {
+                    headers: {"Content-Type": "application/json;charset=UTF-8"},
+                    params: {id: sessionStorage.getItem("userID")}
+                }
             )
             .then(
                 res => {
@@ -103,9 +91,9 @@ class Dolab extends Component {
     };
 
     componentDidMount() {
-        this.getStage();
+        this.getStudentProgress();
         this.getTotalStage();
-        this.getCurrentStage();
+        this.getStage();
     }
 
     setCurrentTool = tool => {
@@ -121,9 +109,7 @@ class Dolab extends Component {
                     params: {stageNum: i}
                 })
                 .then(res => {
-                    console.log("test1");
-                    console.log(res.data);
-                    this.setState({currentStage: res.data.stageNum});
+                    this.setState({stage: res.data});
                 });
         } else {
             this.setState({stage: {stageNum: -1, stageTool: []}});
@@ -139,7 +125,60 @@ class Dolab extends Component {
         this.setState({hasInter: !this.state.hasInter});
     };
 
+    check = () => {
+        axios
+            .get("http://localhost:8080/dolabcheckstage",
+                {
+                    headers: {"Content-Type": "application/json;charset=UTF-8"},
+                    params: {
+                        stageNum: this.state.stage.stageNum,
+                        id: sessionStorage.getItem("userID")
+                    }
+                }
+            )
+            .then(
+                res => {
+                    if (res.data === true) {
+                        alert("correct");
+                        this.getStudentProgress();
+                    } else {
+                        alert("wrong");
+                    }
+                }
+            )
+    };
+
+    next = () => {
+        axios
+            .get("http://localhost:8080/getnextstage",
+                {
+                    headers: {"Content-Type": "application/json;charset=UTF-8"},
+                    params: {stageNum: this.state.stage.stageNum}
+                }
+            )
+            .then(
+                res => {
+                    this.setState({stage: res.data});
+                }
+            )
+    };
+
     render() {
+
+        let stageList = [];
+        for (let i = 0; i < this.state.getTotalStage; i++) {
+            stageList.push(
+                <ListGroup.Item
+                    action
+                    active={i === this.state.stage.stageNum}
+                    disabled={i > this.state.studentProgress}
+                    onClick={() => this.setCurrentStage(i)}
+                >
+                    {i}
+                </ListGroup.Item>
+            );
+        }
+
         return (
             <React.Fragment>
                 <Modal
@@ -203,29 +242,29 @@ class Dolab extends Component {
                         </Stage>
                     </Col>
 
-                    <Card border="secondary" className="col-md-2">
+                    <Card border="secondary" className="col-md-2" id="labStageComponent">
                         <Card.Body>
                             <Card.Title>Lab Progress</Card.Title>
+                            <ProgressBar
+                                now={Math.round(100 * (this.state.studentProgress / this.state.getTotalStage))}
+                                label={Math.round(100 * (this.state.studentProgress / this.state.getTotalStage)) + "%"}
+                            />
+                            <br/>
                             <Modal.Body
                                 style={{
                                     "max-height": "calc(100vh - 310px)",
                                     "overflow-y": "auto"
                                 }}
                             >
-                                <ProgressBar
-                                    now={Math.round(100 * (this.state.currentStage / this.state.getTotalStage))}
-                                    label={Math.round(100 * (this.state.currentStage / this.state.getTotalStage))}
-                                />
-                                <br/>
-                                {
-                                    this.state.currentStage + 1 === this.state.getTotalStage ?
-                                        <Button onClick={this.finishLab}>Finish</Button>
-                                        :
-                                        <Button onClick={this.getNextStage}>Next</Button>
-                                }
-                                <Button onClick={this.back}>Leave</Button>
+                                <ListGroup id="stageGroup">
+                                    {stageList}
+                                </ListGroup>
                             </Modal.Body>
                         </Card.Body>
+                        <Button className="addtoolButton" onClick={this.check}>Check</Button>
+                        <Button className="addtoolButton" onClick={this.next}
+                                disabled={this.state.stage.stageNum >= this.state.studentProgress || this.state.stage.stageNum + 1 === this.state.getTotalStage}>Next</Button>
+                        <Button className="addtoolButton" onClick={this.back}>Leave</Button>
                     </Card>
 
                 </Row>
