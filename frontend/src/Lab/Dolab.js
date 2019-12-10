@@ -39,6 +39,7 @@ class Dolab extends Component {
             stageTool: [],
             instructions: ""
         },
+        studentProgress: -1,
         hasInter: false,
         inter: {
             Description: "Some description",
@@ -48,7 +49,10 @@ class Dolab extends Component {
                 Value: ""
             }
         },
-        studentProgress: -1
+        tempTool: {},
+        sourceTool: {Prop: []},
+        destinationTool: {Prop: []},
+        eventTool: {}
     };
 
     back = () => {
@@ -80,7 +84,10 @@ class Dolab extends Component {
             .get("http://localhost:8080/getdolabstage",
                 {
                     headers: {"Content-Type": "application/json;charset=UTF-8"},
-                    params: {id: sessionStorage.getItem("userID")}
+                    params: {
+                        id: sessionStorage.getItem("userID"),
+                        userType: sessionStorage.getItem("userType")
+                    }
                 }
             )
             .then(
@@ -91,7 +98,9 @@ class Dolab extends Component {
     };
 
     componentDidMount() {
-        this.getStudentProgress();
+        if (sessionStorage.getItem("userType")==="Student") {
+            this.getStudentProgress();
+        }
         this.getTotalStage();
         this.getStage();
     }
@@ -132,15 +141,19 @@ class Dolab extends Component {
                     headers: {"Content-Type": "application/json;charset=UTF-8"},
                     params: {
                         stageNum: this.state.stage.stageNum,
-                        id: sessionStorage.getItem("userID")
+                        id: sessionStorage.getItem("userID"),
+                        userType: sessionStorage.getItem("userType")
                     }
                 }
             )
             .then(
                 res => {
+                    console.log(res.data);
                     if (res.data === true) {
                         alert("correct");
-                        this.getStudentProgress();
+                        if (sessionStorage.getItem("userType")==="Student") {
+                            this.getStudentProgress();
+                        }
                     } else {
                         alert("wrong");
                     }
@@ -148,7 +161,8 @@ class Dolab extends Component {
             )
     };
 
-    next = () => {
+    getNextStage = () => {
+        console.log("test");
         axios
             .get("http://localhost:8080/getnextstage",
                 {
@@ -158,9 +172,26 @@ class Dolab extends Component {
             )
             .then(
                 res => {
+                    console.log(res.data);
                     this.setState({stage: res.data});
                 }
             )
+    };
+
+    disableNextButton = () => {
+        if (sessionStorage.getItem("userType")==="Student") {
+            return this.state.stage.stageNum >= this.state.studentProgress || this.state.stage.stageNum + 1 === this.state.getTotalStage
+        }
+        else {
+            return this.state.stage.stageNum + 1 === this.state.getTotalStage
+        }
+    };
+
+    disableStageSelector = (i) => {
+        if (sessionStorage.getItem("userType")==="Student") {
+            return i > this.state.studentProgress
+        }
+        return false;
     };
 
     render() {
@@ -171,7 +202,7 @@ class Dolab extends Component {
                 <ListGroup.Item
                     action
                     active={i === this.state.stage.stageNum}
-                    disabled={i > this.state.studentProgress}
+                    disabled={this.disableStageSelector(i)}
                     onClick={() => this.setCurrentStage(i)}
                 >
                     {i}
@@ -245,10 +276,18 @@ class Dolab extends Component {
                     <Card border="secondary" className="col-md-2" id="labStageComponent">
                         <Card.Body>
                             <Card.Title>Lab Progress</Card.Title>
-                            <ProgressBar
-                                now={Math.round(100 * (this.state.studentProgress / this.state.getTotalStage))}
-                                label={Math.round(100 * (this.state.studentProgress / this.state.getTotalStage)) + "%"}
-                            />
+                            {
+                                sessionStorage.getItem("userType")==="Student"?
+                                <ProgressBar
+                                    now={Math.round(100 * (this.state.studentProgress / this.state.getTotalStage))}
+                                    label={Math.round(100 * (this.state.studentProgress / this.state.getTotalStage)) + "%"}
+                                />
+                                :
+                                <ProgressBar
+                                    now={100}
+                                    label={"100%"}
+                                />
+                            }
                             <br/>
                             <Modal.Body
                                 style={{
@@ -262,11 +301,10 @@ class Dolab extends Component {
                             </Modal.Body>
                         </Card.Body>
                         <Button className="addtoolButton" onClick={this.check}>Check</Button>
-                        <Button className="addtoolButton" onClick={this.next}
-                                disabled={this.state.stage.stageNum >= this.state.studentProgress || this.state.stage.stageNum + 1 === this.state.getTotalStage}>Next</Button>
+                        <Button className="addtoolButton" onClick={this.getNextStage}
+                                disabled={this.disableNextButton()}>Next</Button>
                         <Button className="addtoolButton" onClick={this.back}>Leave</Button>
                     </Card>
-
                 </Row>
             </React.Fragment>
         );

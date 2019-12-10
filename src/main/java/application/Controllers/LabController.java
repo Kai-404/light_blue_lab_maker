@@ -336,12 +336,15 @@ public class LabController {
 
     @GetMapping("/getdolabstage")
     @ResponseBody
-    public String getDoLabStage(@RequestParam(name="id") String id) {
-        Student student = studentRepository.findByUserId(id);
-        if (student.getLabProgress().get(lab.getId())==lab.getTotalStage()) {
-            return lab.getStage(lab.getTotalStage()-1).getStageAsJSON().toString();
+    public String getDoLabStage(@RequestParam(name="id") String id, @RequestParam(name="userType") String userType) {
+        if (userType.equals("Student")) {
+            Student student = studentRepository.findByUserId(id);
+            if (student.getLabProgress().get(lab.getId()) == lab.getTotalStage()) {
+                return lab.getStage(lab.getTotalStage() - 1).getStageAsJSON().toString();
+            }
+            return lab.getStage(student.getLabProgress().get(lab.getId())).getStageAsJSON().toString();
         }
-        return lab.getStage(student.getLabProgress().get(lab.getId())).getStageAsJSON().toString();
+        return lab.getStage(0).getStageAsJSON().toString();
     }
 
     @GetMapping("/getnextstage")
@@ -352,16 +355,19 @@ public class LabController {
 
     @GetMapping("/dolabcheckstage")
     @ResponseBody
-    public boolean doLabCheckStage(@RequestParam(name="stageNum") int stageNum, @RequestParam(name="id") String id) throws IOException {
-        Student student = studentRepository.findByUserId(id);
+    public boolean doLabCheckStage(@RequestParam(name="stageNum") int stageNum, @RequestParam(name="id") String id, @RequestParam(name="userType") String userType) throws IOException {
+        Student student = null;
+        if (userType.equals("Student")) {
+            student = studentRepository.findByUserId(id);
+        }
         ArrayList<Tool> toolList = lab.getStage(stageNum).getStageToolList();
         for (Tool tool: toolList) {
             HashMap result = new ObjectMapper().readValue(tool.getToolAsJSON().toString(), HashMap.class);
             List initialProperties = (List) result.get("Prop");
             List finalProperties = (List) result.get("FinalProp");
             for (int i=0; i<initialProperties.size();i++) {
-                if (!((LinkedHashMap) (initialProperties).get(i)).get("Value").equals(((LinkedHashMap) (finalProperties).get(i)).get("Value"))) {
-                    if (stageNum==(student.getLabProgress().get(lab.getId()))) {
+                if (((LinkedHashMap) (initialProperties).get(i)).get("Value").equals(((LinkedHashMap) (finalProperties).get(i)).get("Value"))) {
+                    if (student != null && stageNum==(student.getLabProgress().get(lab.getId()))) {
                         HashMap<Integer, Integer> labGrade = student.getGrade().get(lab.getId());
                         labGrade.put(stageNum, labGrade.get(stageNum)+1);
                         studentRepository.save(student);
@@ -370,7 +376,7 @@ public class LabController {
                 }
             }
         }
-        if (stageNum==(student.getLabProgress().get(lab.getId()))) {
+        if (student != null &&  stageNum==(student.getLabProgress().get(lab.getId()))) {
             student.getLabProgress().put(lab.getId(), student.getLabProgress().get(lab.getId())+1);
             studentRepository.save(student);
         }
