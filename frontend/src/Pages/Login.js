@@ -45,7 +45,7 @@ class Login extends Component {
       this.setState({ errmsg: "fill in all blanks" });
     } else {
       axios
-        .get("/login", {
+        .get("http://localhost:8080/login", {
           headers: { "Content-Type": "application/json;charset=UTF-8" },
           params: { email: email, password: password }
         })
