@@ -135,7 +135,7 @@ public class CourseController {
             User user = userRepository.getById(studentID);
             ArrayList<String> studentGrade = new ArrayList<>();
             studentGrade.add(user.getUsername());
-            studentGrade.add(student.getLabProgress().get(labID)+"%");
+            studentGrade.add((100 * (student.getLabProgress().get(labID)/labRepository.getById(labID).getTotalStage()))+"%");
             int numTotalStages = labRepository.getById(labID).getTotalStage();
             for (int i = 0; i < numTotalStages; i++) {
                 studentGrade.add(student.getGrade().get(labID).get(i).toString());
