@@ -3,10 +3,12 @@ package application.Controllers;
 import application.Models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.repository.cdi.Eager;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @RestController
@@ -21,6 +23,8 @@ public class CourseController {
     private StudentRepository studentRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private LabRepository labRepository;
 
     @PostMapping("/addcourse")
     @ResponseBody
@@ -88,5 +92,38 @@ public class CourseController {
         Course course = courseRepository.getById(courseID);
         course.getStudent_list().remove(userID);
         courseRepository.save(course);
+    }
+
+    @GetMapping("/getlabofcourse")
+    @ResponseBody
+    public ArrayList<Lab> getLabOfCourse(@RequestParam(name="id") String courseID) {
+        Course course = courseRepository.getById(courseID);
+        ArrayList<Lab> labList = new ArrayList<>();
+        for (String labID : course.getLab_list()) {
+            Lab lab = labRepository.getById(labID);
+            if (lab.isPublished()) {
+                labList.add(lab);
+            }
+        }
+        return labList;
+    }
+
+    @GetMapping("/getstudentgrades")
+    @ResponseBody
+    public ArrayList<ArrayList<String>> getStudentGrades(@RequestParam(name="courseID") String courseID, @RequestParam(name="labID") String labID) {
+        Course course = courseRepository.getById(courseID);
+        ArrayList<ArrayList<String>> grades = new ArrayList<>();
+        for (String studentID : course.getStudent_list()) {
+            Student student = studentRepository.findByUserId(studentID);
+            User user = userRepository.getById(studentID);
+            ArrayList<String> studentGrade = new ArrayList<>();
+            studentGrade.add(user.getUsername());
+            int numTotalStages = labRepository.getById(labID).getTotalStage();
+            for (int i=0; i<numTotalStages; i++) {
+                studentGrade.add(student.getGrade().get(labID).get(i).toString());
+            }
+            grades.add(studentGrade);
+        }
+        return grades;
     }
 }
