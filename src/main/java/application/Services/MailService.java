@@ -20,14 +20,14 @@ import java.util.Properties;
 @Service("mailService")
 public class MailService {
     private static final String SMTP_SERVER = "smtp.gmail.com";
-    private static final String USERNAME = "fhzotxldj@gmail.com";
+    private static final String USERNAME = "lightbluelabnoreply@gmail.com";
     private static final String PASSWORD = "qazwsxedC1@";
 
     private static final String EMAIL_FROM = "From@gmail.com";
 
     private static final String NOTIFICATION_EMAIL_SUBJECT = "Notification";
     private static final String NOTIFICATION_EMAIL_TEXT = "New announcement has been posted in class ";
-    private static final String VERIFICATION_EMAIL_SUBJECT = "Verify your email";
+    private static final String VERIFICATION_EMAIL_SUBJECT = "Verify 3your email";
     private static final String VERIFICATION_EMAIL_TEXT = "Please confirm your email address by clicking on the link below.<br/>";
 
     private static final String VERIFICATION_API = "http://localhost:8080/verify-email?userId=";
