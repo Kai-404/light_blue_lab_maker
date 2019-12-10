@@ -135,3 +135,45 @@ link:active {
 .errmsg {
   color: red;
 }
+
+.list-group-item {
+  text-align: left;
+}
+
+.sortablehandler {
+  margin-right: 30px;
+}
+
+.courseselectionlist {
+  display: flex;
+  justify-content: flex-start;
+}
+
+#enrollbutton {
+  margin-right: 20px;
+}
+
+#courseselectiongroup {
+  max-height: 300px;
+  margin-bottom: 10px;
+  overflow:scroll;
+}
+
+#labStageComponent {
+  padding-bottom: 35px;
+}
+
+#stageGroup {
+  max-height: 400px;
+}
+
+#stageInstructions {
+  height: 100px;
+  display: flex;
+  padding: 10px;
+}
+
+#stageInstructionsText {
+  width: 100%;
+  resize: none;
+}

@@ -1,5 +1,13 @@
 import React, { Component } from "react";
-import { Button, Form, Modal, Row, Col } from "react-bootstrap";
+import {
+  Button,
+  Dropdown,
+  DropdownButton,
+  Form,
+  Modal,
+  Row,
+  Col
+} from "react-bootstrap";
 import "../App.css";
 import axios from "axios";
 
@@ -13,6 +21,9 @@ class Toolmodal extends Component {
    * setTool(Tool tool): set the tool
    * setCurrentStage(int stageNum): update the stage accordingly
    */
+  state = {
+    errMsg: ""
+  };
 
   //change the tool prop
   handleChangeProps = e => {
@@ -37,7 +48,6 @@ class Toolmodal extends Component {
   };
 
   handleSubmit = e => {
-    console.log(e);
     e.preventDefault();
     //update tool
     let stageNum = this.props.stageNum;
@@ -48,7 +58,6 @@ class Toolmodal extends Component {
       id,
       ctool
     });
-    console.log("handle submit current tool: ", ctool);
     axios
       .post("http://localhost:8080/updatetoolprop", data, {
         headers: { "Content-Type": "application/json;charset=UTF-8" },
@@ -59,9 +68,17 @@ class Toolmodal extends Component {
         toolProps: ctool
       })
       .then(res => {
-        //get back the whole stage
-        this.props.setCurrentStage(stageNum);
-        this.props.setShow();
+        console.log(res.status);
+        if (res.status == 200) {
+          //get back the whole stage
+          this.props.setCurrentStage(stageNum);
+          this.props.setShow();
+        } else {
+          this.setState({ errMsg: "wrong value entered, try again" });
+        }
+      })
+      .catch(err => {
+        this.setState({ errMsg: "wrong value entered, try again" });
       });
   };
 
@@ -89,87 +106,199 @@ class Toolmodal extends Component {
   };
 
   render() {
-    let modalBody;
+    let interaction;
+
     try {
-      modalBody = (
-        <Form onSubmit={this.handleSubmit}>
-          <Form.Group>
-            Initial Properties:
-            <br />
-            {this.props.tool.Prop.map((prop, key) => {
-              let control = (
-                <Form.Control
-                  id={"init"}
-                  name={prop.Name}
-                  required
-                  type={prop.Name}
-                  defaultValue={prop.Value}
-                  onChange={this.handleChangeProps}
-                />
-              );
-              if (!prop.Editable) {
-                control = (
-                  <Form.Control
-                    name={prop.Name}
-                    required
-                    type={prop.Name}
-                    defaultValue={prop.Value}
-                  />
-                );
-              }
-              return (
-                <React.Fragment>
-                  <Form.Group as={Row}>
-                    <Form.Label column sm={2}>
-                      {prop.Name}
-                    </Form.Label>
-                    <Col sm={10}>{control}</Col>
-                  </Form.Group>
-                </React.Fragment>
-              );
-            })}
-          </Form.Group>
-          <Form.Group>
-            Final Properties:
-            <br />
-            {this.props.tool.FinalProp.map((prop, key) => {
-              let control = (
-                <Form.Control
-                  id={"final"}
-                  name={prop.Name}
-                  required
-                  type={prop.Name}
-                  defaultValue={prop.Value}
-                  onChange={this.handleChangeProps}
-                />
-              );
-              if (!prop.Editable) {
-                control = (
-                  <Form.Control
-                    name={prop.Name}
-                    required
-                    type={prop.Name}
-                    defaultValue={prop.Value}
-                  />
-                );
-              }
-              return (
-                <React.Fragment>
-                  <Form.Group as={Row}>
-                    <Form.Label column sm={2}>
-                      {prop.Name}
-                    </Form.Label>
-                    <Col sm={10}>{control}</Col>
-                  </Form.Group>
-                </React.Fragment>
-              );
-            })}
-          </Form.Group>
+      interaction = (
+        <Form.Group>
+          {/*this.props.tool.Interactions.map(intera => {
+            let inter = (
+              <Form.Control
+                name={intera.Name}
+                plaintext
+                readOnly
+                defaultValue={intera.Value}
+              />
+            );
+            return (
+              <React.Fragment>
+                <Form.Group as={Row}>
+                  <Form.Label column sm={2}>
+                    {intera.Name}
+                  </Form.Label>
+                  <Col sm={10}>{inter}</Col>
+                </Form.Group>
+              </React.Fragment>
+            );
+          })*/}
+          <React.Fragment>
+            Interactions:
+            <Col sm={10}>
+              <Form.Control
+                name={this.props.tool.Interactions.Name}
+                plaintext
+                readOnly
+                defaultValue={this.props.tool.Interactions.Name}
+              />
+            </Col>
+          </React.Fragment>
+        </Form.Group>
+      );
+    } catch (err) {
+      interaction = (
+        <>
           <Form.Group>
             Interaction: <br />
             <br />
             No interaction yet!
           </Form.Group>
+        </>
+      );
+    }
+
+    let modalBody;
+    try {
+      modalBody = (
+        <Form onSubmit={this.handleSubmit}>
+          <Row>
+            <Col>
+              <Form.Group>
+                Initial Properties:
+                <br />
+                {this.props.tool.Prop.map((prop, key) => {
+                  let control = (
+                    <Form.Control
+                      id={"init"}
+                      name={prop.Name}
+                      required
+                      type={prop.Name}
+                      defaultValue={prop.Value}
+                      onChange={this.handleChangeProps}
+                    />
+                  );
+                  if (!prop.Editable) {
+                    control = (
+                      <Form.Control
+                        name={prop.Name}
+                        required
+                        type={prop.Name}
+                        defaultValue={prop.Value}
+                        disabled
+                      />
+                    );
+                  }
+                  if (prop.Name == "Color") {
+                    control = (
+                      <Form.Control
+                        as="select"
+                        id={"init"}
+                        name={prop.Name}
+                        defaultValue={prop.Value}
+                        onChange={this.handleChangeProps}
+                      >
+                        {prop.ValidColor.map(s => {
+                          return <option>{s}</option>;
+                        })}
+                      </Form.Control>
+                    );
+                  }
+                  if (prop.Name == "PH Status") {
+                    control = (
+                      <Form.Control
+                        as="select"
+                        id={"init"}
+                        name={prop.Name}
+                        defaultValue={prop.Value}
+                        onChange={this.handleChangeProps}
+                      >
+                        {prop.ValidStatus.map(s => {
+                          return <option>{s}</option>;
+                        })}
+                      </Form.Control>
+                    );
+                  }
+                  return (
+                    <React.Fragment>
+                      <Form.Group as={Row}>
+                        <Form.Label column sm={2}>
+                          {prop.Name}
+                        </Form.Label>
+                        <Col sm={10}>{control}</Col>
+                      </Form.Group>
+                    </React.Fragment>
+                  );
+                })}
+              </Form.Group>
+            </Col>
+            <Col>
+              <Form.Group>
+                Final Properties:
+                <br />
+                {this.props.tool.FinalProp.map((prop, key) => {
+                  let control = (
+                    <Form.Control
+                      id={"final"}
+                      name={prop.Name}
+                      required
+                      type={prop.Name}
+                      defaultValue={prop.Value}
+                      onChange={this.handleChangeProps}
+                    />
+                  );
+                  if (prop.Name == "PH Status") {
+                    control = (
+                      <Form.Control
+                        as="select"
+                        name={prop.Name}
+                        defaultValue={prop.Value}
+                        onChange={this.handleChangeProps}
+                      >
+                        {prop.ValidStatus.map(s => {
+                          return <option>{s}</option>;
+                        })}
+                      </Form.Control>
+                    );
+                  }
+                  if (prop.Name == "Color") {
+                    control = (
+                      <Form.Control
+                        as="select"
+                        name={prop.Name}
+                        defaultValue={prop.Value}
+                        onChange={this.handleChangeProps}
+                      >
+                        {prop.ValidColor.map(s => {
+                          return <option>{s}</option>;
+                        })}
+                      </Form.Control>
+                    );
+                  }
+                  if (!prop.Editable) {
+                    control = (
+                      <Form.Control
+                        name={prop.Name}
+                        required
+                        type={prop.Name}
+                        defaultValue={prop.Value}
+                        disabled
+                      />
+                    );
+                  }
+                  return (
+                    <React.Fragment>
+                      <Form.Group as={Row}>
+                        <Form.Label column sm={2}>
+                          {prop.Name}
+                        </Form.Label>
+                        <Col sm={10}>{control}</Col>
+                      </Form.Group>
+                    </React.Fragment>
+                  );
+                })}
+              </Form.Group>
+            </Col>
+          </Row>
+          {interaction}
           <Button type="submit" className="addtoolButton">
             Submit
           </Button>
@@ -187,6 +316,10 @@ class Toolmodal extends Component {
             <Button onClick={this.props.setShow} className="addtoolButton">
               OK
             </Button>
+            {"  "}
+            <Button onClick={this.deleteTool} className="addtoolButton">
+              Delete
+            </Button>
           </Form>
         </>
       );
@@ -194,7 +327,7 @@ class Toolmodal extends Component {
     return (
       <React.Fragment>
         <Modal
-          size="sm"
+          size="lg"
           centered
           show={this.props.showPop}
           onHide={this.props.setShow}
@@ -206,6 +339,7 @@ class Toolmodal extends Component {
               {this.props.tool.Name}
             </Modal.Title>
           </Modal.Header>
+          <p className="errmsg">{this.state.errMsg}</p>
           <Modal.Body>{modalBody}</Modal.Body>
         </Modal>
       </React.Fragment>

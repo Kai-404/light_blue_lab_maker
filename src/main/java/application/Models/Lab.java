@@ -75,7 +75,7 @@ public class Lab {
 
         byte[] bdata = FileCopyUtils.copyToByteArray(inputStream);
         String data = new String(bdata, StandardCharsets.UTF_8);
-        System.out.println(data);
+        //System.out.println(data);
         String[] tools = data.split("[\r\n]+");
 
         for (String tool : tools) {
@@ -193,5 +193,11 @@ public class Lab {
 
     public void saveInstructions(int stageNum, String instructions) {
         this.getStage(stageNum).setInstruction(instructions);
+    }
+
+    public void swapStages(int oldIndex, int newIndex) {
+        Stage stage = this.stageList.remove(oldIndex);
+        this.stageList.add(newIndex, stage);
+        this.updateStageList();
     }
 }

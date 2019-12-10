@@ -11,16 +11,14 @@ import java.util.ArrayList;
 @Getter
 @Document
 public class Professor {
-    //private final String userType = "professor";
+    private String userType = "Professor";
     @Id
     private String id;
     private String userId;
     private ArrayList<String> course_list;
-    private ArrayList<String> lab_list;
 
     public Professor(String userId) {
         this.userId = userId;
         this.course_list = new ArrayList<>();
-        this.lab_list = new ArrayList<>();
     }
 }

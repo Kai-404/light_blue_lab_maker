@@ -17,7 +17,9 @@ class Addlab extends Component {
 
   addNewLab = () => {
     let title = this.state.labTitle;
-    let author = this.props.user.username;
+    //for testing
+    let author = "kai";
+    if (sessionStorage.getItem("username")) author = sessionStorage.getItem("username");
     let description = this.state.description;
     let data = JSON.stringify({
       author,
@@ -47,7 +49,9 @@ class Addlab extends Component {
   render() {
     return (
       <div>
-        <Button onClick={this.setShowAddLab}>Add Lab</Button>
+        <Button variant="info" onClick={this.setShowAddLab}>
+          Add Lab
+        </Button>
 
         <Modal show={this.state.showAddLab} onHide={this.setShowAddLab}>
           <Modal.Header>
@@ -76,8 +80,12 @@ class Addlab extends Component {
             </form>
           </Modal.Body>
           <Modal.Footer>
-            <Button onClick={this.addNewLab}>Add</Button>
-            <Button onClick={this.setShowAddLab}>Cancel</Button>
+            <Button variant="info" onClick={this.addNewLab}>
+              Add
+            </Button>
+            <Button variant="info" onClick={this.setShowAddLab}>
+              Cancel
+            </Button>
           </Modal.Footer>
         </Modal>
       </div>

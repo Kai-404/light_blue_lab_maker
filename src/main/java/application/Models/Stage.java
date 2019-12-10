@@ -2,6 +2,7 @@ package application.Models;
 
 import application.Tools.AlcoholBurner;
 import application.Tools.Beaker;
+import application.Tools.Flask;
 import application.Tools.PHPaper;
 import com.mongodb.util.JSON;
 import lombok.Data;
@@ -63,7 +64,7 @@ public class Stage {
         UUID uuid = UUID.randomUUID();
         String toolID = uuid.toString();
 
-        System.out.println( toolID );
+        //System.out.println( toolID );
 
         tool.setId( toolID );
 
@@ -94,6 +95,16 @@ public class Stage {
         return toReturn;
     }
 
+    public Tool getToolByID(String ID){
+        Tool toReturn = null;
+        for (Tool tool : stageToolList) {
+            if (tool.getId().equals( ID )) {
+                toReturn= tool;
+            }
+        }
+        return toReturn;
+    }
+
     public JSONObject getStageAsJSON(){
 
         JSONObject stageJSONObject = new JSONObject();
@@ -113,31 +124,68 @@ public class Stage {
         return  stageJSONObject;
     }
 
-    public JSONObject updateToolProp(String toolID, String toolProps){
+        public boolean updateToolProp(String toolID, String toolProps){
 
-        JSONObject toReturn = null;
+        boolean updateSuccess = true;
         for (Tool tool : stageToolList) {
             if (tool.getId().equals( toolID )) {
                 int index = stageToolList.indexOf( tool );
                 if (tool.getName().equals( "Beaker" )){
                     Beaker beaker = (Beaker) tool;
-                    beaker.updateProp( toolProps );
-                    toReturn = beaker.getToolAsJSON();
+                    updateSuccess = beaker.updateProp( toolProps );
+                    //toReturn = beaker.getToolAsJSON();
                     stageToolList.set( index,beaker );
                 }else if (tool.getName().equals( "PHPaper" )){
                     PHPaper phpaper = (PHPaper) tool;
-                    phpaper.updateProp( toolProps );
-                    toReturn = phpaper.getToolAsJSON();
+                    updateSuccess = phpaper.updateProp( toolProps );
+                    //toReturn = phpaper.getToolAsJSON();
                     stageToolList.set( index,phpaper );
-                }else if (tool.getName().equals( "AlcoholBurner" )){
-                    AlcoholBurner alcoholBurner = (AlcoholBurner) tool;
-                    alcoholBurner.updateProp( toolProps );
-                    toReturn = alcoholBurner.getToolAsJSON();
-                    stageToolList.set( index,alcoholBurner );
+                }else if (tool.getName().equals( "Flask" )){
+                    Flask flask = (Flask) tool;
+                    updateSuccess = flask.updateProp( toolProps );
+                    stageToolList.set( index,flask );
+
                 }
+//                else if (tool.getName().equals( "AlcoholBurner" )){
+//                    AlcoholBurner alcoholBurner = (AlcoholBurner) tool;
+//                    alcoholBurner.updateProp( toolProps );
+//                    toReturn = alcoholBurner.getToolAsJSON();
+//                    stageToolList.set( index,alcoholBurner );
+// Removed Tool
+//                }
             }
         }
-        return toReturn;
+        return updateSuccess;
+
+    }
+
+    public void doInteraction(String id, String id2, String prams){
+
+        Tool tool1 = this.getToolByID( id );
+        Tool tool2 = this.getToolByID( id2 );
+
+        JSONObject interactionPrams = new JSONObject(prams);
+
+        if (interactionPrams.get( "Name" ).equals( "Pour" )){
+
+            if (tool1.getName().equals( "Beaker" )){
+
+                Beaker beaker = (Beaker) tool1;
+                JSONObject amount = (JSONObject) interactionPrams.get( "Prams" );
+                beaker.pour( tool2, Double.parseDouble( String.valueOf( amount.get( "Value" ) ) ));
+            }else if (tool1.getName().equals( "Flask" )){
+
+                Flask flask = (Flask) tool1;
+                JSONObject amount = (JSONObject) interactionPrams.get( "Prams" );
+                flask.pour( tool2, Double.parseDouble( String.valueOf( amount.get( "Value" ) ) ));
+
+            }
+
+        }
+
+
+
+
 
     }
 

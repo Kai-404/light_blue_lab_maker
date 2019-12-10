@@ -14,14 +14,14 @@ import java.util.concurrent.atomic.AtomicReference;
 
 @Getter
 @Setter
-public class Beaker extends Tool {
-    @Field("BeakerName")
-    String name = "Beaker";
-    @Field("BeakerImageName")
-    final String imageName = "beaker.png";
-    @Field("BeakerX")
+public class Flask extends Tool {
+    @Field("FlaskName")
+    String name = "Flask";
+    @Field("FlaskImageName")
+    final String imageName = "flask.png";
+    @Field("FlaskX")
     int x = 0;
-    @Field("BeakerY")
+    @Field("FlaskY")
     int y = 0;
 
     //initial property
@@ -38,7 +38,7 @@ public class Beaker extends Tool {
 
     boolean canBeBurned = true;
 
-    @Field("BeakerInteractWith")
+    @Field("FlaskInteractWith")
     Map<String,String> canInteractWith = Map.of(
             "Beaker","Pour",
             "Flask","Pour"
@@ -46,7 +46,7 @@ public class Beaker extends Tool {
 
 
 
-    public Beaker(){
+    public Flask(){
 
     }
     public String getName(){
@@ -285,8 +285,8 @@ public class Beaker extends Tool {
 
     }
 
-    public Beaker clone() throws CloneNotSupportedException {
-        Beaker clone = (Beaker) super.clone();
+    public Flask clone() throws CloneNotSupportedException {
+        Flask clone = (Flask) super.clone();
         clone.setMaxVolume(this.maxVolume);
         clone.setCurrentVolume(this.currentVolume);
         clone.setCurrentChemicalsList( this.currentChemicalsList );
@@ -300,7 +300,6 @@ public class Beaker extends Tool {
     }
 
     public boolean pour(Tool tool, Double amount){
-
         if (tool.getName().equals( "Beaker" )) {
             Beaker pourTo = (Beaker) tool;
             if(amount>this.currentVolume){
@@ -324,9 +323,6 @@ public class Beaker extends Tool {
                 return true;
             }
         }
-
-
-
     }
 
     public JSONObject getInteractionDetail(String interactionName){

@@ -29,6 +29,12 @@ class Login extends Component {
     this.props.history.push("/resetpassword");
   };
 
+  componentDidMount() {
+    if (sessionStorage.getItem("loggedin") != null) {
+      this.routeHome();
+    }
+  };
+
   onChange = e => this.setState({ [e.target.name]: e.target.value });
 
   /* When login button is clicked, retrieve user info from database */
@@ -45,14 +51,20 @@ class Login extends Component {
         })
         .then(res => {
           if (res.data != "") {
-            this.props.login(res.data);
-            this.props.showbar(true);
-            this.setState({
-              email: "",
-              password: "",
-              errmsg: ""
-            });
-            this.routeHome();
+            if (!res.data.active) {
+              this.setState({ errmsg: "Please verify your email"});
+            } else {
+              sessionStorage.setItem("username", res.data.username);
+              sessionStorage.setItem("userType", res.data.userType);
+              sessionStorage.setItem("userID", res.data.id);
+              sessionStorage.setItem("loggedin", "true");
+              this.setState({
+                email: "",
+                password: "",
+                errmsg: ""
+              });
+              this.routeHome();
+            }
           } else {
             this.setState({ errmsg: "Invalid username/email or password" });
           }

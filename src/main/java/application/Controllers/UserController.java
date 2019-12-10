@@ -1,7 +1,9 @@
 package application.Controllers;
 
 import application.Models.*;
+import application.Services.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
@@ -18,10 +20,12 @@ public class UserController {
     private ProfessorRepository professorRepository;
     @Autowired
     private StudentRepository studentRepository;
+    @Autowired
+    private MailService mailService;
 
     @PostMapping("/register")
     public int createUser(@RequestBody User user) {
-        System.out.println(user);
+        //System.out.println(user);
         if (userRepository.findByEmail(user.getEmail()) != null) { return 1; }
         if (userRepository.findByUsername(user.getUsername()) != null) { return 2; }
         user.setPassword(encryptPassword(user.getPassword()));
@@ -34,6 +38,8 @@ public class UserController {
             Student student = new Student(user.getId());
             studentRepository.save(student);
         }
+
+        mailService.sendVerificationEmail(user.getId(), user.getEmail());
         return 3;
     }
 
@@ -49,6 +55,17 @@ public class UserController {
         if (user != null)
             session.setAttribute("user", user.getUsername());
         return user;
+    }
+
+    @GetMapping("/verify-email")
+    public String verifyUserEmail(@RequestParam(name="userId") String id) {
+        User user = userRepository.getById(id);
+        if (user != null) {
+            user.setActive(true);
+            userRepository.save(user);
+            return "Your email has been verified! Please login.";
+        }
+        return "Something is wrong.";
     }
 
     private String encryptPassword(String password) {
