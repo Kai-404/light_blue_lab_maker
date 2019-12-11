@@ -186,36 +186,37 @@ class Toolmodal extends Component {
                         disabled
                       />
                     );
-                  }
-                  if (prop.Name == "Color") {
-                    control = (
-                      <Form.Control
-                        as="select"
-                        id={"init"}
-                        name={prop.Name}
-                        defaultValue={prop.Value}
-                        onChange={this.handleChangeProps}
-                      >
-                        {prop.ValidColor.map(s => {
-                          return <option>{s}</option>;
-                        })}
-                      </Form.Control>
-                    );
-                  }
-                  if (prop.Name == "PH Status") {
-                    control = (
-                      <Form.Control
-                        as="select"
-                        id={"init"}
-                        name={prop.Name}
-                        defaultValue={prop.Value}
-                        onChange={this.handleChangeProps}
-                      >
-                        {prop.ValidStatus.map(s => {
-                          return <option>{s}</option>;
-                        })}
-                      </Form.Control>
-                    );
+                  } else {
+                    if (prop.Name == "Color") {
+                      control = (
+                        <Form.Control
+                          as="select"
+                          id={"init"}
+                          name={prop.Name}
+                          defaultValue={prop.Value}
+                          onChange={this.handleChangeProps}
+                        >
+                          {prop.ValidColor.map(s => {
+                            return <option>{s}</option>;
+                          })}
+                        </Form.Control>
+                      );
+                    }
+                    if (prop.Name == "PH Status") {
+                      control = (
+                        <Form.Control
+                          as="select"
+                          id={"init"}
+                          name={prop.Name}
+                          defaultValue={prop.Value}
+                          onChange={this.handleChangeProps}
+                        >
+                          {prop.ValidStatus.map(s => {
+                            return <option>{s}</option>;
+                          })}
+                        </Form.Control>
+                      );
+                    }
                   }
                   return (
                     <React.Fragment>
