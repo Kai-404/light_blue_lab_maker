@@ -24,12 +24,15 @@ class HomePage extends Component {
     };
 
     componentDidMount() {
+        sessionStorage.setItem("underCourse", "false");
         this.getCourseList();
     };
 
-    showBar = id => {
+    showBar = course => {
         sessionStorage.setItem("underCourse", "true");
-        sessionStorage.setItem("currentCourse", id);
+        sessionStorage.setItem("currentCourse", course.id);
+        sessionStorage.setItem("currentCourseName", course.title);
+        sessionStorage.setItem("currentCourseTerm", course.term);
         this.props.history.push("/announcements");
     };
 
@@ -46,7 +49,7 @@ class HomePage extends Component {
                         <Card.Body>
                             <Card.Title>{course.title}</Card.Title>
                             <Card.Text>{course.professor}</Card.Text>
-                            <Button variant="primary" onClick={() => this.showBar(course.id)}>
+                            <Button variant="primary" onClick={() => this.showBar(course)}>
                                 Go to the course
                             </Button>
                         </Card.Body>

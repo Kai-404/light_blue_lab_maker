@@ -98,6 +98,11 @@ class Header extends Component {
                     <Navbar.Collapse id="basic-navbar-nav">
                         <BarContent under={sessionStorage.getItem("underCourse")}/>
                     </Navbar.Collapse>
+                    {
+                        sessionStorage.getItem("underCourse") ?
+                            <Navbar.Text>{sessionStorage.getItem("currentCourseName")} {sessionStorage.getItem("currentCourseTerm")}</Navbar.Text>
+                        : null
+                    }
                     <ButtonGroup>
                         <UserInfo login={sessionStorage.getItem("loggedin")}/>
                     </ButtonGroup>
