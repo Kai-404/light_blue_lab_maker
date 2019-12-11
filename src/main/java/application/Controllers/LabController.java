@@ -151,8 +151,10 @@ public class LabController {
 
     @GetMapping("/savelab")
     @ResponseBody
-    public boolean saveLab(@RequestParam(name = "courseID") String courseID) {
+    public boolean saveLab(@RequestParam(name = "courseID") String courseID, @RequestParam(name = "title") String title, @RequestParam(name = "description") String description) {
         try {
+            lab.setTitle(title);
+            lab.setDescription(description);
             labRepository.save(lab);
             Course course = courseRepository.getById(courseID);
             if (!course.getLab_list().contains(lab.getId())) {

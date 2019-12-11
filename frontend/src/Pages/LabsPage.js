@@ -97,13 +97,15 @@ class LabsPage extends Component {
             });
     };
 
-    editLab = id => {
+    editLab = lab => {
         axios
             .get("http://localhost:8080/editlab", {
                 headers: {"Content-Type": "application/json;charset=UTF-8"},
-                params: {id: id}
+                params: {id: lab.id}
             })
             .then(res => {
+                sessionStorage.setItem("currentLabTitle", lab.title);
+                sessionStorage.setItem("currentLabDescription", lab.description);
                 this.props.history.push("/makelab");
             })
             .catch(err => {
@@ -161,7 +163,7 @@ class LabsPage extends Component {
                 let buttonGroup = (
                     <ButtonGroup>
                         <Button variant="info" onClick={() => this.setDoLab(lab.id)}>Do</Button>
-                        <Button variant="info" onClick={() => this.editLab(lab.id)}>Edit</Button>
+                        <Button variant="info" onClick={() => this.editLab(lab)}>Edit</Button>
                         <Button variant="info" onClick={() => this.deleteLab(lab.id)}>Delete</Button>
                     </ButtonGroup>
                 );

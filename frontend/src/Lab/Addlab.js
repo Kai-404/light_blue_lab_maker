@@ -32,6 +32,8 @@ class Addlab extends Component {
         params: { title: title, author: author, description: description }
       })
       .then(res => {
+        sessionStorage.setItem("currentLabTitle", title);
+        sessionStorage.setItem("currentLabDescription", description);
         this.props.his.push("/makelab");
       })
       .catch(err => {

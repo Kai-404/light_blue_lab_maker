@@ -25,6 +25,7 @@ import LabStageBar from "./LabStageBar";
 import LabTool from "./LabTool";
 import InteractionModal from "./InteractionModal";
 import "../App.css";
+import TextField from "@material-ui/core/TextField";
 
 const stageW = window.innerWidth - window.innerWidth * 0.3;
 const stageH = window.innerHeight - 400;
@@ -178,21 +179,31 @@ class Makelab extends Component {
   };
 
   saveLab = () => {
-    axios
-      .get("http://localhost:8080/savelab", {
-        headers: { "Content-Type": "application/json;charset=UTF-8" },
-        params: {
-          courseID: sessionStorage.getItem("currentCourse"),
-          username: sessionStorage.getItem("username")
-        }
-      })
-      .then(res => {
-        if (res.data) {
-          alert("successfully saved lab");
-        } else {
-          alert("fail to save the lab");
-        }
-      });
+    let title = document.getElementById("title").value;
+    let description = document.getElementById("description").value;
+    if (title === "" || description === "") {
+      alert("title and description must be filled");
+    } else {
+      sessionStorage.setItem("currentLabTitle", title);
+      sessionStorage.setItem("currentLabDescription", description);
+      axios
+          .get("http://localhost:8080/savelab", {
+            headers: { "Content-Type": "application/json;charset=UTF-8" },
+            params: {
+              courseID: sessionStorage.getItem("currentCourse"),
+              username: sessionStorage.getItem("username"),
+              title: title,
+              description: description,
+            }
+          })
+          .then(res => {
+            if (res.data) {
+              alert("successfully saved lab");
+            } else {
+              alert("fail to save the lab");
+            }
+          });
+    }
   };
 
   publishLab = () => {
@@ -308,6 +319,14 @@ class Makelab extends Component {
         ))}
       </React.Fragment>
     );
+    let textInput = (
+      <React.Fragment>
+        <div align="left">
+          <TextField id="title" label="title" defaultValue={sessionStorage.getItem("currentLabTitle")}/>
+          <TextField id="description" label="description" defaultValue={sessionStorage.getItem("currentLabDescription")}/>
+        </div>
+      </React.Fragment>
+    );
     return (
       <React.Fragment>
         <p className="errmsg">{this.state.errMsg}</p>
@@ -333,6 +352,7 @@ class Makelab extends Component {
           setShow={this.setShowModal}
           setCurrentStage={this.setCurrentStage}
         />
+        {textInput}
         <ButtonGroup>
           {toolBar}
           <Dropdown className="toolButton" as={ButtonGroup}>
