@@ -98,7 +98,9 @@ class Discussion extends Component {
                 <Table striped bordered>
                     <thead>
                         <tr>
-                            {header}
+                            <th>Name</th>
+                            <th>Progress</th>
+                            <th>Total attempt</th>
                         </tr>
                     </thead>
                     <tbody>
