@@ -45,7 +45,7 @@ public class MailService {
     }
 
     public void sendResetPasswordEmail(String email, String userId) {
-        String link = "<a href='" + RESETPASSWORD_API +"'>link</a>";
+        String link = "<a href='" + RESETPASSWORD_API +"'>link</a><br/>";
         String code = "Code : " + userId;
         sendEmail(RESETPASSWORD_EMAIL_SUBJECT, RESETPASSWORD_EMAIL_TEXT + link + code, email);
     }
