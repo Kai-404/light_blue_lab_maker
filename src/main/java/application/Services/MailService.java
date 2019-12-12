@@ -30,7 +30,7 @@ public class MailService {
     private static final String VERIFICATION_EMAIL_SUBJECT = "Verify your email";
     private static final String VERIFICATION_EMAIL_TEXT = "Please confirm your email address by clicking on the link below.<br/>";
     private static final String RESETPASSWORD_EMAIL_SUBJECT = "Reset password";
-    private static final String RESETPASSWORD_EMAIL_TEXT = "Please click below link to reset your password.<br/>";
+    private static final String RESETPASSWORD_EMAIL_TEXT = "Here is the code and link for reset password. <br/> Please click below link to reset your password.<br/>";
 
     private static final String VERIFICATION_API = "http://localhost:8080/verify-email?userId=";
     private static final String RESETPASSWORD_API = "http://localhost:8080/resetpassword";
@@ -45,8 +45,9 @@ public class MailService {
     }
 
     public void sendResetPasswordEmail(String email, String userId) {
-        String link = "<a href='" + RESETPASSWORD_API + userId + "'>link</a>";
-        sendEmail(RESETPASSWORD_EMAIL_SUBJECT, RESETPASSWORD_EMAIL_TEXT + link, email);
+        String link = "<a href='" + RESETPASSWORD_API +"'>link</a>";
+        String code = "Code : " + userId;
+        sendEmail(RESETPASSWORD_EMAIL_SUBJECT, RESETPASSWORD_EMAIL_TEXT + link + code, email);
     }
 
     private void sendEmail(String subject, String text, String recipients) {
