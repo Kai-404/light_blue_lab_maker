@@ -7,7 +7,8 @@ class Discussion extends Component {
 
     state = {
         labList: [],
-        studentGrades: [[]]
+        studentGrades: [[]],
+        buttonTitle: "Select a lab"
     };
 
 
@@ -30,13 +31,18 @@ class Discussion extends Component {
         this.getLabOfCourse();
     }
 
+    handleSelect = e => {
+        this.setState({buttonTitle: this.state.labList[e].title})
+        this.getStudentGrades(e);
+    };
+
     getStudentGrades = e => {
         axios
             .get("http://localhost:8080/getstudentgrades", {
                 headers: {"Content-Type": "application/json;charset=UTF-8"},
                 params: {
                     courseID: sessionStorage.getItem("currentCourse"),
-                    labID: e
+                    labID: this.state.labList[e].id
                 }
             })
             .then(
@@ -73,14 +79,14 @@ class Discussion extends Component {
         return (
             <React.Fragment>
                 <DropdownButton
-                    title={"Select a lab"}
-                    onSelect={this.getStudentGrades}
+                    title={this.state.buttonTitle}
+                    onSelect={this.handleSelect}
                 >
                     {
-                        this.state.labList.map(lab =>
+                        this.state.labList.map((lab, index) =>
                             (
                                 <Dropdown.Item
-                                    eventKey={lab.id}
+                                    eventKey={index}
                                 >
                                     {lab.title}
                                 </Dropdown.Item>
