@@ -78,8 +78,8 @@ public class UserController {
         return false;
     }
 
-    @PostMapping("/reset-password")
-    public boolean resetPassword(@RequestParam(name="password") String password, @RequestParam(name = "id")  String id) {
+    @GetMapping("/reset-password")
+    public boolean resetPassword(@RequestParam String id, @RequestParam String password) {
         User user = userRepository.getById(id);
         if (user == null)
             return false;

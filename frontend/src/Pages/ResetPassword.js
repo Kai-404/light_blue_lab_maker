@@ -35,12 +35,9 @@ class ResetPassword extends Component {
             });
         } else {
             axios
-                .post("http://localhost:8080/reset-password",{
+                .get("http://localhost:8080/reset-password",{
                     headers: { "Content-Type": "application/json;charset=UTF-8" },
-                    params: {
-                        id : id,
-                        password: password
-                    }
+                    params: {id: id, password: password}
                 })
                 .then(res => {
                     if (res.data == false) {
@@ -67,9 +64,10 @@ class ResetPassword extends Component {
                         className="input"
                         value={this.state.id}
                         type="text"
-                        name="code"
+                        name="id"
                         onChange={this.onChange}
                     />
+                    <br />
                     <br />
                     New Password:
                     <input
