@@ -68,6 +68,27 @@ public class UserController {
         return "Something is wrong.";
     }
 
+    @GetMapping("/reset")
+    public boolean sendResetPasswordEmail(@RequestParam(name="email") String email) {
+        User user = userRepository.findByEmail(email);
+        if (user != null) {
+            mailService.sendResetPasswordEmail(email, user.getId());
+            return true;
+        }
+        return false;
+    }
+
+    @GetMapping("/reset-password")
+    public boolean resetPassword(@RequestParam String id, @RequestParam String password) {
+        User user = userRepository.getById(id);
+        if (user == null)
+            return false;
+        else {
+            user.setPassword(encryptPassword(password));
+            userRepository.save(user);
+            return true;
+        }
+    }
     private String encryptPassword(String password) {
         try {
             MessageDigest sh = MessageDigest.getInstance("SHA-256");

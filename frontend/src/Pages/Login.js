@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { withRouter } from "react-router";
 import axios from "axios";
 import "../App.css";
+import {Button, Modal} from "react-bootstrap";
 
 class Login extends Component {
   /* States */
@@ -11,7 +12,8 @@ class Login extends Component {
     this.state = {
       email: "",
       password: "",
-      errmsg: ""
+      errmsg: "",
+      showResetPassword: false
     };
   }
 
@@ -75,6 +77,33 @@ class Login extends Component {
     }
   };
 
+  openResetPassword = () => {
+    this.setState({showResetPassword : true})
+  };
+
+  closeResetPassword = () => {
+    this.setState({showResetPassword : false})
+  };
+
+  resetPassword = () => {
+    axios
+        .get("http://localhost:8080/reset", {
+          headers: { "Content-Type": "application/json;charset=UTF-8" },
+          params: { email: this.state.email }
+        })
+        .then(res => {
+          if (res.data) {
+            alert("The email has been sent");
+            this.closeResetPassword();
+          } else {
+            alert("There is no account that has this email address");
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+  };
+
   render() {
     return (
       <div>
@@ -116,11 +145,35 @@ class Login extends Component {
           <button
             type="button"
             className="submitButton"
-            onClick={this.routeResetPassword}
+            onClick={this.openResetPassword}
           >
             Reset Password
           </button>
         </form>
+        <Modal show={this.state.showResetPassword} onHide={this.closeResetPassword}>
+          <Modal.Header>
+            <Modal.Title>Add a New Course</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <form>
+              Email
+              <br/>
+              <input
+                  className="input"
+                  name="email"
+                  value={this.state.email}
+                  onChange={this.onChange}
+              >
+              </input>
+
+              <br />
+            </form>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button onClick={this.resetPassword}>Send Reset Email</Button>
+            <Button onClick={this.closeResetPassword}>Cancel</Button>
+          </Modal.Footer>
+        </Modal>
       </div>
     );
   }
