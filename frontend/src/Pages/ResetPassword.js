@@ -9,6 +9,7 @@ class ResetPassword extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            id: "",
             password: "",
             password2 : ""
         };
@@ -22,9 +23,9 @@ class ResetPassword extends Component {
 
     onSubmit = e => {
         e.preventDefault();
-        const { password, password2} = this.state;
+        const { id, password, password2} = this.state;
 
-        if (password === "" || password2 === "") {
+        if (password === "" || password2 === "" || id === "") {
             this.setState({errmsg : "fill in all fields"});
         } else if (password !== password2) {
             this.setState({errmsg: "password don't match"});
@@ -37,11 +38,17 @@ class ResetPassword extends Component {
                 .post("http://localhost:8080/reset-password",{
                     headers: { "Content-Type": "application/json;charset=UTF-8" },
                     params: {
+                        id : id,
                         password: password
                     }
                 })
                 .then(res => {
-                    this.routeLogin();
+                    if (res.data == false) {
+                        this.setState({errmsg: "wrong code"});
+                    } else {
+                        alert("password has been updated");
+                        this.routeLogin();
+                    }
                 })
                 .catch(err => {
                     console.log(err);
@@ -54,6 +61,15 @@ class ResetPassword extends Component {
             <div>
                 <p className="errmsg">{this.state.errmsg}</p>
                 <form className="form" onSubmit={this.onSubmit}>
+                    <br />
+                    Code:
+                    <input
+                        className="input"
+                        value={this.state.id}
+                        type="text"
+                        name="code"
+                        onChange={this.onChange}
+                    />
                     <br />
                     New Password:
                     <input
@@ -70,7 +86,7 @@ class ResetPassword extends Component {
                         className="input"
                         value={this.state.password2}
                         type="password"
-                        name="password"
+                        name="password2"
                         onChange={this.onChange}
                     />
                     <br />

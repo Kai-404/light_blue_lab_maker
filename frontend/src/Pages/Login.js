@@ -85,9 +85,10 @@ class Login extends Component {
         })
         .then(res => {
           if (res.data) {
+            alert("The email has been sent");
             this.closeResetPassword();
           } else {
-
+            alert("There is no account that has this email address");
           }
         })
         .catch(err => {

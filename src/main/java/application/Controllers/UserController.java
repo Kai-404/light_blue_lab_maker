@@ -78,14 +78,9 @@ public class UserController {
         return false;
     }
 
-    @GetMapping("/resetpassword")
-    public void resetPasswordPage(@RequestParam(name="id") String id, HttpSession session) {
-        session.setAttribute("reset_password_id", id);
-    }
-
     @PostMapping("/reset-password")
-    public boolean resetPassword(@RequestParam(name="password") String password, HttpSession session) {
-        User user = userRepository.getById((String)session.getAttribute("reset_password_id"));
+    public boolean resetPassword(@RequestParam(name="password") String password, @RequestParam(name = "id")  String id) {
+        User user = userRepository.getById(id);
         if (user == null)
             return false;
         else {

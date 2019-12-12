@@ -33,7 +33,7 @@ public class MailService {
     private static final String RESETPASSWORD_EMAIL_TEXT = "Please click below link to reset your password.<br/>";
 
     private static final String VERIFICATION_API = "http://localhost:8080/verify-email?userId=";
-    private static final String RESETPASSWORD_API = "http://localhost:8080/resetpassword?id=";
+    private static final String RESETPASSWORD_API = "http://localhost:8080/resetpassword";
 
     public void sendVerificationEmail(String userId, String email) {
         String link = "<a href='" + VERIFICATION_API + userId + "'>link</a>";
