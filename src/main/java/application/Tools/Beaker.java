@@ -308,8 +308,26 @@ public class Beaker extends Tool {
             }else if((pourTo.getCurrentVolume()+amount) > pourTo.getMaxVolume()){
                 return false;
             }else {
+                if(amount>pourTo.currentVolume){
+                    pourTo.phStatus = this.phStatus;
+                }else if(amount == pourTo.currentVolume){
+                    if (! this.phStatus.equals( pourTo.getPhStatus())){
+                        if(pourTo.phStatus.equals( "Neutral" )){
+                            pourTo.phStatus=this.phStatus;
+                        } else {
+                            pourTo.phStatus="Neutral";
+                        }
+                    }
+                }
+
+                for (String s : this.currentChemicalsList){
+                    if (!pourTo.currentChemicalsList.contains(s))
+                        pourTo.currentChemicalsList.add( s );
+                }
+
                 this.currentVolume = this.currentVolume - amount;
                 pourTo.currentVolume = pourTo.currentVolume + amount;
+
                 return true;
             }
         }else {
@@ -319,8 +337,26 @@ public class Beaker extends Tool {
             }else if((pourTo.getCurrentVolume()+amount) > pourTo.getMaxVolume()){
                 return false;
             }else {
+                if(amount>this.currentVolume){
+                    pourTo.phStatus = this.phStatus;
+                }else if(amount == this.currentVolume){
+                    if (! this.phStatus.equals( pourTo.getPhStatus())){
+                        if(pourTo.phStatus.equals( "Neutral" )){
+                            pourTo.phStatus=this.phStatus;
+                        } else {
+                            pourTo.phStatus="Neutral";
+                        }
+                    }
+                }
+
+                for (String s : this.currentChemicalsList){
+                    if (!pourTo.currentChemicalsList.contains(s))
+                        pourTo.currentChemicalsList.add( s );
+                }
+
                 this.currentVolume = this.currentVolume - amount;
                 pourTo.currentVolume = pourTo.currentVolume + amount;
+
                 return true;
             }
         }

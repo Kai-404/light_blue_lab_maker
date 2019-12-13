@@ -14,39 +14,39 @@ import java.util.concurrent.atomic.AtomicReference;
 
 @Getter
 @Setter
-public class Flask extends Tool {
-    @Field("FlaskName")
-    String name = "Flask";
-    @Field("FlaskImageName")
-    final String imageName = "flask.png";
-    @Field("FlaskX")
+public class Pipette extends Tool {
+    @Field("PipetteName")
+    String name = "Pipette";
+    @Field("PipetteImageName")
+    final String imageName = "pipette.png";
+    @Field("PipetteX")
     int x = 0;
-    @Field("FlaskY")
+    @Field("PipetteY")
     int y = 0;
 
     //initial property
-    double maxVolume = 100.0;
-    double currentVolume = 50.0;
-    ArrayList<String> currentChemicalsList = new ArrayList<>( Arrays.asList("H20"));
+    double maxVolume = 10.0;
+    ArrayList<String> currentChemicalsList = new ArrayList<>( );
     String phStatus = "Neutral";
+    boolean sucked = false;
 
     //final property
-    double finalMaxVolume = 100.0;
-    double finalCurrentVolume = 50.0;
-    ArrayList<String> finalCurrentChemicalsList = new ArrayList<>( Arrays.asList("H20"));
+    double finalMaxVolume = 10.0;
+    ArrayList<String> finalCurrentChemicalsList = new ArrayList<>();
     String finalPhStatus = "Neutral";
+    boolean finalSucked = false;
 
-    boolean canBeBurned = true;
 
-    @Field("FlaskInteractWith")
+
+    @Field("PipetteInteractWith")
     Map<String,String> canInteractWith = Map.of(
-            "Beaker","Pour",
-            "Flask","Pour"
+            "Beaker","SuckOrDrop",
+            "Flask","SuckOrDrop"
     );
 
 
 
-    public Flask(){
+    public Pipette(){
 
     }
     public String getName(){
@@ -67,11 +67,15 @@ public class Flask extends Tool {
 
     public ArrayList<String> chemicalStringToList(String chemicalString){
         ArrayList<String> chemicalList = new ArrayList(Arrays.asList( chemicalString.split( "," )));
-        for(String s : chemicalList){
-            if (s.isBlank()){
-                chemicalList.remove( s );
+
+        if (!chemicalList.isEmpty()){
+            for(String s : chemicalList){
+                if (s.isBlank()){
+                    chemicalList.remove( s );
+                }
             }
         }
+
         return chemicalList;
     }
 
@@ -91,16 +95,16 @@ public class Flask extends Tool {
         JSONObject maxVolumeProp = new JSONObject();
         maxVolumeProp.put( "Name","Max Volume" );
         maxVolumeProp.put( "Value",this.maxVolume );
-        maxVolumeProp.put( "Editable", true );
+        maxVolumeProp.put( "Editable", false );
         maxVolumeProp.put( "Max", "9999" );
         maxVolumeProp.put( "Min", "1" );
 
-        JSONObject currentVolumeProp = new JSONObject();
-        currentVolumeProp.put( "Name","Current Volume" );
-        currentVolumeProp.put( "Value",this.currentVolume );
-        currentVolumeProp.put( "Editable", true );
-        currentVolumeProp.put( "Max", "9999" );
-        currentVolumeProp.put( "Min", "1" );
+//        JSONObject currentVolumeProp = new JSONObject();
+//        currentVolumeProp.put( "Name","Current Volume" );
+//        currentVolumeProp.put( "Value",this.currentVolume );
+//        currentVolumeProp.put( "Editable", true );
+//        currentVolumeProp.put( "Max", "9999" );
+//        currentVolumeProp.put( "Min", "1" );
 
         JSONObject phStatusProp = new JSONObject();
         phStatusProp.put( "Name","PH Status" );
@@ -118,7 +122,7 @@ public class Flask extends Tool {
         chemicalsListProp.put( "Editable", true );
 
         properties.put(maxVolumeProp);
-        properties.put(currentVolumeProp);
+        //properties.put(currentVolumeProp);
         properties.put(phStatusProp);
         properties.put(chemicalsListProp);
 
@@ -130,16 +134,16 @@ public class Flask extends Tool {
         JSONObject finalMaxVolumeProp = new JSONObject();
         finalMaxVolumeProp.put( "Name","Max Volume" );
         finalMaxVolumeProp.put( "Value",this.finalMaxVolume );
-        finalMaxVolumeProp.put( "Editable", true );
+        finalMaxVolumeProp.put( "Editable", false );
         finalMaxVolumeProp.put( "Max", "9999" );
         finalMaxVolumeProp.put( "Min", "1" );
 
-        JSONObject finalCurrentVolumeProp = new JSONObject();
-        finalCurrentVolumeProp.put( "Name","Current Volume" );
-        finalCurrentVolumeProp.put( "Value",this.finalCurrentVolume );
-        finalCurrentVolumeProp.put( "Editable", true );
-        finalCurrentVolumeProp.put( "Max", "9999" );
-        finalCurrentVolumeProp.put( "Min", "1" );
+//        JSONObject finalCurrentVolumeProp = new JSONObject();
+//        finalCurrentVolumeProp.put( "Name","Current Volume" );
+//        finalCurrentVolumeProp.put( "Value",this.finalCurrentVolume );
+//        finalCurrentVolumeProp.put( "Editable", true );
+//        finalCurrentVolumeProp.put( "Max", "9999" );
+//        finalCurrentVolumeProp.put( "Min", "1" );
 
         JSONObject finalPhStatusProp = new JSONObject();
         finalPhStatusProp.put( "Name","PH Status" );
@@ -160,7 +164,7 @@ public class Flask extends Tool {
 
 
         finalProperties.put(finalMaxVolumeProp);
-        finalProperties.put(finalCurrentVolumeProp);
+        //finalProperties.put(finalCurrentVolumeProp);
         finalProperties.put(finalPhStatusProp);
         finalProperties.put(finalChemicalsListProp);
 
@@ -168,7 +172,7 @@ public class Flask extends Tool {
 
 
         JSONObject interactions = new JSONObject();
-        interactions.put("Name", "Pour");
+        interactions.put("Name", "Suck or Drop");
 
         toolJSONObject.put( "Interactions",interactions );
 
@@ -181,7 +185,6 @@ public class Flask extends Tool {
         JSONObject jsonObject = new JSONObject(toolProps);
 
         JSONObject cTool = jsonObject.getJSONObject( "ctool" );
-        //System.out.println( "X:" +cTool.get( "x" )+" \n Y"+cTool.get( "y" ));
 
         this.x = (int)cTool.get( "x" );
         if (cTool.get( "y" ) instanceof Double){
@@ -193,7 +196,6 @@ public class Flask extends Tool {
 
         JSONArray propArray = cTool.getJSONArray( "Prop" );
 
-        //System.out.println( propArray );
 
         AtomicReference<Boolean> updateSuccess = new AtomicReference<>( true );
 
@@ -209,17 +211,16 @@ public class Flask extends Tool {
                 }
 
             }
-            else if (((String)prop.get("Name")).equals( "Current Volume" )){
-                double temp =  Double.parseDouble( String.valueOf( prop.get( "Value" ) ) );
-
-                if (temp > this.maxVolume || temp <0){
-                    updateSuccess.set( false );
-                }else {
-                    this.currentVolume = temp;
-                }
-
-
-            }
+//            else if (((String)prop.get("Name")).equals( "Current Volume" )){
+//                double temp =  Double.parseDouble( String.valueOf( prop.get( "Value" ) ) );
+//
+//                if (temp > this.maxVolume || temp <0){
+//                    updateSuccess.set( false );
+//                }else {
+//                    this.currentVolume = temp;
+//                }
+//
+//            }
             else if (((String)prop.get("Name")).equals( "PH Status" )){
                 this.phStatus= (String) prop.get( "Value" );
             }
@@ -246,16 +247,16 @@ public class Flask extends Tool {
                 }
 
             }
-            else if (((String)prop.get("Name")).equals( "Current Volume" )){
-
-                double temp =  Double.parseDouble( String.valueOf( prop.get( "Value" ) ) );
-
-                if (temp > this.maxVolume || temp <0){
-                    updateSuccess.set( false );
-                }else {
-                    this.finalCurrentVolume = temp;
-                }
-            }
+//            else if (((String)prop.get("Name")).equals( "Current Volume" )){
+//
+//                double temp =  Double.parseDouble( String.valueOf( prop.get( "Value" ) ) );
+//
+//                if (temp > this.maxVolume || temp <0){
+//                    updateSuccess.set( false );
+//                }else {
+//                    this.finalCurrentVolume = temp;
+//                }
+//            }
             else if (((String)prop.get("Name")).equals( "PH Status" )){
                 this.finalPhStatus= (String) prop.get( "Value" );
             }
@@ -268,92 +269,117 @@ public class Flask extends Tool {
 
     }
 
-    public Flask clone() throws CloneNotSupportedException {
-        Flask clone = (Flask) super.clone();
+    public Pipette clone() throws CloneNotSupportedException {
+        Pipette clone = (Pipette) super.clone();
         clone.setMaxVolume(this.maxVolume);
-        clone.setCurrentVolume(this.currentVolume);
+        //clone.setCurrentVolume(this.currentVolume);
         clone.setCurrentChemicalsList( this.currentChemicalsList );
         clone.setPhStatus( this.phStatus );
 
         clone.setFinalMaxVolume(this.finalMaxVolume);
-        clone.setFinalCurrentVolume(this.finalCurrentVolume);
+        //clone.setFinalCurrentVolume(this.finalCurrentVolume);
         clone.setFinalCurrentChemicalsList( this.finalCurrentChemicalsList );
         clone.setFinalPhStatus( this.finalPhStatus );
         return clone;
     }
 
-    public boolean pour(Tool tool, Double amount){
-        if (tool.getName().equals( "Beaker" )) {
-            Beaker pourTo = (Beaker) tool;
-            if(amount>this.currentVolume){
-                return false;
-            }else if((pourTo.getCurrentVolume()+amount) > pourTo.getMaxVolume()){
-                return false;
-            }else {
-                if(amount>this.currentVolume){
-                    pourTo.phStatus = this.phStatus;
-                }else if(amount == this.currentVolume){
-                    if (! this.phStatus.equals( pourTo.getPhStatus())){
-                        if(pourTo.phStatus.equals( "Neutral" )){
-                            pourTo.phStatus=this.phStatus;
-                        } else {
-                            pourTo.phStatus="Neutral";
+    public boolean suckOrDrop(Tool tool){
+
+        //drop
+        if (sucked){
+            if (tool.getName().equals( "Beaker" )) {
+                Beaker pourTo = (Beaker) tool;
+                if((pourTo.getCurrentVolume()+10.0) > pourTo.getMaxVolume()){
+                    return false;
+                }else {
+                    if(10.0>pourTo.currentVolume){
+                        pourTo.phStatus = this.phStatus;
+                    }else if(10.0 == pourTo.currentVolume){
+                        if (! this.phStatus.equals( pourTo.getPhStatus())){
+                            if(pourTo.phStatus.equals( "Neutral" )){
+                                pourTo.phStatus=this.phStatus;
+                            } else {
+                                pourTo.phStatus="Neutral";
+                            }
                         }
                     }
+
+                    for (String s : this.currentChemicalsList){
+                        if (!pourTo.currentChemicalsList.contains(s))
+                            pourTo.currentChemicalsList.add( s );
+                    }
+                    pourTo.currentVolume = pourTo.currentVolume + 10.0;
+                    this.sucked = false;
+                    return true;
                 }
+            }else {
+                Flask pourTo = (Flask) tool;
+                if((pourTo.getCurrentVolume()+10.0) > pourTo.getMaxVolume()){
+                    return false;
+                }else {
+                    if(10.0>pourTo.currentVolume){
+                        pourTo.phStatus = this.phStatus;
+                    }else if(10.0 == pourTo.currentVolume){
+                        if (! this.phStatus.equals( pourTo.getPhStatus())){
+                            if(pourTo.phStatus.equals( "Neutral" )){
+                                pourTo.phStatus=this.phStatus;
+                            } else {
+                                pourTo.phStatus="Neutral";
+                            }
+                        }
+                    }
 
-                for (String s : this.currentChemicalsList){
-                    if (!pourTo.currentChemicalsList.contains(s))
-                        pourTo.currentChemicalsList.add( s );
+                    for (String s : this.currentChemicalsList){
+                        if (!pourTo.currentChemicalsList.contains(s))
+                            pourTo.currentChemicalsList.add( s );
+                    }
+                    pourTo.currentVolume = pourTo.currentVolume + 10.0;
+                    this.sucked = false;
+                    return true;
                 }
-
-                this.currentVolume = this.currentVolume - amount;
-                pourTo.currentVolume = pourTo.currentVolume + amount;
-
-                return true;
             }
-        }else {
-            Flask pourTo = (Flask) tool;
-            if(amount>this.currentVolume){
-                return false;
-            }else if((pourTo.getCurrentVolume()+amount) > pourTo.getMaxVolume()){
-                return false;
+        }else {//Suck
+            if (tool.getName().equals( "Beaker" )) {
+                Beaker suckFrom = (Beaker) tool;
+                if((suckFrom.getCurrentVolume()-10.0) <0){
+                    return false;
+                }else {
+                    this.phStatus = suckFrom.phStatus;
+                    this.currentChemicalsList = suckFrom.currentChemicalsList;
+                    this.sucked = true;
+                    suckFrom.currentVolume = suckFrom.currentVolume-10.0;
+                    return true;
+                }
             }else {
-                if(amount>this.currentVolume){
-                    pourTo.phStatus = this.phStatus;
-                }else if(amount == this.currentVolume){
-                    if (! this.phStatus.equals( pourTo.getPhStatus())){
-                        if(pourTo.phStatus.equals( "Neutral" )){
-                            pourTo.phStatus=this.phStatus;
-                        } else {
-                            pourTo.phStatus="Neutral";
-                        }
-                    }
+                Flask suckFrom = (Flask) tool;
+                if((suckFrom.getCurrentVolume()-10.0) <0){
+                    return false;
+                }else {
+                    this.phStatus = suckFrom.phStatus;
+                    this.currentChemicalsList = suckFrom.currentChemicalsList;
+                    this.sucked = true;
+                    suckFrom.currentVolume = suckFrom.currentVolume-10.0;
+                    return true;
                 }
-
-                for (String s : this.currentChemicalsList){
-                    if (!pourTo.currentChemicalsList.contains(s))
-                        pourTo.currentChemicalsList.add( s );
-                }
-
-                this.currentVolume = this.currentVolume - amount;
-                pourTo.currentVolume = pourTo.currentVolume + amount;
-
-                return true;
             }
         }
+
     }
 
     public JSONObject getInteractionDetail(String interactionName){
         JSONObject interactionJSONObject = new JSONObject();
 
-        if (interactionName.equals("Pour")){
-            interactionJSONObject.put( "Name",interactionName );
-            interactionJSONObject.put( "Description","Select how much you want pour to another glassware" );
-            JSONObject pourPrams = new JSONObject();
-            pourPrams.put( "PramName","Amount to pour" );
-            pourPrams.put( "Value",Double.valueOf( 0 ) );
-            interactionJSONObject.put( "Prams",pourPrams );
+        if (interactionName.equals("SuckOrDrop") && !this.sucked){
+            interactionJSONObject.put( "Name", "Suck" );
+            interactionJSONObject.put( "Description","Suck chemical from a glassware" );
+            //JSONObject pourPrams = new JSONObject();
+            interactionJSONObject.put( "Prams", "Suck" );
+
+        }else if (interactionName.equals("SuckOrDrop") && this.sucked){
+            interactionJSONObject.put( "Name", "Drop" );
+            interactionJSONObject.put( "Description","Drop chemical to a glassware" );
+            //JSONObject pourPrams = new JSONObject();
+            interactionJSONObject.put( "Prams", "Drop" );
         }
 
         return interactionJSONObject;

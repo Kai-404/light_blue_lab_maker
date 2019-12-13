@@ -7,6 +7,7 @@ import application.Models.Lab;
 import application.Tools.Beaker;
 import application.Tools.Flask;
 import application.Tools.PHPaper;
+import application.Tools.Pipette;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -294,6 +295,10 @@ public class LabController {
                 return new ResponseEntity<>(tool.getInteractionDetail(interActionName).toString(), HttpStatus.OK);
             }else if(tool1.getName().equals( "Flask" )){
                 Flask tool = (Flask) tool1;
+                return new ResponseEntity<>(tool.getInteractionDetail(interActionName).toString(), HttpStatus.OK);
+            }else if (tool1.getName().equals( "Pipette" )){
+                Pipette tool = (Pipette) tool1;
+                tool.suckOrDrop( tool2 );
                 return new ResponseEntity<>(tool.getInteractionDetail(interActionName).toString(), HttpStatus.OK);
             }else if (tool1.getName().equals( "PHPaper" )) {
                 PHPaper tool = (PHPaper) tool1;
