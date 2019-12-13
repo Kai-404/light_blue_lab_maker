@@ -18,9 +18,10 @@ class AddAnnouncement extends Component {
 
     addNewAnnouncement = event => {
         const form = event.currentTarget;
-        if (form.checkValidity() === false) {
+        if (this.state.validated === false) {
             event.preventDefault();
             event.stopPropagation();
+            console.log("works");
         } else {
             let title = this.state.announTitle;
             let content = this.state.content;
@@ -52,7 +53,6 @@ class AddAnnouncement extends Component {
                 content: ""
             });
         }
-        this.setState({validated: true});
     };
 
     onChange = e => this.setState({[e.target.name]: e.target.value});
