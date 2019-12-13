@@ -1,9 +1,6 @@
 package application.Models;
 
-import application.Tools.AlcoholBurner;
-import application.Tools.Beaker;
-import application.Tools.Flask;
-import application.Tools.PHPaper;
+import application.Tools.*;
 import com.mongodb.util.JSON;
 import lombok.Data;
 import lombok.Getter;
@@ -144,6 +141,11 @@ public class Stage {
                     Flask flask = (Flask) tool;
                     updateSuccess = flask.updateProp( toolProps );
                     stageToolList.set( index,flask );
+
+                }else if (tool.getName().equals( "Pipette" )){
+                    Pipette pipette = (Pipette) tool;
+                    updateSuccess = pipette.updateProp( toolProps );
+                    stageToolList.set( index,pipette );
 
                 }
 //                else if (tool.getName().equals( "AlcoholBurner" )){
