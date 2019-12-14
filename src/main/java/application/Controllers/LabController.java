@@ -203,7 +203,15 @@ public class LabController {
 
     @GetMapping("/publishlab")
     @ResponseBody
-    public boolean publishLab(@RequestParam(name = "courseID") String courseID) {
+    public int publishLab(@RequestParam(name = "courseID") String courseID) {
+        if (lab.getStageList().size() == 0) {
+            return 1;
+        }
+        for (Stage stage : lab.getStageList()) {
+            if (stage.getStageToolList().size() == 0) {
+                return 2;
+            }
+        }
         try {
             lab.setPublished(true);
             labRepository.save(lab);
@@ -221,9 +229,9 @@ public class LabController {
             }
         } catch (Error e) {
             e.printStackTrace();
-            return false;
+            return 3;
         }
-        return true;
+        return 0;
     }
 
     @GetMapping("/deletelab")

@@ -214,9 +214,13 @@ class Makelab extends Component {
         }
       })
       .then(res => {
-        if (res.data) {
+        if (res.data == 0) {
           this.saveLab();
           alert("successfully published lab");
+        } else if (res.data == 1) {
+          alert("there has to be at least one stage");
+        } else if (res.data == 2) {
+          alert("each stage must have at least one tool");
         } else {
           alert("fail to publish the lab");
         }
