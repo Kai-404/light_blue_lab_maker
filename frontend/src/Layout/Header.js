@@ -97,10 +97,12 @@ class Header extends Component {
     return (
       <React.Fragment>
         <Navbar bg="dark" variant="dark">
-          <Navbar.Brand>
-            <img src={Logo} className="LogoIcon" alt="LOGO" />
-            Lab Maker
-          </Navbar.Brand>
+          <LinkContainer to="/">
+            <Navbar.Brand onClick={this.showBar}>
+              <img src={Logo} className="LogoIcon" alt="LOGO" />
+              Lab Maker
+            </Navbar.Brand>
+          </LinkContainer>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <BarContent under={sessionStorage.getItem("underCourse")} />
