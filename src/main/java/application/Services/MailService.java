@@ -27,7 +27,7 @@ public class MailService {
 
     private static final String NOTIFICATION_EMAIL_SUBJECT = "Notification";
     private static final String NOTIFICATION_EMAIL_TEXT = "New announcement has been posted in class ";
-    private static final String VERIFICATION_EMAIL_SUBJECT = "Verify 3your email";
+    private static final String VERIFICATION_EMAIL_SUBJECT = "Verify your email";
     private static final String VERIFICATION_EMAIL_TEXT = "Please confirm your email address by clicking on the link below.<br/>";
     private static final String RESETPASSWORD_EMAIL_SUBJECT = "Reset password";
     private static final String RESETPASSWORD_EMAIL_TEXT = "Here is the code and link for reset password. <br/> Please click below link to reset your password.<br/>";
