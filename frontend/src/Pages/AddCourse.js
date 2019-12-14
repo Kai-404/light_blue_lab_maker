@@ -7,6 +7,7 @@ import "../App.css";
 class AddCourse extends Component {
 
     state = {
+        errMsg: "",
         showAddCourse: false,
         courseName: '',
         term: ''
@@ -17,18 +18,36 @@ class AddCourse extends Component {
     };
 
     closeAddCourse = () => {
-        this.setState({showAddCourse: false})
-    };
-
-    addCourse() {
-        axios.post("http://localhost:8080/addcourse", {title: this.state.courseName, term: this.state.term, professor: sessionStorage.getItem("username")})
-            .then(res => {this.props.getCourseList();})
-            .catch((err => {console.log("error")}));
         this.setState({
+            errMsg: "",
             showAddCourse: false,
             courseName: '',
             term: ''
-        });
+        })
+    };
+
+    addCourse() {
+        if (this.state.courseName === "" || this.state.term === "") {
+            this.setState({errMsg: "Please fill in all fields!"})
+        }
+        else {
+            axios.post("http://localhost:8080/addcourse", {
+                title: this.state.courseName,
+                term: this.state.term,
+                professor: sessionStorage.getItem("username")
+            })
+                .then(res => {
+                    this.props.getCourseList();
+                })
+                .catch((err => {
+                    console.log("error")
+                }));
+            this.setState({
+                showAddCourse: false,
+                courseName: '',
+                term: ''
+            });
+        }
     };
 
     onChange = e => this.setState({ [e.target.name]: e.target.value });
@@ -45,6 +64,7 @@ class AddCourse extends Component {
                     <Modal.Title>Add a New Course</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
+                    <p className="errmsg">{this.state.errMsg}</p>
                     <form>
                         Course Name
                         <br/>
