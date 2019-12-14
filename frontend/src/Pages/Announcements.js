@@ -43,7 +43,7 @@ class Announcements extends Component {
                                 {announ.title}
                             </Card.Title>
                             <Card.Subtitle className="text-muted" align="left">
-                                {announ.date}
+                                {announ.date.slice(0,10)}
                             </Card.Subtitle>
                             <br/>
                             <Card.Text align="left">{announ.content}</Card.Text>
