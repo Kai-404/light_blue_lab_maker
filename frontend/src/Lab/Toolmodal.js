@@ -201,8 +201,7 @@ class Toolmodal extends Component {
                           })}
                         </Form.Control>
                       );
-                    }
-                    if (prop.Name == "PH Status") {
+                    } else if (prop.Name == "PH Status") {
                       control = (
                         <Form.Control
                           as="select"
@@ -215,6 +214,16 @@ class Toolmodal extends Component {
                             return <option>{s}</option>;
                           })}
                         </Form.Control>
+                      );
+                    } else if (prop.Name == "Chemicals List") {
+                      control = (
+                        <Form.Control
+                          id={"init"}
+                          name={prop.Name}
+                          type={prop.Name}
+                          defaultValue={prop.Value}
+                          onChange={this.handleChangeProps}
+                        />
                       );
                     }
                   }
@@ -246,34 +255,6 @@ class Toolmodal extends Component {
                       onChange={this.handleChangeProps}
                     />
                   );
-                  if (prop.Name == "PH Status") {
-                    control = (
-                      <Form.Control
-                        as="select"
-                        name={prop.Name}
-                        defaultValue={prop.Value}
-                        onChange={this.handleChangeProps}
-                      >
-                        {prop.ValidStatus.map(s => {
-                          return <option>{s}</option>;
-                        })}
-                      </Form.Control>
-                    );
-                  }
-                  if (prop.Name == "Color") {
-                    control = (
-                      <Form.Control
-                        as="select"
-                        name={prop.Name}
-                        defaultValue={prop.Value}
-                        onChange={this.handleChangeProps}
-                      >
-                        {prop.ValidColor.map(s => {
-                          return <option>{s}</option>;
-                        })}
-                      </Form.Control>
-                    );
-                  }
                   if (!prop.Editable) {
                     control = (
                       <Form.Control
@@ -284,7 +265,46 @@ class Toolmodal extends Component {
                         disabled
                       />
                     );
+                  } else {
+                    if (prop.Name == "PH Status") {
+                      control = (
+                        <Form.Control
+                          as="select"
+                          name={prop.Name}
+                          defaultValue={prop.Value}
+                          onChange={this.handleChangeProps}
+                        >
+                          {prop.ValidStatus.map(s => {
+                            return <option>{s}</option>;
+                          })}
+                        </Form.Control>
+                      );
+                    } else if (prop.Name == "Color") {
+                      control = (
+                        <Form.Control
+                          as="select"
+                          name={prop.Name}
+                          defaultValue={prop.Value}
+                          onChange={this.handleChangeProps}
+                        >
+                          {prop.ValidColor.map(s => {
+                            return <option>{s}</option>;
+                          })}
+                        </Form.Control>
+                      );
+                    } else if (prop.Name == "Chemicals List") {
+                      control = (
+                        <Form.Control
+                          id={"final"}
+                          name={prop.Name}
+                          type={prop.Name}
+                          defaultValue={prop.Value}
+                          onChange={this.handleChangeProps}
+                        />
+                      );
+                    }
                   }
+
                   return (
                     <React.Fragment>
                       <Form.Group as={Row}>

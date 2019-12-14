@@ -28,6 +28,10 @@ class Header extends Component {
       if (e.under == "true") {
         res = (
           <React.Fragment>
+            <Navbar.Text>
+              {sessionStorage.getItem("currentCourseName")}{" "}
+              {sessionStorage.getItem("currentCourseTerm")}
+            </Navbar.Text>
             <Nav className="mr-auto">
               <LinkContainer to="/announcements">
                 <Nav.Link>Announcements</Nav.Link>
@@ -41,10 +45,6 @@ class Header extends Component {
                 </LinkContainer>
               ) : null}
             </Nav>
-            <Navbar.Text>
-              {sessionStorage.getItem("currentCourseName")}{" "}
-              {sessionStorage.getItem("currentCourseTerm")}
-            </Navbar.Text>
           </React.Fragment>
         );
       }
