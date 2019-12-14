@@ -29,7 +29,7 @@ public class PHPaper extends Tool {
     String phStatus = "NONE";
     //final property
     String finalColor = "#00ff00";
-    String finalPhStatus = "Neutral";
+    String finalPhStatus = "NEUTRAL";
 
     @Field("PHInteractWith")
     Map<String,String> canInteractWith = Map.of(

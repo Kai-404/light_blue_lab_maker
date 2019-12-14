@@ -27,13 +27,13 @@ public class Pipette extends Tool {
     //initial property
     double maxVolume = 10.0;
     ArrayList<String> currentChemicalsList = new ArrayList<>( );
-    String phStatus = "Neutral";
+    String phStatus = "NEUTRAL";
     boolean sucked = false;
 
     //final property
     double finalMaxVolume = 10.0;
     ArrayList<String> finalCurrentChemicalsList = new ArrayList<>();
-    String finalPhStatus = "Neutral";
+    String finalPhStatus = "NEUTRAL";
     boolean finalSucked = false;
 
 
@@ -296,10 +296,10 @@ public class Pipette extends Tool {
                         pourTo.phStatus = this.phStatus;
                     }else if(10.0 == pourTo.currentVolume){
                         if (! this.phStatus.equals( pourTo.getPhStatus())){
-                            if(pourTo.phStatus.equals( "Neutral" )){
+                            if(pourTo.phStatus.equals( "NEUTRAL" )){
                                 pourTo.phStatus=this.phStatus;
                             } else {
-                                pourTo.phStatus="Neutral";
+                                pourTo.phStatus="NEUTRAL";
                             }
                         }
                     }
@@ -321,10 +321,10 @@ public class Pipette extends Tool {
                         pourTo.phStatus = this.phStatus;
                     }else if(10.0 == pourTo.currentVolume){
                         if (! this.phStatus.equals( pourTo.getPhStatus())){
-                            if(pourTo.phStatus.equals( "Neutral" )){
+                            if(pourTo.phStatus.equals( "NEUTRAL" )){
                                 pourTo.phStatus=this.phStatus;
                             } else {
-                                pourTo.phStatus="Neutral";
+                                pourTo.phStatus="NEUTRAL";
                             }
                         }
                     }
