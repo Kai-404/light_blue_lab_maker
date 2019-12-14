@@ -56,6 +56,8 @@ class Login extends Component {
             if (!res.data.active) {
               this.setState({ errmsg: "Please verify your email"});
             } else {
+              sessionStorage.setItem("userFirstName", res.data.firstName);
+              sessionStorage.setItem("userLastName", res.data.lastName);
               sessionStorage.setItem("username", res.data.username);
               sessionStorage.setItem("userType", res.data.userType);
               sessionStorage.setItem("userID", res.data.id);
