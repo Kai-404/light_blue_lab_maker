@@ -187,43 +187,68 @@ class Makelab extends Component {
       sessionStorage.setItem("currentLabTitle", title);
       sessionStorage.setItem("currentLabDescription", description);
       axios
-          .get("http://localhost:8080/savelab", {
-            headers: { "Content-Type": "application/json;charset=UTF-8" },
-            params: {
-              courseID: sessionStorage.getItem("currentCourse"),
-              username: sessionStorage.getItem("username"),
-              title: title,
-              description: description,
-            }
-          })
-          .then(res => {
-            if (res.data) {
-              alert("successfully saved lab");
-            } else {
-              alert("fail to save the lab");
-            }
-          });
+        .get("http://localhost:8080/savelab", {
+          headers: { "Content-Type": "application/json;charset=UTF-8" },
+          params: {
+            courseID: sessionStorage.getItem("currentCourse"),
+            username: sessionStorage.getItem("username"),
+            title: title,
+            description: description
+          }
+        })
+        .then(res => {
+          if (res.data) {
+            alert("successfully saved lab");
+          } else {
+            alert("fail to save the lab");
+          }
+        });
     }
   };
 
   publishLab = () => {
-    axios
-      .get("http://localhost:8080/publishlab", {
-        params: {
-          courseID: sessionStorage.getItem("currentCourse")
-        }
-      })
-      .then(res => {
-        if (res.data) {
-          this.saveLab();
-          alert("successfully published lab");
-        } else {
-          alert("fail to publish the lab");
-        }
-      })
-      .catch(err => {
-        alert("fail to publish the lab with", err);
-      });
+    let title = document.getElementById("title").value;
+    let description = document.getElementById("description").value;
+    if (title === "" || description === "") {
+      alert("title and description must be filled");
+    } else {
+      sessionStorage.setItem("currentLabTitle", title);
+      sessionStorage.setItem("currentLabDescription", description);
+      axios
+        .get("http://localhost:8080/savelab", {
+          headers: { "Content-Type": "application/json;charset=UTF-8" },
+          params: {
+            courseID: sessionStorage.getItem("currentCourse"),
+            username: sessionStorage.getItem("username"),
+            title: title,
+            description: description
+          }
+        })
+        .then(res => {
+          if (res.data) {
+            axios
+              .get("http://localhost:8080/publishlab", {
+                params: {
+                  courseID: sessionStorage.getItem("currentCourse")
+                }
+              })
+              .then(res => {
+                if (res.data) {
+                  alert("successfully published lab");
+                  this.props.history.push("/labspage");
+                } else {
+                  alert("fail to publish the lab");
+                }
+              })
+              .catch(err => {
+                alert("fail to publish the lab with", err);
+              });
+          }
+        })
+        .catch(err => {
+          alert("fail to publish the lab with", err);
+        });
+    }
   };
 
   setCurrentTool = tool => {
@@ -322,8 +347,16 @@ class Makelab extends Component {
     let textInput = (
       <React.Fragment>
         <div align="left">
-          <TextField id="title" label="title" defaultValue={sessionStorage.getItem("currentLabTitle")}/>
-          <TextField id="description" label="description" defaultValue={sessionStorage.getItem("currentLabDescription")}/>
+          <TextField
+            id="title"
+            label="title"
+            defaultValue={sessionStorage.getItem("currentLabTitle")}
+          />
+          <TextField
+            id="description"
+            label="description"
+            defaultValue={sessionStorage.getItem("currentLabDescription")}
+          />
         </div>
       </React.Fragment>
     );
