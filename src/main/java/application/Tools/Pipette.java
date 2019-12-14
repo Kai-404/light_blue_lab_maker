@@ -66,7 +66,12 @@ public class Pipette extends Tool {
     }
 
     public ArrayList<String> chemicalStringToList(String chemicalString){
-        ArrayList<String> chemicalList = new ArrayList(Arrays.asList( chemicalString.split( "," )));
+
+        ArrayList<String> chemicalList = new ArrayList();
+
+        if (! chemicalString.equals( "" ) ){
+            chemicalList = new ArrayList(Arrays.asList( chemicalString.split( "," )));
+        }
 
         if (!chemicalList.isEmpty()){
             for(String s : chemicalList){
