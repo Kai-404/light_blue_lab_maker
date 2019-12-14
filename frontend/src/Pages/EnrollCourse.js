@@ -171,7 +171,7 @@ class EnrollCourse extends Component {
                                                         :
                                                         <Button id='enrollbutton' onClick={() => this.enrollCourse(course.id)}>Enroll</Button>
                                                 }
-                                                {course.title + " " + course.term}
+                                                {course.title + " / " + course.term}
                                             </div>
                                         </ListGroup.Item>
                                     )
