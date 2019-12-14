@@ -117,7 +117,7 @@ class LabTool extends Component {
       if (id2 != e.target.attrs.name) {
         if (this.haveIntersection(tool, targetTool)) {
           inter = true;
-          this.setState({ interactedTool: tool, sourceTool: sourceTool });
+          this.setState({ interactedTool: tool });
           e.target.setAttrs({
             x: this.state.interactedTool.x,
             y: this.state.interactedTool.y - stageH * 0.2
@@ -160,20 +160,20 @@ class LabTool extends Component {
   handleDragEnd = e => {
     let stageNum = this.props.stageNum,
       id = e.target.attrs.name;
-
-    this.props.stageTool.map(tool => {
-      // e.target.attrs.name is the id of img
-      if (tool.id === id) {
-        tool.x = e.target.attrs.x;
-        tool.y = e.target.attrs.y;
-        this.setState({ currentTool: tool });
-      }
-    });
-
-    let ctool = this.state.currentTool;
+    console.log("tool: ", this.props.stageTool);
+    let ctool;
     if (this.checkInteraction(e, stageNum, id)) {
-      console.log(true);
-      ctool = this.state.sourceTool;
+      this.props.setCurrentStage(stageNum);
+    } else {
+      this.props.stageTool.map(tool => {
+        // e.target.attrs.name is the id of img
+        if (tool.id === id) {
+          tool.x = e.target.attrs.x;
+          tool.y = e.target.attrs.y;
+          this.setState({ currentTool: tool });
+        }
+      });
+      ctool = this.state.currentTool;
     }
 
     e.target.to({
