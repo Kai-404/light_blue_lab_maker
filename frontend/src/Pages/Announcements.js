@@ -42,6 +42,10 @@ class Announcements extends Component {
                             <Card.Title as="h4" align="left">
                                 {announ.title}
                             </Card.Title>
+                            <Card.Subtitle className="text-muted" align="left">
+                                {announ.date}
+                            </Card.Subtitle>
+                            <br/>
                             <Card.Text align="left">{announ.content}</Card.Text>
                         </Card.Body>
                     </Card>
