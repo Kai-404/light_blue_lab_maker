@@ -28,13 +28,13 @@ public class Beaker extends Tool {
     double maxVolume = 100.0;
     double currentVolume = 50.0;
     ArrayList<String> currentChemicalsList = new ArrayList<>( Arrays.asList("H20"));
-    String phStatus = "Neutral";
+    String phStatus = "NEUTRAL";
 
     //final property
     double finalMaxVolume = 100.0;
     double finalCurrentVolume = 50.0;
     ArrayList<String> finalCurrentChemicalsList = new ArrayList<>( Arrays.asList("H20"));
-    String finalPhStatus = "Neutral";
+    String finalPhStatus = "NEUTRAL";
 
     boolean canBeBurned = true;
 
@@ -312,10 +312,10 @@ public class Beaker extends Tool {
                     pourTo.phStatus = this.phStatus;
                 }else if(amount == pourTo.currentVolume){
                     if (! this.phStatus.equals( pourTo.getPhStatus())){
-                        if(pourTo.phStatus.equals( "Neutral" )){
+                        if(pourTo.phStatus.equals( "NEUTRAL" )){
                             pourTo.phStatus=this.phStatus;
                         } else {
-                            pourTo.phStatus="Neutral";
+                            pourTo.phStatus="NEUTRAL";
                         }
                     }
                 }
@@ -341,10 +341,10 @@ public class Beaker extends Tool {
                     pourTo.phStatus = this.phStatus;
                 }else if(amount == this.currentVolume){
                     if (! this.phStatus.equals( pourTo.getPhStatus())){
-                        if(pourTo.phStatus.equals( "Neutral" )){
+                        if(pourTo.phStatus.equals( "NEUTRAL" )){
                             pourTo.phStatus=this.phStatus;
                         } else {
-                            pourTo.phStatus="Neutral";
+                            pourTo.phStatus="NEUTRAL";
                         }
                     }
                 }
