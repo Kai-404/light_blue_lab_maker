@@ -23,18 +23,20 @@ public class Flask extends Tool {
     int x = 0;
     @Field("FlaskY")
     int y = 0;
+    @Field("FlaskNickName")
+    String nickName = "Flask";
 
     //initial property
     double maxVolume = 100.0;
     double currentVolume = 50.0;
     ArrayList<String> currentChemicalsList = new ArrayList<>( Arrays.asList("H20"));
-    String phStatus = "Neutral";
+    String phStatus = "NEUTRAL";
 
     //final property
     double finalMaxVolume = 100.0;
     double finalCurrentVolume = 50.0;
     ArrayList<String> finalCurrentChemicalsList = new ArrayList<>( Arrays.asList("H20"));
-    String finalPhStatus = "Neutral";
+    String finalPhStatus = "NEUTRAL";
 
     boolean canBeBurned = true;
 
@@ -66,32 +68,23 @@ public class Flask extends Tool {
     }
 
     public ArrayList<String> chemicalStringToList(String chemicalString){
-        ArrayList<String> chemicalList = new ArrayList(Arrays.asList( chemicalString.split( "," )));
-        for(String s : chemicalList){
-            if (s.isBlank()){
-                chemicalList.remove( s );
+        ArrayList<String> chemicalList = new ArrayList();
+
+        if (! chemicalString.equals( "" ) ){
+            chemicalList = new ArrayList(Arrays.asList( chemicalString.split( "," )));
+        }
+
+        if (!chemicalList.isEmpty()){
+            for(String s : chemicalList){
+                if (s.isBlank()){
+                    chemicalList.remove( s );
+                }
             }
         }
+
         return chemicalList;
     }
 
-//    [
-//    {
-//          id: "1",
-//          Name: "Beaker",
-//          Img: "beakerTool.png",
-//          x: 0,
-//          y: 0,
-//          Prop: [
-//              { Name: "Size", Value: "100", Editable: true },
-//              { Name: "Color", Value: "Green", Editable: true }
-//          ],
-//          Interaction: [Pour]
-//    },
-//    {
-//     },
-//     }
-//    ]
 
     public JSONObject getToolAsJSON(){
 
@@ -101,6 +94,7 @@ public class Flask extends Tool {
         toolJSONObject.put( "Img",this.imageName );
         toolJSONObject.put( "x",this.x );
         toolJSONObject.put( "y",this.y );
+        toolJSONObject.put( "nickname",this.nickName );
 
         //initial property
         JSONArray properties = new JSONArray();
@@ -125,7 +119,7 @@ public class Flask extends Tool {
         phStatusProp.put( "Editable", true );
         phStatusProp.put( "ValidStatus",
                 new ArrayList<String>(
-                        Arrays.asList( "BASE", "ACID", "NEUTRAL" )
+                        Arrays.asList( "BASE", "ACID", "NEUTRAL", "NONE" )
                 )
         );
 
@@ -164,7 +158,7 @@ public class Flask extends Tool {
         finalPhStatusProp.put( "Editable", true );
         finalPhStatusProp.put( "ValidStatus",
                 new ArrayList<String>(
-                        Arrays.asList( "BASE", "ACID", "NEUTRAL" )
+                        Arrays.asList( "BASE", "ACID", "NEUTRAL", "NONE" )
                 )
         );
 
@@ -200,12 +194,20 @@ public class Flask extends Tool {
         JSONObject cTool = jsonObject.getJSONObject( "ctool" );
         //System.out.println( "X:" +cTool.get( "x" )+" \n Y"+cTool.get( "y" ));
 
-        this.x = (int)cTool.get( "x" );
+
+        if (cTool.get( "x" ) instanceof Double){
+            this.x = (int)((double) cTool.get( "x" ));
+        }else {
+            this.x = (int) cTool.get( "x" );
+        }
+
         if (cTool.get( "y" ) instanceof Double){
             this.y = (int)((double) cTool.get( "y" ));
         }else {
             this.y = (int) cTool.get( "y" );
         }
+
+        this.nickName = (String)cTool.get( "nickname" );
 
 
         JSONArray propArray = cTool.getJSONArray( "Prop" );
@@ -281,6 +283,14 @@ public class Flask extends Tool {
             }
         } );
 
+
+        if( this.currentChemicalsList.isEmpty() || currentVolume==0){
+            currentChemicalsList.clear();
+            this.currentVolume = 0 ;
+            this.phStatus = "NONE" ;
+
+        }
+
         return updateSuccess.get();
 
     }
@@ -307,8 +317,33 @@ public class Flask extends Tool {
             }else if((pourTo.getCurrentVolume()+amount) > pourTo.getMaxVolume()){
                 return false;
             }else {
+                if(amount>this.currentVolume){
+                    pourTo.phStatus = this.phStatus;
+                }else if(amount == this.currentVolume){
+                    if (! this.phStatus.equals( pourTo.getPhStatus())){
+                        if(pourTo.phStatus.equals( "NEUTRAL" )){
+                            pourTo.phStatus=this.phStatus;
+                        } else {
+                            pourTo.phStatus="NEUTRAL";
+                        }
+                    }
+                }
+
+                for (String s : this.currentChemicalsList){
+                    if (!pourTo.currentChemicalsList.contains(s))
+                        pourTo.currentChemicalsList.add( s );
+                }
+
                 this.currentVolume = this.currentVolume - amount;
                 pourTo.currentVolume = pourTo.currentVolume + amount;
+
+                if( this.currentChemicalsList.isEmpty() || currentVolume==0){
+                    currentChemicalsList.clear();
+                    this.currentVolume = 0 ;
+                    this.phStatus = "NONE" ;
+
+                }
+
                 return true;
             }
         }else {
@@ -318,8 +353,33 @@ public class Flask extends Tool {
             }else if((pourTo.getCurrentVolume()+amount) > pourTo.getMaxVolume()){
                 return false;
             }else {
+                if(amount>this.currentVolume){
+                    pourTo.phStatus = this.phStatus;
+                }else if(amount == this.currentVolume){
+                    if (! this.phStatus.equals( pourTo.getPhStatus())){
+                        if(pourTo.phStatus.equals( "NEUTRAL" )){
+                            pourTo.phStatus=this.phStatus;
+                        } else {
+                            pourTo.phStatus="NEUTRAL";
+                        }
+                    }
+                }
+
+                for (String s : this.currentChemicalsList){
+                    if (!pourTo.currentChemicalsList.contains(s))
+                        pourTo.currentChemicalsList.add( s );
+                }
+
                 this.currentVolume = this.currentVolume - amount;
                 pourTo.currentVolume = pourTo.currentVolume + amount;
+
+                if( this.currentChemicalsList.isEmpty() || currentVolume==0){
+                    currentChemicalsList.clear();
+                    this.currentVolume = 0 ;
+                    this.phStatus = "NONE" ;
+
+                }
+
                 return true;
             }
         }

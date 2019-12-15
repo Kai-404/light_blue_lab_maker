@@ -25,6 +25,7 @@ import LabStageBar from "./LabStageBar";
 import LabTool from "./LabTool";
 import InteractionModal from "./InteractionModal";
 import "../App.css";
+import TextField from "@material-ui/core/TextField";
 
 const stageW = window.innerWidth - window.innerWidth * 0.3;
 const stageH = window.innerHeight - 400;
@@ -178,41 +179,86 @@ class Makelab extends Component {
   };
 
   saveLab = () => {
-    axios
-      .get("http://localhost:8080/savelab", {
-        headers: { "Content-Type": "application/json;charset=UTF-8" },
-        params: {
-          courseID: sessionStorage.getItem("currentCourse"),
-          username: sessionStorage.getItem("username")
-        }
-      })
-      .then(res => {
-        if (res.data) {
-          alert("successfully saved lab");
-        } else {
-          alert("fail to save the lab");
-        }
-      });
+    let title = document.getElementById("title").value;
+    let description = document.getElementById("description").value;
+    if (title === "" || description === "") {
+      alert("title and description must be filled");
+    } else {
+      sessionStorage.setItem("currentLabTitle", title);
+      sessionStorage.setItem("currentLabDescription", description);
+      axios
+        .get("http://localhost:8080/savelab", {
+          headers: { "Content-Type": "application/json;charset=UTF-8" },
+          params: {
+            courseID: sessionStorage.getItem("currentCourse"),
+            username: sessionStorage.getItem("username"),
+            title: title,
+            description: description,
+          }
+        })
+        .then(res => {
+          if (res.data) {
+            alert("successfully saved lab");
+          } else {
+            alert("fail to save the lab");
+          }
+        });
+    }
   };
 
   publishLab = () => {
-    axios
-      .get("http://localhost:8080/publishlab", {
-        params: {
-          courseID: sessionStorage.getItem("currentCourse")
-        }
-      })
-      .then(res => {
-        if (res.data) {
-          this.saveLab();
-          alert("successfully published lab");
-        } else {
-          alert("fail to publish the lab");
-        }
-      })
-      .catch(err => {
-        alert("fail to publish the lab with", err);
-      });
+    const r = window.confirm(
+      "Do you really want to publish the lab? After publish you cannot edit it."
+    );
+    if (r == true) {
+      let title = document.getElementById("title").value;
+      let description = document.getElementById("description").value;
+      if (title === "" || description === "") {
+        alert("title and description must be filled");
+      } else {
+        sessionStorage.setItem("currentLabTitle", title);
+        sessionStorage.setItem("currentLabDescription", description);
+        axios
+          .get("http://localhost:8080/savelab", {
+            headers: { "Content-Type": "application/json;charset=UTF-8" },
+            params: {
+              courseID: sessionStorage.getItem("currentCourse"),
+              username: sessionStorage.getItem("username"),
+              title: title,
+              description: description
+            }
+          })
+          .then(res => {
+            if (res.data) {
+              axios
+                .get("http://localhost:8080/publishlab", {
+                  params: {
+                    courseID: sessionStorage.getItem("currentCourse")
+                  }
+                })
+                .then(res => {
+                  if (res.data == 0) {
+                    alert("successfully published lab");
+                  } else if (res.data == 1) {
+                    alert("there has to be at least one stage");
+                  } else if (res.data == 2) {
+                    alert("each stage must have at least one tool");
+                  } else if (res.data == 4) {
+                     alert("instruction must not be empty");
+                  } else {
+                    alert("fail to publish the lab");
+                  }
+                })
+                .catch(err => {
+                  alert("fail to publish the lab with", err);
+                });
+            }
+          })
+          .catch(err => {
+            alert("fail to publish the lab with", err);
+          });
+      }
+    }
   };
 
   setCurrentTool = tool => {
@@ -271,7 +317,8 @@ class Makelab extends Component {
       });
   };
 
-  dataChanged(data) {}
+  dataChanged(data) {
+  }
 
   updateInstructions = event => {
     axios.post("http://localhost:8080/saveinstructions", null, {
@@ -308,6 +355,22 @@ class Makelab extends Component {
         ))}
       </React.Fragment>
     );
+    let textInput = (
+      <React.Fragment>
+        <div align="left">
+          <TextField
+            id="title"
+            label="title"
+            defaultValue={sessionStorage.getItem("currentLabTitle")}
+          />
+          <TextField
+            id="description"
+            label="description"
+            defaultValue={sessionStorage.getItem("currentLabDescription")}
+          />
+        </div>
+      </React.Fragment>
+    );
     return (
       <React.Fragment>
         <p className="errmsg">{this.state.errMsg}</p>
@@ -333,14 +396,17 @@ class Makelab extends Component {
           setShow={this.setShowModal}
           setCurrentStage={this.setCurrentStage}
         />
+        {textInput}
         <ButtonGroup>
           {toolBar}
-          <Dropdown className="toolButton" as={ButtonGroup}>
-            {/*<Dropdown.Toggle variant="Secondary">More</Dropdown.Toggle>*/}
-            <Dropdown.Menu>
-              <Dropdown.Item>Tool 1</Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown>
+          {/*
+                    <Dropdown className="toolButton" as={ButtonGroup}>
+                        <Dropdown.Toggle variant="Secondary">More</Dropdown.Toggle>
+                        <Dropdown.Menu>
+                            <Dropdown.Item>Tool 1</Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown>
+                    */}
           <Addtool addLabTool={this.addLabTool} />
         </ButtonGroup>
         <br />
@@ -350,28 +416,36 @@ class Makelab extends Component {
             <div className="stage" id="stageInstructions">
               <textarea
                 id="stageInstructionsText"
+                placeholder={"Enter instructions here"}
                 value={this.state.currentStage.instructions}
                 onChange={this.updateInstructions}
+                disabled={this.state.currentStage.stageNum === -1}
               />
             </div>
             <Stage width={stageW} height={stageH} className="stage">
               <Layer>
-                {this.state.currentStage.stageTool.map((tool, key) => (
-                  <LabTool
-                    key={key}
-                    src={tool.Img}
-                    x={tool.x}
-                    y={tool.y}
-                    id={tool.id}
-                    stageNum={this.state.currentStage.stageNum}
-                    stageTool={this.state.currentStage.stageTool}
-                    setCurrentStage={this.setCurrentStage}
-                    setTool={this.setCurrentTool}
-                    setShowModal={this.setShowModal}
-                    setInteraction={this.setInteraction}
-                    setShowInterModal={this.setShowInterModal}
-                  />
-                ))}
+                {this.state.currentStage.stageTool.map(
+                  (tool, key) => (
+                    console.log(tool.nickname),
+                    (
+                      <LabTool
+                        key={key}
+                        src={tool.Img}
+                        x={tool.x}
+                        y={tool.y}
+                        id={tool.id}
+                        nickname={tool.nickname}
+                        stageNum={this.state.currentStage.stageNum}
+                        stageTool={this.state.currentStage.stageTool}
+                        setCurrentStage={this.setCurrentStage}
+                        setTool={this.setCurrentTool}
+                        setShowModal={this.setShowModal}
+                        setInteraction={this.setInteraction}
+                        setShowInterModal={this.setShowInterModal}
+                      />
+                    )
+                  )
+                )}
               </Layer>
             </Stage>
           </Col>
@@ -394,31 +468,31 @@ class Makelab extends Component {
 
             <Button onClick={() => this.addStage()} className="addtoolButton">
               New
-            </Button>
+                        </Button>
             <Button
               onClick={() => this.duplicateStage()}
               className="addtoolButton"
               disabled={this.state.currentStage.stageNum === -1}
             >
               Duplicate
-            </Button>
+                        </Button>
             <Button
               className="addtoolButton"
               onClick={() => this.deleteStage()}
               disabled={this.state.currentStage.stageNum === -1}
             >
               Delete
-            </Button>
+                        </Button>
           </Card>
         </Row>
         <br />
         <ButtonGroup>
           <Button className="submitButton" onClick={this.saveLab}>
             Save
-          </Button>
+                    </Button>
           <Button className="submitButton" onClick={this.publishLab}>
             Publish
-          </Button>
+                    </Button>
           <LinkContainer to="/labspage">
             <Button className="submitButton">Cancel</Button>
           </LinkContainer>

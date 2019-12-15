@@ -1,179 +1,184 @@
 .App {
-  background-color: white;
-  /*background-image: url("./Image/tran_logo.png");*/
-  height: 100vh;
-  text-align: center;
+	background-color: white;
+	/*background-image: url("./Image/tran_logo.png");*/
+	height: 100vh;
+	text-align: center;
 }
 
 .stage {
-  border: 1px solid darkslategray;
-  border-radius: 3px;
-  background-color: transparent;
+	border: 1px solid darkslategray;
+	border-radius: 3px;
+	background-color: transparent;
 }
 
 .Home {
-  position: absolute;
-  left: 10%;
-  right: 5%;
-  line-height: 30px;
-  font-size: 16px;
-  border-width: 1px;
-  background-color: transparent;
+	position: absolute;
+	left: 10%;
+	right: 5%;
+	line-height: 30px;
+	font-size: 16px;
+	border-width: 1px;
+	background-color: transparent;
+}
+.control {
+	/* text-align:right; */
+	text-align: center;
+	background-color: transparent;
 }
 
 .sidenav {
-  position: absolute;
-  top: 76px;
-  bottom: 0;
-  left: 0;
-  z-index: 1006;
-  min-width: 50px;
-  background: #f7f8f9;
-  -webkit-transition: min-width 0.2s;
-  -moz-transition: min-width 0.2s;
-  -o-transition: min-width 0.2s;
-  -ms-transition: min-width 0.2s;
-  transition: min-width 0.2s;
+	position: absolute;
+	top: 76px;
+	bottom: 0;
+	left: 0;
+	z-index: 1006;
+	min-width: 50px;
+	background: #f7f8f9;
+	-webkit-transition: min-width 0.2s;
+	-moz-transition: min-width 0.2s;
+	-o-transition: min-width 0.2s;
+	-ms-transition: min-width 0.2s;
+	transition: min-width 0.2s;
 }
 
 .link {
-  color: #fff;
-  font-weight: 800;
-  color: black;
-  font-size: 20px;
-  text-align: center;
-  text-decoration: none;
+	color: #fff;
+	font-weight: 800;
+	color: black;
+	font-size: 20px;
+	text-align: center;
+	text-decoration: none;
 }
 
 .link:hover,
 link:active {
-  background-color: lightblue;
+	background-color: lightblue;
 }
 
 .linkStyle {
-  color: #fff;
-  text-decoration: none;
+	color: #fff;
+	text-decoration: none;
 }
 .notes {
-  text-align: center;
-  font-family: Open Sans, sans-serif;
-  font-weight: bold;
-  color: black;
-  margin-bottom: 30px;
+	text-align: center;
+	font-family: Open Sans, sans-serif;
+	font-weight: bold;
+	color: black;
+	margin-bottom: 30px;
 }
 
 .form {
-  font-size: 15px;
-  text-align: center;
-  padding: 20px;
-  border-style: groove;
-  border-radius: 5px;
-  display: inline-block;
-  background-color: white;
+	font-size: 15px;
+	text-align: center;
+	padding: 20px;
+	border-style: groove;
+	border-radius: 5px;
+	display: inline-block;
+	background-color: white;
 }
 
 .inputBox {
-  width: 30vh;
-  padding: 6px 10px;
-  border-radius: 4px;
+	width: 30vh;
+	padding: 6px 10px;
+	border-radius: 4px;
 }
 
 .header {
-  border: none;
-  font-family: monospace;
-  font-size: 20px;
-  width: 100%;
+	border: none;
+	font-family: monospace;
+	font-size: 20px;
+	width: 100%;
 }
 .input {
-  border: none;
-  width: 100%;
-  border-bottom: 2px solid darkslategray;
+	border: none;
+	width: 100%;
+	border-bottom: 2px solid darkslategray;
 }
 
 .password {
-  font-family: caption;
-  -webkit-text-security: disc;
-  -moz-text-security: disc;
-  -webkit-text-security: disc;
+	font-family: caption;
+	-webkit-text-security: disc;
+	-moz-text-security: disc;
+	-webkit-text-security: disc;
 }
 
 .submitButton {
-  background-color: #469d93;
-  color: #fff;
-  padding: 12px 20px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
+	background-color: #469d93;
+	color: #fff;
+	padding: 12px 20px;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
 }
 
 .toolButton {
-  background-color: white;
-  color: black;
-  padding: 0px 10px;
-  border: none;
-  cursor: pointer;
+	background-color: white;
+	color: black;
+	padding: 0px 10px;
+	border: none;
+	cursor: pointer;
 }
 
 .toolButton:hover {
-  background-color: lightblue;
-  color: #469d93;
-  border: none;
+	background-color: lightblue;
+	color: #469d93;
+	border: none;
 }
 
 .addtoolButton {
-  background: lightblue;
-  color: black;
-  padding: 6px 4px;
-  border-color: teal;
-  text-transform: uppercase;
+	background: lightblue;
+	color: black;
+	padding: 6px 4px;
+	border-color: teal;
+	text-transform: uppercase;
 }
 
 .addtoolButton:hover {
-  background-color: #469d93;
+	background-color: #469d93;
 }
 
 .errmsg {
-  color: red;
+	color: red;
 }
 
 .list-group-item {
-  text-align: left;
+	text-align: left;
 }
 
 .sortablehandler {
-  margin-right: 30px;
+	margin-right: 30px;
 }
 
 .courseselectionlist {
-  display: flex;
-  justify-content: flex-start;
+	display: flex;
+	justify-content: flex-start;
 }
 
 #enrollbutton {
-  margin-right: 20px;
+	margin-right: 20px;
 }
 
 #courseselectiongroup {
-  max-height: 300px;
-  margin-bottom: 10px;
-  overflow:scroll;
+	max-height: 300px;
+	margin-bottom: 10px;
+	overflow: scroll;
 }
 
 #labStageComponent {
-  padding-bottom: 35px;
+	padding-bottom: 35px;
 }
 
 #stageGroup {
-  max-height: 400px;
+	max-height: 400px;
 }
 
 #stageInstructions {
-  height: 100px;
-  display: flex;
-  padding: 10px;
+	height: 100px;
+	display: flex;
+	padding: 10px;
 }
 
 #stageInstructionsText {
-  width: 100%;
-  resize: none;
+	width: 100%;
+	resize: none;
 }

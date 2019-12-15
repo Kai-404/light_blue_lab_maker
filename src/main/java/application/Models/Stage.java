@@ -1,9 +1,6 @@
 package application.Models;
 
-import application.Tools.AlcoholBurner;
-import application.Tools.Beaker;
-import application.Tools.Flask;
-import application.Tools.PHPaper;
+import application.Tools.*;
 import com.mongodb.util.JSON;
 import lombok.Data;
 import lombok.Getter;
@@ -27,7 +24,7 @@ import java.util.UUID;
 @Document
 public class Stage {
 
-    private String instructions="Double click to enter instructions";
+    private String instructions="";
     private ArrayList<Tool> stageToolList;
     private int stageNum;
 
@@ -144,6 +141,11 @@ public class Stage {
                     Flask flask = (Flask) tool;
                     updateSuccess = flask.updateProp( toolProps );
                     stageToolList.set( index,flask );
+
+                }else if (tool.getName().equals( "Pipette" )){
+                    Pipette pipette = (Pipette) tool;
+                    updateSuccess = pipette.updateProp( toolProps );
+                    stageToolList.set( index,pipette );
 
                 }
 //                else if (tool.getName().equals( "AlcoholBurner" )){

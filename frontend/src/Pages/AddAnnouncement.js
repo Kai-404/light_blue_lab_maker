@@ -6,6 +6,7 @@ import "../App.css";
 
 class AddAnnouncement extends Component {
     state = {
+        errMsg: "",
         validated: false,
         showAddAnnoun: false,
         announTitle: "",
@@ -13,14 +14,18 @@ class AddAnnouncement extends Component {
     };
 
     setShowAdd = () => {
-        this.setState({showAddAnnoun: !this.state.showAddAnnoun});
-    };
+        this.setState({
+            showAddAnnoun: !this.state.showAddAnnoun,
+            errMsg: "",
+            announTitle: "",
+            content: ""
+        });
+    };s
 
     addNewAnnouncement = event => {
         const form = event.currentTarget;
-        if (form.checkValidity() === false) {
-            event.preventDefault();
-            event.stopPropagation();
+        if (this.state.announTitle === "" || this.state.content === "") {
+            //this.setState({errMsg: "Please fill in all fields!"})
         } else {
             let title = this.state.announTitle;
             let content = this.state.content;
@@ -52,7 +57,7 @@ class AddAnnouncement extends Component {
                 content: ""
             });
         }
-        this.setState({validated: true});
+        this.setState({ validated: true });
     };
 
     onChange = e => this.setState({[e.target.name]: e.target.value});

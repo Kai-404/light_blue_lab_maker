@@ -9,7 +9,7 @@ class ResetPassword extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            email: "",
+            id: "",
             password: "",
             password2 : ""
         };
@@ -21,17 +21,50 @@ class ResetPassword extends Component {
 
     onChange = e => this.setState({ [e.target.name]: e.target.value });
 
+    onSubmit = e => {
+        e.preventDefault();
+        const { id, password, password2} = this.state;
+
+        if (password === "" || password2 === "" || id === "") {
+            this.setState({errmsg : "fill in all fields"});
+        } else if (password !== password2) {
+            this.setState({errmsg: "password don't match"});
+        } else if (password.length < 8) {
+            this.setState({
+                errmsg: "password needs to be at least 8 characters long"
+            });
+        } else {
+            axios
+                .get("http://localhost:8080/reset-password",{
+                    headers: { "Content-Type": "application/json;charset=UTF-8" },
+                    params: {id: id, password: password}
+                })
+                .then(res => {
+                    if (res.data == false) {
+                        this.setState({errmsg: "wrong code"});
+                    } else {
+                        alert("password has been updated");
+                        this.routeLogin();
+                    }
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        }
+    };
+
     render() {
         return (
             <div>
                 <p className="errmsg">{this.state.errmsg}</p>
                 <form className="form" onSubmit={this.onSubmit}>
-                    Username or Email:
+                    <br />
+                    Code:
                     <input
                         className="input"
-                        value={this.state.email}
+                        value={this.state.id}
                         type="text"
-                        name="email"
+                        name="id"
                         onChange={this.onChange}
                     />
                     <br />
@@ -51,7 +84,7 @@ class ResetPassword extends Component {
                         className="input"
                         value={this.state.password2}
                         type="password"
-                        name="password"
+                        name="password2"
                         onChange={this.onChange}
                     />
                     <br />
@@ -59,18 +92,11 @@ class ResetPassword extends Component {
                     <button
                         type="submit"
                         className="submitButton"
-                        onClick={this.routeLogin}
+                        onClick={this.onSubmit}
                     >
                         Submit
                     </button>
                     {"  "}
-                    <button
-                        type="button"
-                        className="submitButton"
-                        onClick={this.routeLogin}
-                    >
-                        Cancel
-                    </button>
                 </form>
             </div>
         )

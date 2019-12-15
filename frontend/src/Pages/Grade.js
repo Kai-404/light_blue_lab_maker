@@ -7,11 +7,14 @@ class Discussion extends Component {
 
     state = {
         labList: [],
-        studentGrades: [[]]
+        studentGrades: [[]],
+        labTitle: "Select a lab",
+        numStages: 0,
+        currentStage: ""
     };
 
 
-    getLabOfCourse = () => {
+    getLabs = () => {
         axios
             .get("http://localhost:8080/getlabofcourse", {
                 headers: {"Content-Type": "application/json;charset=UTF-8"},
@@ -27,8 +30,20 @@ class Discussion extends Component {
     };
 
     componentDidMount() {
-        this.getLabOfCourse();
+        this.getLabs();
     }
+
+    selectLab = e => {
+        this.setState({labTitle: this.state.labList[e].title});
+        this.getStudentGrades(e);
+    };
+
+    selectStage = e => {
+        this.setState({
+            currentStage: e,
+            stageTitle: e
+        });
+    };
 
     getStudentGrades = e => {
         axios
@@ -36,12 +51,17 @@ class Discussion extends Component {
                 headers: {"Content-Type": "application/json;charset=UTF-8"},
                 params: {
                     courseID: sessionStorage.getItem("currentCourse"),
-                    labID: e
+                    labID: this.state.labList[e].id
                 }
             })
             .then(
                 res => {
-                    this.setState({studentGrades: res.data})
+                    console.log(res.data);
+                    this.setState({
+                        studentGrades: res.data,
+                        numStages: res.data[0].length - 2,
+                        currentStage: 0
+                    })
                 }
             )
     };
@@ -52,35 +72,31 @@ class Discussion extends Component {
         return "Stage " + (i-2);
     }
 
-    render() {
-
-        let header =
-            (
-                <div>
-                    <th>Name</th>
-                    <th>Progress</th>
-                </div>
-            );
-        if (this.state.studentGrades[0]) {
-            header =
-                this.state.studentGrades[0].map((item, i) =>
-                    <th>
-                        {this.getLabel(i)}
-                    </th>
-                )
+    populateStageSelection() {
+        let stageSelection = [];
+        let i;
+        for (i=0; i<this.state.numStages; i++) {
+            stageSelection.push(
+                <Dropdown.Item eventKey={i}>
+                    {i}
+                </Dropdown.Item>
+            )
         }
+        return stageSelection;
+    }
 
+    render() {
         return (
             <React.Fragment>
                 <DropdownButton
-                    title={"Select a lab"}
-                    onSelect={this.getStudentGrades}
+                    title={this.state.labTitle}
+                    onSelect={this.selectLab}
                 >
                     {
-                        this.state.labList.map(lab =>
+                        this.state.labList.map((lab, index) =>
                             (
                                 <Dropdown.Item
-                                    eventKey={lab.id}
+                                    eventKey={index}
                                 >
                                     {lab.title}
                                 </Dropdown.Item>
@@ -92,7 +108,14 @@ class Discussion extends Component {
                 <Table striped bordered>
                     <thead>
                         <tr>
-                            {header}
+                            <th>Name</th>
+                            <th>Progress</th>
+                            <th>
+                                Stage
+                                <DropdownButton title={this.state.currentStage} onSelect={this.selectStage}>
+                                    {this.populateStageSelection()}
+                                </DropdownButton>
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -100,13 +123,9 @@ class Discussion extends Component {
                         this.state.studentGrades.map(student =>
                             (
                                 <tr>
-                                    {
-                                        student.map(item =>
-                                            (
-                                                <td>{item}</td>
-                                            )
-                                        )
-                                    }
+                                    {<td>{student[0]}</td>}
+                                    {<td>{student[1]}</td>}
+                                    {<td>{student[parseInt(this.state.currentStage)+2]}</td>}
                                 </tr>
                             )
                         )

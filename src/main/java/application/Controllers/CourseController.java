@@ -41,20 +41,28 @@ public class CourseController {
     @ResponseBody
     public List<Course> getCourseList(@RequestParam(name = "id") String id,
                                       @RequestParam(name = "username") String username,
-                                      @RequestParam(name = "userType") String userType) {
+                                      @RequestParam(name = "userType") String userType,
+                                      @RequestParam(name = "courseName") String courseName,
+                                      @RequestParam(name = "term") String term) {
+        ArrayList<Course> courseList = new ArrayList<>();
         if (userType.equals("Professor")) {
-            return courseRepository.findByProfessor(username);
+            List<Course> allCourses = courseRepository.findByProfessor(username);
+            for (Course course : allCourses) {
+                if (course.getTitle().contains(courseName) && course.getTerm().contains(term)) {
+                    courseList.add(course);
+                }
+            }
         } else {
-            ArrayList<Course> courseList = new ArrayList<Course>();
             Student student = studentRepository.findByUserId(id);
             ArrayList<String> studentCourseList = student.getCourse_list();
             for (String course : studentCourseList) {
-                if (courseRepository.findById(course).isPresent()) {
-                    courseList.add(courseRepository.findById(course).get());
+                Course newCourse = courseRepository.getById(course);
+                if (newCourse.getTitle().contains(courseName) && newCourse.getTerm().contains(term)) {
+                    courseList.add(newCourse);
                 }
             }
-            return courseList;
         }
+        return courseList;
     }
 
     @GetMapping("/getcourseselection")
@@ -134,8 +142,8 @@ public class CourseController {
             Student student = studentRepository.findByUserId(studentID);
             User user = userRepository.getById(studentID);
             ArrayList<String> studentGrade = new ArrayList<>();
-            studentGrade.add(user.getUsername());
-            studentGrade.add(student.getLabProgress().get(labID)+"%");
+            studentGrade.add(user.getFirstName() + " " + user.getLastName());
+            studentGrade.add((100 * (student.getLabProgress().get(labID)/labRepository.getById(labID).getTotalStage()))+"%");
             int numTotalStages = labRepository.getById(labID).getTotalStage();
             for (int i = 0; i < numTotalStages; i++) {
                 studentGrade.add(student.getGrade().get(labID).get(i).toString());

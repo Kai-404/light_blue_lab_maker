@@ -15,6 +15,8 @@ class Register extends Component {
     password: "",
     password2: "",
     userType: "",
+    firstName: "",
+    lastName: "",
     errmsg: ""
   };
 
@@ -23,12 +25,14 @@ class Register extends Component {
     this.setState({ userType: e.target.value });
   };
   /* adds user info to database */
-  register = (username, email, password, userType) => {
+  register = (username, email, password, userType, firstName, lastName) => {
     let data = JSON.stringify({
       username,
       email,
       password,
-      userType
+      userType,
+      firstName,
+      lastName
     });
     console.log(data);
     axios
@@ -38,7 +42,9 @@ class Register extends Component {
           username: username,
           email: email,
           password: password,
-          userType: userType
+          userType: userType,
+          firstName: firstName,
+          lastName: lastName
         }
       })
       .then(res => {
@@ -60,7 +66,9 @@ class Register extends Component {
             email: "",
             password: "",
             password2: "",
-            userType: ""
+            userType: "",
+            firstName: "",
+            lastName: ""
           });
           this.props.history.push("/");
         }
@@ -73,13 +81,15 @@ class Register extends Component {
   /* Does error checking, if everything is ok call register function */
   onSubmit = e => {
     e.preventDefault();
-    const { username, email, password, password2, userType } = this.state;
+    const { username, email, password, password2, userType, firstName, lastName } = this.state;
     if (
       username === "" ||
       email == "" ||
       password === "" ||
       password2 === "" ||
-      userType === ""
+      userType === "" ||
+        firstName === "" ||
+        lastName === ""
     ) {
       this.setState({ errmsg: "fill in all fields" });
     } else if (/\S+@\S+\.\S+/.test(email) == false) {
@@ -93,7 +103,7 @@ class Register extends Component {
         errmsg: "password needs to be at least 8 characters long"
       });
     }
-    this.register(username, email, password, userType);
+    this.register(username, email, password, userType, firstName, lastName);
   };
   render() {
     return (
@@ -114,6 +124,26 @@ class Register extends Component {
               <option value="Professor">Professor</option>
             </select>
           </Form.Group>
+          <Form.Row>
+            <Form.Group as={Col} controlId="formGridFirstName">
+              <Form.Label>First Name</Form.Label>
+              <Form.Control
+                  type="firstName"
+                  name="firstName"
+                  placeholder="Enter first name"
+                  onChange={this.onChange}
+              />
+            </Form.Group>
+            <Form.Group as={Col} controlId="formGridLastName">
+              <Form.Label>Last Name</Form.Label>
+              <Form.Control
+                  type="lastName"
+                  name="lastName"
+                  placeholder="Enter last name"
+                  onChange={this.onChange}
+              />
+            </Form.Group>
+          </Form.Row>
           <Form.Row>
             <Form.Group as={Col} controlId="formGridName">
               <Form.Label>Username</Form.Label>

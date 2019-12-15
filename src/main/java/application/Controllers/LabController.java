@@ -7,6 +7,7 @@ import application.Models.Lab;
 import application.Tools.Beaker;
 import application.Tools.Flask;
 import application.Tools.PHPaper;
+import application.Tools.Pipette;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
 
 @CrossOrigin
 @RestController
@@ -151,8 +149,10 @@ public class LabController {
 
     @GetMapping("/savelab")
     @ResponseBody
-    public boolean saveLab(@RequestParam(name = "courseID") String courseID) {
+    public boolean saveLab(@RequestParam(name = "courseID") String courseID, @RequestParam(name = "title") String title, @RequestParam(name = "description") String description) {
         try {
+            lab.setTitle(title);
+            lab.setDescription(description);
             labRepository.save(lab);
             Course course = courseRepository.getById(courseID);
             if (!course.getLab_list().contains(lab.getId())) {
@@ -200,7 +200,18 @@ public class LabController {
 
     @GetMapping("/publishlab")
     @ResponseBody
-    public boolean publishLab(@RequestParam(name = "courseID") String courseID) {
+    public int publishLab(@RequestParam(name = "courseID") String courseID) {
+        if (lab.getStageList().size() == 0) {
+            return 1;
+        }
+        for (Stage stage : lab.getStageList()) {
+            if (stage.getStageToolList().size() == 0) {
+                return 2;
+            }
+            if (stage.getInstructions().equals("")) {
+                return 4;
+            }
+        }
         try {
             lab.setPublished(true);
             labRepository.save(lab);
@@ -218,9 +229,9 @@ public class LabController {
             }
         } catch (Error e) {
             e.printStackTrace();
-            return false;
+            return 3;
         }
-        return true;
+        return 0;
     }
 
     @GetMapping("/deletelab")
@@ -291,6 +302,10 @@ public class LabController {
             }else if(tool1.getName().equals( "Flask" )){
                 Flask tool = (Flask) tool1;
                 return new ResponseEntity<>(tool.getInteractionDetail(interActionName).toString(), HttpStatus.OK);
+            }else if (tool1.getName().equals( "Pipette" )){
+                Pipette tool = (Pipette) tool1;
+                tool.suckOrDrop( tool2 );
+                return new ResponseEntity<>(tool.getInteractionDetail(interActionName).toString(), HttpStatus.OK);
             }else if (tool1.getName().equals( "PHPaper" )) {
                 PHPaper tool = (PHPaper) tool1;
                 tool.measurePh( tool2 );
@@ -349,6 +364,13 @@ public class LabController {
         return lab.getStage(0).getStageAsJSON().toString();
     }
 
+    @GetMapping("/resetlabstage")
+    @ResponseBody
+    public String resetLabStage(@RequestParam(name = "stageNum") int stageNum) {
+        lab.getStageList().set(stageNum, labRepository.getById(lab.getId()).getStage(stageNum));
+        return lab.getStageList().get(stageNum).getStageAsJSON().toString();
+    }
+
     @GetMapping("/getnextstage")
     @ResponseBody
     public String getNextStage(@RequestParam(name = "stageNum") int stageNum) {
@@ -370,7 +392,25 @@ public class LabController {
             for (int i = 0; i < initialProperties.size(); i++) {
                 System.out.println(((LinkedHashMap) (initialProperties).get(i)).get("Value"));
                 System.out.println(((LinkedHashMap) (finalProperties).get(i)).get("Value"));
+                CHECK:
                 if (!((LinkedHashMap) (initialProperties).get(i)).get("Value").equals(((LinkedHashMap) (finalProperties).get(i)).get("Value"))) {
+
+                    if (((LinkedHashMap) (finalProperties).get(i)).get("Name") . equals( "Chemicals List" )){
+
+                        String initString = (String) ((LinkedHashMap) (initialProperties).get(i)).get("Value");
+                        ArrayList<String> one = new ArrayList( Arrays.asList( initString.split( "," )));
+
+                        String finalString = (String) ((LinkedHashMap) (finalProperties).get(i)).get("Value");
+                        ArrayList<String> two = new ArrayList( Arrays.asList( finalString.split( "," )));
+
+                        Collections.sort( one );
+                        Collections.sort( two );
+
+                        if (one.equals( two )){
+                            break CHECK;
+                        }
+                    }
+
                     if (student != null && stageNum == (student.getLabProgress().get(lab.getId()))) {
                         HashMap<Integer, Integer> labGrade = student.getGrade().get(lab.getId());
                         labGrade.put(stageNum, labGrade.get(stageNum) + 1);

@@ -38,7 +38,9 @@ class EnrollCourse extends Component {
                     params: {
                         id: sessionStorage.getItem("userID"),
                         username: sessionStorage.getItem("username"),
-                        userType: sessionStorage.getItem("userType")
+                        userType: sessionStorage.getItem("userType"),
+                        courseName: "",
+                        term: ""
                     }
                 }
             )
@@ -171,7 +173,7 @@ class EnrollCourse extends Component {
                                                         :
                                                         <Button id='enrollbutton' onClick={() => this.enrollCourse(course.id)}>Enroll</Button>
                                                 }
-                                                {course.title + " " + course.term}
+                                                {course.title + " / " + course.term}
                                             </div>
                                         </ListGroup.Item>
                                     )
