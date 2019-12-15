@@ -194,7 +194,13 @@ public class Flask extends Tool {
         JSONObject cTool = jsonObject.getJSONObject( "ctool" );
         //System.out.println( "X:" +cTool.get( "x" )+" \n Y"+cTool.get( "y" ));
 
-        this.x = (int)cTool.get( "x" );
+
+        if (cTool.get( "x" ) instanceof Double){
+            this.x = (int)((double) cTool.get( "x" ));
+        }else {
+            this.x = (int) cTool.get( "x" );
+        }
+
         if (cTool.get( "y" ) instanceof Double){
             this.y = (int)((double) cTool.get( "y" ));
         }else {

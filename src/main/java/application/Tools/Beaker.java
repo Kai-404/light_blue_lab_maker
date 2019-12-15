@@ -85,23 +85,6 @@ public class Beaker extends Tool {
         return chemicalList;
     }
 
-//    [
-//    {
-//          id: "1",
-//          Name: "Beaker",
-//          Img: "beakerTool.png",
-//          x: 0,
-//          y: 0,
-//          Prop: [
-//              { Name: "Size", Value: "100", Editable: true },
-//              { Name: "Color", Value: "Green", Editable: true }
-//          ],
-//          Interaction: [Pour]
-//    },
-//    {
-//     },
-//     }
-//    ]
 
     public JSONObject getToolAsJSON(){
 
@@ -211,7 +194,14 @@ public class Beaker extends Tool {
         JSONObject cTool = jsonObject.getJSONObject( "ctool" );
         //System.out.println( "X:" +cTool.get( "x" )+" \n Y"+cTool.get( "y" ));
 
-        this.x = (int)cTool.get( "x" );
+        //this.x = (int)cTool.get( "x" );
+
+        if (cTool.get( "x" ) instanceof Double){
+            this.x = (int)((double) cTool.get( "x" ));
+        }else {
+            this.x = (int) cTool.get( "x" );
+        }
+
         if (cTool.get( "y" ) instanceof Double){
             this.y = (int)((double) cTool.get( "y" ));
         }else {

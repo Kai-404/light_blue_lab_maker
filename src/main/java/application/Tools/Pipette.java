@@ -194,7 +194,13 @@ public class Pipette extends Tool {
 
         JSONObject cTool = jsonObject.getJSONObject( "ctool" );
 
-        this.x = (int)cTool.get( "x" );
+
+        if (cTool.get( "x" ) instanceof Double){
+            this.x = (int)((double) cTool.get( "x" ));
+        }else {
+            this.x = (int) cTool.get( "x" );
+        }
+
         if (cTool.get( "y" ) instanceof Double){
             this.y = (int)((double) cTool.get( "y" ));
         }else {
