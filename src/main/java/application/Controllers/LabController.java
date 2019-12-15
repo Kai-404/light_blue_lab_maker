@@ -364,6 +364,13 @@ public class LabController {
         return lab.getStage(0).getStageAsJSON().toString();
     }
 
+    @GetMapping("/resetlabstage")
+    @ResponseBody
+    public String resetLabStage(@RequestParam(name = "stageNum") int stageNum) {
+        lab.getStageList().set(stageNum, labRepository.getById(lab.getId()).getStage(stageNum));
+        return lab.getStageList().get(stageNum).getStageAsJSON().toString();
+    }
+
     @GetMapping("/getnextstage")
     @ResponseBody
     public String getNextStage(@RequestParam(name = "stageNum") int stageNum) {
