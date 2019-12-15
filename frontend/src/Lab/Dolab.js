@@ -186,12 +186,12 @@ class Dolab extends Component {
       .then(res => {
         console.log(res.data);
         if (res.data === true) {
-          alert("correct");
+          alert("You are correct! Click Next to go to next stage or leave to leave the lab.");
           if (sessionStorage.getItem("userType") === "Student") {
             this.getStudentProgress();
           }
         } else {
-          alert("wrong");
+          alert("You are wrong. Please read the instruction carefully and try one more time.");
         }
       });
   };
