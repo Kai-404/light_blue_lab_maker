@@ -243,6 +243,8 @@ class Makelab extends Component {
                     alert("there has to be at least one stage");
                   } else if (res.data == 2) {
                     alert("each stage must have at least one tool");
+                  } else if (res.data == 4) {
+                     alert("instruction must not be empty");
                   } else {
                     alert("fail to publish the lab");
                   }
