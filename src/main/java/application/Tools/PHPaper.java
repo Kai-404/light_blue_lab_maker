@@ -28,12 +28,13 @@ public class PHPaper extends Tool {
     String color = "#ffffff";
     String phStatus = "NONE";
     //final property
-    String finalColor = "#00ff00";
+    String finalColor = "#005E57";
     String finalPhStatus = "NEUTRAL";
 
     @Field("PHInteractWith")
     Map<String,String> canInteractWith = Map.of(
-            "Beaker","Measure"
+            "Beaker","Measure",
+            "Flask","Measure"
     );
 
 //    HashMap<String,Boolean> propertyEditableList = new HashMap<String, Boolean>( ){{
@@ -85,7 +86,7 @@ public class PHPaper extends Tool {
         colorProp.put( "Editable", false );
         colorProp.put( "ValidColor",
                 new ArrayList<String>(
-                        Arrays.asList( "#6a0dad", "#ff0000","#00ff00" )
+                        Arrays.asList( "#6a0dad", "#ff0000","#005E57","#ffffff" )
                 )
         );
 
@@ -111,10 +112,10 @@ public class PHPaper extends Tool {
         JSONObject finalColorProp = new JSONObject();
         finalColorProp.put( "Name","Color" );
         finalColorProp.put( "Value",this.finalColor );
-        finalColorProp.put( "Editable", true );
+        finalColorProp.put( "Editable", false );
         finalColorProp.put( "ValidColor",
                 new ArrayList<String>(
-                        Arrays.asList( "#6a0dad", "#ff0000","#00ff00" )
+                        Arrays.asList( "#6a0dad", "#ff0000","#005E57","#ffffff" )
                 )
         );
 
@@ -181,26 +182,59 @@ public class PHPaper extends Tool {
             }
         } );
 
+        //"BASE", "ACID", "NEUTRAL", "NONE"
+        //"#6a0dad", "#ff0000","#005E57","#ffffff"
+
+        if (this.finalPhStatus.equals( "BASE" ))
+            this.finalColor = "#6a0dad";
+        else if(this.finalPhStatus.equals( "ACID" ))
+            this.finalColor = "#ff0000";
+        else if(this.finalPhStatus.equals( "NEUTRAL" ))
+            this.finalColor = "#005E57";
+        else if(this.finalPhStatus.equals( "NONE" ))
+            this.finalColor = "#ffffff";
+
         return true;
 
     }
 
     public boolean measurePh(Tool tool){
 
-//        if (tool.getName().equals( "Beaker" )){
-//
-//        }
+        if (tool.getName().equals( "Beaker" )) {
 
-        Beaker toMeasure = (Beaker) tool;
 
-        //System.out.println( toMeasure.phStatus );
+            Beaker toMeasure = (Beaker) tool;
 
-        this.phStatus = toMeasure.getPhStatus();
+            this.phStatus = toMeasure.getPhStatus();
 
-        //System.out.println( "emmmmm:   \n"+this.getToolAsJSON().toString() );
+            if (this.phStatus.equals( "BASE" ))
+                this.color = "#6a0dad";
+            else if(this.phStatus.equals( "ACID" ))
+                this.color = "#ff0000";
+            else if(this.phStatus.equals( "NEUTRAL" ))
+                this.color = "#005E57";
+            else if(this.phStatus.equals( "NONE" ))
+                this.color = "#ffffff";
 
-        //this.setPhStatus( );
-        return true;
+            return true;
+        }else {
+
+            Flask toMeasure = (Flask) tool;
+
+            this.phStatus = toMeasure.getPhStatus();
+
+            if (this.phStatus.equals( "BASE" ))
+                this.color = "#6a0dad";
+            else if(this.phStatus.equals( "ACID" ))
+                this.color = "#ff0000";
+            else if(this.phStatus.equals( "NEUTRAL" ))
+                this.color = "#005E57";
+            else if(this.phStatus.equals( "NONE" ))
+                this.color = "#ffffff";
+
+            return true;
+        }
+
     }
 
     public JSONObject getInteractionDetail(String interactionName){
