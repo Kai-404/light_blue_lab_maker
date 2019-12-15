@@ -21,7 +21,7 @@ import {Button, Form, Modal, Row, Col, ListGroup} from "react-bootstrap";
  *   setShowInterModal()
  */
 const stageW = window.innerWidth - window.innerWidth * 0.3;
-const stageH = window.innerHeight - 200;
+const stageH = window.innerHeight - 400;
 
 class LabTool extends Component {
     state = {
@@ -266,8 +266,8 @@ class LabTool extends Component {
     handleMove = pos => {
         if (pos.x < 0) pos.x = 0;
         if (pos.y < 0) pos.y = 0;
-        if (pos.x > stageW - 125) pos.x = stageW - 125;
-        if (pos.y > stageH - 375) pos.y = stageH - 375;
+        if (pos.x > stageW*0.9) pos.x = stageW*0.9;
+        if (pos.y > stageH*0.8) pos.y = stageH*0.8;
         return pos;
     };
 
