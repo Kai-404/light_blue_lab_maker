@@ -23,6 +23,8 @@ public class PHPaper extends Tool {
     int x = 0;
     @Field("PHy")
     int y = 0;
+    @Field("PHPaperNickName")
+    String nickName = "PH Paper";
 
     //initial property
     String color = "#ffffff";
@@ -77,6 +79,7 @@ public class PHPaper extends Tool {
         toolJSONObject.put( "Img",this.imageName );
         toolJSONObject.put( "x",this.x );
         toolJSONObject.put( "y",this.y );
+        toolJSONObject.put( "nickname",this.nickName );
 
         JSONArray properties = new JSONArray();
 
@@ -155,6 +158,8 @@ public class PHPaper extends Tool {
         }else {
             this.y = (int) cTool.get( "y" );
         }
+
+        this.nickName = (String)cTool.get( "nickname" );
 
         JSONArray propArray = cTool.getJSONArray( "Prop" );
 

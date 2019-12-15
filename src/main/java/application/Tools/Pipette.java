@@ -23,6 +23,8 @@ public class Pipette extends Tool {
     int x = 0;
     @Field("PipetteY")
     int y = 0;
+    @Field("PipetteNickName")
+    String nickName = "Pipette";
 
     //initial property
     double maxVolume = 10.0;
@@ -93,6 +95,7 @@ public class Pipette extends Tool {
         toolJSONObject.put( "Img",this.imageName );
         toolJSONObject.put( "x",this.x );
         toolJSONObject.put( "y",this.y );
+        toolJSONObject.put( "nickname",this.nickName );
 
         //initial property
         JSONArray properties = new JSONArray();
@@ -197,6 +200,8 @@ public class Pipette extends Tool {
         }else {
             this.y = (int) cTool.get( "y" );
         }
+
+        this.nickName = (String)cTool.get( "nickname" );
 
 
         JSONArray propArray = cTool.getJSONArray( "Prop" );

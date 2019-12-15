@@ -23,6 +23,8 @@ public class Beaker extends Tool {
     int x = 0;
     @Field("BeakerY")
     int y = 0;
+    @Field("BeakerNickName")
+    String nickName = "Beaker";
 
     //initial property
     double maxVolume = 100.0;
@@ -109,6 +111,7 @@ public class Beaker extends Tool {
         toolJSONObject.put( "Img",this.imageName );
         toolJSONObject.put( "x",this.x );
         toolJSONObject.put( "y",this.y );
+        toolJSONObject.put( "nickname",this.nickName );
 
         //initial property
         JSONArray properties = new JSONArray();
@@ -214,6 +217,8 @@ public class Beaker extends Tool {
         }else {
             this.y = (int) cTool.get( "y" );
         }
+
+        this.nickName = (String)cTool.get( "nickname" );
 
 
         JSONArray propArray = cTool.getJSONArray( "Prop" );
