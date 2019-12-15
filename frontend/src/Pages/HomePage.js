@@ -80,6 +80,7 @@ class HomePage extends Component {
                         />
                     </Col>
                 </Row>
+                <br />
                 {this.state.courseList.map(course => (
                     <Card>
                         <Card.Header>{course.term}</Card.Header>
