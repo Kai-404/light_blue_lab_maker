@@ -37,6 +37,8 @@ class Toolmodal extends Component {
           prop.Value = value;
         }
       });
+    } else if (type == "nickname") {
+      tool.nickname = value;
     } else {
       tool.FinalProp.map(prop => {
         if (prop.Name == name) {
@@ -68,7 +70,6 @@ class Toolmodal extends Component {
         toolProps: ctool
       })
       .then(res => {
-        console.log(res.status);
         if (res.status == 200) {
           //get back the whole stage
           this.props.setCurrentStage(stageNum);
@@ -111,26 +112,6 @@ class Toolmodal extends Component {
     try {
       interaction = (
         <Form.Group>
-          {/*this.props.tool.Interactions.map(intera => {
-            let inter = (
-              <Form.Control
-                name={intera.Name}
-                plaintext
-                readOnly
-                defaultValue={intera.Value}
-              />
-            );
-            return (
-              <React.Fragment>
-                <Form.Group as={Row}>
-                  <Form.Label column sm={2}>
-                    {intera.Name}
-                  </Form.Label>
-                  <Col sm={10}>{inter}</Col>
-                </Form.Group>
-              </React.Fragment>
-            );
-          })*/}
           <React.Fragment>
             Interactions:
             <Col sm={10}>
@@ -160,6 +141,20 @@ class Toolmodal extends Component {
     try {
       modalBody = (
         <Form onSubmit={this.handleSubmit}>
+          <Form.Group as={Row} controlId="formPlaintextPassword">
+            <Form.Label column sm="2">
+              Nick Name:
+            </Form.Label>
+            <Col sm="10">
+              <Form.Control
+                required
+                id="nickname"
+                placeholder="nick name for the tool"
+                defaultValue={this.nickname}
+                onChange={this.handleChangeProps}
+              />
+            </Col>
+          </Form.Group>
           <Row>
             <Col>
               <Form.Group>
