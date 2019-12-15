@@ -116,12 +116,6 @@ class LabTool extends Component {
       let id2 = tool.id;
       if (id2 != e.target.attrs.name) {
         if (this.haveIntersection(tool, targetTool)) {
-          inter = true;
-          this.setState({ interactedTool: tool });
-          e.target.setAttrs({
-            x: this.state.interactedTool.x,
-            y: this.state.interactedTool.y - stageH * 0.2
-          });
           let data = JSON.stringify({
             stageNum,
             id,
@@ -142,6 +136,12 @@ class LabTool extends Component {
               if (res.status == 200) {
                 //animation, goes to the top of interacted tool
                 this.props.setInteraction(res.data);
+                inter = true;
+                this.setState({ interactedTool: tool });
+                e.target.setAttrs({
+                  x: this.state.interactedTool.x,
+                  y: this.state.interactedTool.y - stageH * 0.2
+                });
                 //param: (sourceTool, destinationTool)
                 if (res.data.Name == "Pour")
                   this.props.setShowInterModal(sourceTool, tool, e);
