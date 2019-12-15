@@ -208,6 +208,9 @@ public class LabController {
             if (stage.getStageToolList().size() == 0) {
                 return 2;
             }
+            if (stage.getInstructions().equals("")) {
+                return 4;
+            }
         }
         try {
             lab.setPublished(true);

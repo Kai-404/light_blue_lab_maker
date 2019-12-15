@@ -19,7 +19,12 @@ class AddCourse extends Component {
     };
 
     closeAddCourse = () => {
-        this.setState({showAddCourse: false})
+        this.setState({
+            errMsg: "",
+            showAddCourse: false,
+            courseName: '',
+            term: ''
+        })
     };
 
     addCourse() {
@@ -31,7 +36,7 @@ class AddCourse extends Component {
                 title: this.state.courseName,
                 term: this.state.term,
                 professor: sessionStorage.getItem("username"),
-                firstName: sessionStorage.getItem("userFirstName"), 
+                firstName: sessionStorage.getItem("userFirstName"),
                 lastName: sessionStorage.getItem("userLastName")
             })
                 .then(res => {

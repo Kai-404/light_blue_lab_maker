@@ -38,7 +38,9 @@ class EnrollCourse extends Component {
                     params: {
                         id: sessionStorage.getItem("userID"),
                         username: sessionStorage.getItem("username"),
-                        userType: sessionStorage.getItem("userType")
+                        userType: sessionStorage.getItem("userType"),
+                        courseName: "",
+                        term: ""
                     }
                 }
             )

@@ -1,23 +1,23 @@
-import React, { Component } from "react";
+import React, {Component} from "react";
 import axios from "axios";
-import { withRouter } from "react-router";
+import {withRouter} from "react-router";
 import Konva from "konva";
-import { Stage, Layer, Star, Text, Image } from "react-konva";
+import {Stage, Layer, Star, Text, Image} from "react-konva";
 import useImage from "use-image";
 import Sidebar from "../Layout/Sidebar";
-import { LinkContainer } from "react-router-bootstrap";
+import {LinkContainer} from "react-router-bootstrap";
 import {
-  Button,
-  ButtonGroup,
-  Card,
-  Col,
-  Dropdown,
-  Form,
-  ListGroup,
-  Row,
-  Modal,
-  CardDeck,
-  ProgressBar
+    Button,
+    ButtonGroup,
+    Card,
+    Col,
+    Dropdown,
+    Form,
+    ListGroup,
+    Row,
+    Modal,
+    CardDeck,
+    ProgressBar
 } from "react-bootstrap";
 import Addtool from "./Addtool";
 import ToolModal from "./Toolmodal";
@@ -31,152 +31,152 @@ const stageW = window.innerWidth - window.innerWidth * 0.3;
 const stageH = window.innerHeight - 400;
 
 class Makelab extends Component {
-  state = {
-    errMsg: "",
-    labTools: [], //all the tools will be used for this lab
-    //currentStage, //element of stage list
-    getTotalStage: 0,
-    currentStage: {
-      stageNum: -1,
-      stageTool: [],
-      instructions: ""
-    }, //all stage start at stage 0
-    currentTool: [], //the tool prof want to change property with.
-    showPop: false, //show popup
-    hasInter: false,
-    inter: {
-      Description: "Some description",
-      Name: "Name of interaction",
-      Prams: {
-        PramName: "",
-        Value: ""
-      }
-    },
-    tempTool: {},
-    sourceTool: { Prop: [] },
-    destinationTool: { Prop: [] },
-    eventTool: {}
-  };
+    state = {
+        errMsg: "",
+        labTools: [], //all the tools will be used for this lab
+        //currentStage, //element of stage list
+        getTotalStage: 0,
+        currentStage: {
+            stageNum: -1,
+            stageTool: [],
+            instructions: ""
+        }, //all stage start at stage 0
+        currentTool: [], //the tool prof want to change property with.
+        showPop: false, //show popup
+        hasInter: false,
+        inter: {
+            Description: "Some description",
+            Name: "Name of interaction",
+            Prams: {
+                PramName: "",
+                Value: ""
+            }
+        },
+        tempTool: {},
+        sourceTool: {Prop: []},
+        destinationTool: {Prop: []},
+        eventTool: {}
+    };
 
-  componentDidMount() {
-    this.getTotalStage();
-    this.setCurrentStage(-1);
-    //  to display the lab tool bar when loading the page
-    axios.get("http://localhost:8080/getalltools").then(res => {
-      this.addLabTool(res.data);
-    });
-  }
-
-  getTotalStage() {
-    axios.get("http://localhost:8080/gettotalstage").then(res => {
-      this.setState({ getTotalStage: res.data });
-    });
-  }
-
-  setCurrentStage = i => {
-    let data = JSON.stringify(i);
-    if (i > -1) {
-      axios
-        .post("http://localhost:8080/getstage", data, {
-          headers: { "Content-Type": "application/json;charset=UTF-8" },
-          params: { stageNum: i }
-        })
-        .then(res => {
-          this.setState({ currentStage: res.data });
+    componentDidMount() {
+        this.getTotalStage();
+        this.setCurrentStage(-1);
+        //  to display the lab tool bar when loading the page
+        axios.get("http://localhost:8080/getalltools").then(res => {
+            this.addLabTool(res.data);
         });
-    } else {
-      this.setState({ currentStage: { stageNum: -1, stageTool: [] } });
     }
-  };
 
-  duplicateStage() {
-    axios
-      .post(
-        "http://localhost:8080/duplicatestage",
-        JSON.stringify(this.state.currentStage.stageNum),
-        {
-          headers: { "Content-Type": "application/json;charset=UTF-8" }
-        }
-      )
-      .then(res => {
-        this.getTotalStage();
-        this.setCurrentStage(this.state.currentStage.stageNum + 1);
-      });
-  }
+    getTotalStage() {
+        axios.get("http://localhost:8080/gettotalstage").then(res => {
+            this.setState({getTotalStage: res.data});
+        });
+    }
 
-  addStage() {
-    axios
-      .post(
-        "http://localhost:8080/addstage",
-        JSON.stringify(this.state.currentStage.stageNum),
-        {
-          headers: { "Content-Type": "application/json;charset=UTF-8" }
-        }
-      )
-      .then(res => {
-        this.getTotalStage();
-        this.setCurrentStage(this.state.currentStage.stageNum + 1);
-      });
-  }
-
-  deleteStage() {
-    let stageNum = this.state.currentStage.stageNum;
-    axios
-      .post("http://localhost:8080/deletestage", JSON.stringify(stageNum), {
-        headers: { "Content-Type": "application/json;charset=UTF-8" }
-      })
-      .then(res => {
-        this.getTotalStage();
-        if (stageNum === this.state.getTotalStage - 1) {
-          this.setCurrentStage(stageNum - 1);
+    setCurrentStage = i => {
+        let data = JSON.stringify(i);
+        if (i > -1) {
+            axios
+                .post("http://localhost:8080/getstage", data, {
+                    headers: {"Content-Type": "application/json;charset=UTF-8"},
+                    params: {stageNum: i}
+                })
+                .then(res => {
+                    this.setState({currentStage: res.data});
+                });
         } else {
-          this.setCurrentStage(stageNum);
+            this.setState({currentStage: {stageNum: -1, stageTool: []}});
         }
-      });
-  }
+    };
 
-  setInteraction = inter => {
-    console.log("pased:", inter);
-    this.setState({ inter: inter });
-  };
-  //add tool to whole lab
-  addLabTool = tool => {
-    let allTool = tool.filter(t => {
-      if (t.Display) {
-        return t;
-      }
-    });
-    this.setState({ labTools: allTool });
-    this.setCurrentStage(this.state.currentStage.stageNum);
-  };
+    duplicateStage() {
+        axios
+            .post(
+                "http://localhost:8080/duplicatestage",
+                JSON.stringify(this.state.currentStage.stageNum),
+                {
+                    headers: {"Content-Type": "application/json;charset=UTF-8"}
+                }
+            )
+            .then(res => {
+                this.getTotalStage();
+                this.setCurrentStage(this.state.currentStage.stageNum + 1);
+            });
+    }
 
-  // pop a tool to the center of the stage with defalut
-  popTool = e => {
-    const uuidv4 = require("uuid/v4");
-    let id = uuidv4();
-    let name = e.target.alt;
-    let stageNum = this.state.currentStage.stageNum;
-    let data = JSON.stringify({
-      id,
-      name,
-      stageNum
-    });
-    //request a tool with , get back a default tool
-    axios
-      .post("http://localhost:8080/stageaddtool", data, {
-        headers: { "Content-Type": "application/json;charset=UTF-8" },
-        params: {
-          stageNum: stageNum,
-          toolName: name, //name of tool
-          ID: id
-        }
-      })
-      .then(res => {
-        if (res.data) {
-          this.setCurrentStage(stageNum);
-        }
-      });
-  };
+    addStage() {
+        axios
+            .post(
+                "http://localhost:8080/addstage",
+                JSON.stringify(this.state.currentStage.stageNum),
+                {
+                    headers: {"Content-Type": "application/json;charset=UTF-8"}
+                }
+            )
+            .then(res => {
+                this.getTotalStage();
+                this.setCurrentStage(this.state.currentStage.stageNum + 1);
+            });
+    }
+
+    deleteStage() {
+        let stageNum = this.state.currentStage.stageNum;
+        axios
+            .post("http://localhost:8080/deletestage", JSON.stringify(stageNum), {
+                headers: {"Content-Type": "application/json;charset=UTF-8"}
+            })
+            .then(res => {
+                this.getTotalStage();
+                if (stageNum === this.state.getTotalStage - 1) {
+                    this.setCurrentStage(stageNum - 1);
+                } else {
+                    this.setCurrentStage(stageNum);
+                }
+            });
+    }
+
+    setInteraction = inter => {
+        console.log("pased:", inter);
+        this.setState({inter: inter});
+    };
+    //add tool to whole lab
+    addLabTool = tool => {
+        let allTool = tool.filter(t => {
+            if (t.Display) {
+                return t;
+            }
+        });
+        this.setState({labTools: allTool});
+        this.setCurrentStage(this.state.currentStage.stageNum);
+    };
+
+    // pop a tool to the center of the stage with defalut
+    popTool = e => {
+        const uuidv4 = require("uuid/v4");
+        let id = uuidv4();
+        let name = e.target.alt;
+        let stageNum = this.state.currentStage.stageNum;
+        let data = JSON.stringify({
+            id,
+            name,
+            stageNum
+        });
+        //request a tool with , get back a default tool
+        axios
+            .post("http://localhost:8080/stageaddtool", data, {
+                headers: {"Content-Type": "application/json;charset=UTF-8"},
+                params: {
+                    stageNum: stageNum,
+                    toolName: name, //name of tool
+                    ID: id
+                }
+            })
+            .then(res => {
+                if (res.data) {
+                    this.setCurrentStage(stageNum);
+                }
+            });
+    };
 
   saveLab = () => {
     let title = document.getElementById("title").value;
@@ -187,22 +187,22 @@ class Makelab extends Component {
       sessionStorage.setItem("currentLabTitle", title);
       sessionStorage.setItem("currentLabDescription", description);
       axios
-        .get("http://localhost:8080/savelab", {
-          headers: { "Content-Type": "application/json;charset=UTF-8" },
-          params: {
-            courseID: sessionStorage.getItem("currentCourse"),
-            username: sessionStorage.getItem("username"),
-            title: title,
-            description: description
-          }
-        })
-        .then(res => {
-          if (res.data) {
-            alert("successfully saved lab");
-          } else {
-            alert("fail to save the lab");
-          }
-        });
+          .get("http://localhost:8080/savelab", {
+            headers: { "Content-Type": "application/json;charset=UTF-8" },
+            params: {
+              courseID: sessionStorage.getItem("currentCourse"),
+              username: sessionStorage.getItem("username"),
+              title: title,
+              description: description,
+            }
+          })
+          .then(res => {
+            if (res.data) {
+              alert("successfully saved lab");
+            } else {
+              alert("fail to save the lab");
+            }
+          });
     }
   };
 
@@ -243,6 +243,8 @@ class Makelab extends Component {
                     alert("there has to be at least one stage");
                   } else if (res.data == 2) {
                     alert("each stage must have at least one tool");
+                  } else if (res.data == 4) {
+                     alert("instruction must not be empty");
                   } else {
                     alert("fail to publish the lab");
                   }
@@ -259,80 +261,81 @@ class Makelab extends Component {
     }
   };
 
-  setCurrentTool = tool => {
-    this.setState({ currentTool: tool });
-  };
+    setCurrentTool = tool => {
+        this.setState({currentTool: tool});
+    };
 
-  setShowModal = () => {
-    this.setState({ showPop: !this.state.showPop });
-  };
+    setShowModal = () => {
+        this.setState({showPop: !this.state.showPop});
+    };
 
-  setShowInterModal = (source, destination, e) => {
-    this.setState({
-      hasInter: !this.state.hasInter
-    });
-    if (source && destination && e) {
-      this.setState({
-        sourceTool: source,
-        destinationTool: destination,
-        eventTool: e
-      });
-    } else {
-      this.setState({
-        sourceTool: { Prop: [] },
-        destinationTool: { Prop: [] },
-        eventTool: {}
-      });
+    setShowInterModal = (source, destination, e) => {
+        this.setState({
+            hasInter: !this.state.hasInter
+        });
+        if (source && destination && e) {
+            this.setState({
+                sourceTool: source,
+                destinationTool: destination,
+                eventTool: e
+            });
+        } else {
+            this.setState({
+                sourceTool: {Prop: []},
+                destinationTool: {Prop: []},
+                eventTool: {}
+            });
+        }
+    };
+    updateTools = (source, destination, stageNum) => {
+        let data = JSON.stringify({
+            stageNum,
+            source,
+            destination
+        });
+        axios
+            .post("http://localhost:8080/gettool", data, {
+                headers: {"Content-Type": "application/json;charset=UTF-8"},
+                params: {
+                    stageNum: stageNum,
+                    ID: source
+                }
+            })
+            .then(res => {
+                this.setState({sourceTool: res.data});
+            });
+        axios
+            .post("http://localhost:8080/gettool", data, {
+                headers: {"Content-Type": "application/json;charset=UTF-8"},
+                params: {
+                    stageNum: stageNum,
+                    ID: destination
+                }
+            })
+            .then(res => {
+                this.setState({destinationTool: res.data});
+            });
+    };
+
+    dataChanged(data) {
     }
-  };
-  updateTools = (source, destination, stageNum) => {
-    let data = JSON.stringify({
-      stageNum,
-      source,
-      destination
-    });
-    axios
-      .post("http://localhost:8080/gettool", data, {
-        headers: { "Content-Type": "application/json;charset=UTF-8" },
-        params: {
-          stageNum: stageNum,
-          ID: source
-        }
-      })
-      .then(res => {
-        this.setState({ sourceTool: res.data });
-      });
-    axios
-      .post("http://localhost:8080/gettool", data, {
-        headers: { "Content-Type": "application/json;charset=UTF-8" },
-        params: {
-          stageNum: stageNum,
-          ID: destination
-        }
-      })
-      .then(res => {
-        this.setState({ destinationTool: res.data });
-      });
-  };
 
-  dataChanged(data) {}
-
-  updateInstructions = event => {
-    axios.post("http://localhost:8080/saveinstructions", null, {
-      headers: { "Content-Type": "application/json;charset=UTF-8" },
-      params: {
-        stageNum: this.state.currentStage.stageNum,
-        instructions: event.target.value
-      }
-    });
-    this.setState({
-      currentStage: {
-        stageNum: this.state.currentStage.stageNum,
-        stageTool: this.state.currentStage.stageTool,
-        instructions: event.target.value
-      }
-    });
-  };
+    updateInstructions = event => {
+        axios.post("http://localhost:8080/saveinstructions", null, {
+            headers: {"Content-Type": "application/json;charset=UTF-8"},
+            params: {
+                stageNum: this.state.currentStage.stageNum,
+                instructions: event.target.value
+            }
+        });
+        this.setState({
+            currentStage: {
+                stageNum: this.state.currentStage.stageNum,
+                stageTool: this.state.currentStage.stageTool,
+                instructions: event.target.value
+            }
+        });
+    };
 
   render() {
     let toolBar = (
@@ -385,35 +388,35 @@ class Makelab extends Component {
           getToolById={this.getToolById}
         />
 
-        <ToolModal
-          setTool={this.setCurrentTool}
-          tool={this.state.currentTool}
-          stageNum={this.state.currentStage.stageNum}
-          showPop={this.state.showPop}
-          setShow={this.setShowModal}
-          setCurrentStage={this.setCurrentStage}
-        />
-        {textInput}
-        <ButtonGroup>
-          {toolBar}
-          <Dropdown className="toolButton" as={ButtonGroup}>
-            {/*<Dropdown.Toggle variant="Secondary">More</Dropdown.Toggle>*/}
-            <Dropdown.Menu>
-              <Dropdown.Item>Tool 1</Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown>
-          <Addtool addLabTool={this.addLabTool} />
-        </ButtonGroup>
-        <br />
-        <Row>
-          {/* append tools to the stageTool and rerender */}
-          <Col>
-            <div className="stage" id="stageInstructions">
+                <ToolModal
+                    setTool={this.setCurrentTool}
+                    tool={this.state.currentTool}
+                    stageNum={this.state.currentStage.stageNum}
+                    showPop={this.state.showPop}
+                    setShow={this.setShowModal}
+                    setCurrentStage={this.setCurrentStage}
+                />
+                {textInput}
+                <ButtonGroup>
+                    {toolBar}
+                    <Dropdown className="toolButton" as={ButtonGroup}>
+                        {/*<Dropdown.Toggle variant="Secondary">More</Dropdown.Toggle>*/}
+                        <Dropdown.Menu>
+                            <Dropdown.Item>Tool 1</Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown>
+                    <Addtool addLabTool={this.addLabTool}/>
+                </ButtonGroup>
+                <br/>
+                <Row>
+                    {/* append tools to the stageTool and rerender */}
+                    <Col>
+                        <div className="stage" id="stageInstructions">
               <textarea
-                id="stageInstructionsText"
-                value={this.state.currentStage.instructions}
-                onChange={this.updateInstructions}
-                disabled={this.state.currentStage.stageNum === -1}
+                  id="stageInstructionsText"
+                  value={this.state.currentStage.instructions}
+                  onChange={this.updateInstructions}
+                  disabled={this.state.currentStage.stageNum === -1}
               />
             </div>
             <Stage width={stageW} height={stageH} className="stage">
@@ -460,40 +463,40 @@ class Makelab extends Component {
               </Modal.Body>
             </Card.Body>
 
-            <Button onClick={() => this.addStage()} className="addtoolButton">
-              New
-            </Button>
-            <Button
-              onClick={() => this.duplicateStage()}
-              className="addtoolButton"
-              disabled={this.state.currentStage.stageNum === -1}
-            >
-              Duplicate
-            </Button>
-            <Button
-              className="addtoolButton"
-              onClick={() => this.deleteStage()}
-              disabled={this.state.currentStage.stageNum === -1}
-            >
-              Delete
-            </Button>
-          </Card>
-        </Row>
-        <br />
-        <ButtonGroup>
-          <Button className="submitButton" onClick={this.saveLab}>
-            Save
-          </Button>
-          <Button className="submitButton" onClick={this.publishLab}>
-            Publish
-          </Button>
-          <LinkContainer to="/labspage">
-            <Button className="submitButton">Cancel</Button>
-          </LinkContainer>
-        </ButtonGroup>
-      </React.Fragment>
-    );
-  }
+                        <Button onClick={() => this.addStage()} className="addtoolButton">
+                            New
+                        </Button>
+                        <Button
+                            onClick={() => this.duplicateStage()}
+                            className="addtoolButton"
+                            disabled={this.state.currentStage.stageNum === -1}
+                        >
+                            Duplicate
+                        </Button>
+                        <Button
+                            className="addtoolButton"
+                            onClick={() => this.deleteStage()}
+                            disabled={this.state.currentStage.stageNum === -1}
+                        >
+                            Delete
+                        </Button>
+                    </Card>
+                </Row>
+                <br/>
+                <ButtonGroup>
+                    <Button className="submitButton" onClick={this.saveLab}>
+                        Save
+                    </Button>
+                    <Button className="submitButton" onClick={this.publishLab}>
+                        Publish
+                    </Button>
+                    <LinkContainer to="/labspage">
+                        <Button className="submitButton">Cancel</Button>
+                    </LinkContainer>
+                </ButtonGroup>
+            </React.Fragment>
+        );
+    }
 }
 
 export default withRouter(Makelab);
