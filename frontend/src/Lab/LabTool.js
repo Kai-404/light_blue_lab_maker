@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import axios from "axios";
 import Konva from "konva";
-import { Image, Layer, Rect } from "react-konva";
+import { Image, Text } from "react-konva";
 import Portal from "react-portal";
 import InteractionModal from "./InteractionModal";
 import ToolContextMenu from "./ToolContextMenu";
-import { Button, Form, Modal, Row, Col } from "react-bootstrap";
+import { ListGroup } from "react-bootstrap";
 
 /**
  * Props:
@@ -117,11 +117,6 @@ class LabTool extends Component {
       if (id2 != e.target.attrs.name) {
         if (this.haveIntersection(tool, targetTool)) {
           inter = true;
-          this.setState({ interactedTool: tool, sourceTool: sourceTool });
-          e.target.setAttrs({
-            x: this.state.interactedTool.x,
-            y: this.state.interactedTool.y - stageH * 0.2
-          });
           let data = JSON.stringify({
             stageNum,
             id,
@@ -142,6 +137,12 @@ class LabTool extends Component {
               if (res.status == 200) {
                 //animation, goes to the top of interacted tool
                 this.props.setInteraction(res.data);
+
+                this.setState({ interactedTool: tool });
+                e.target.setAttrs({
+                  x: this.state.interactedTool.x,
+                  y: this.state.interactedTool.y - stageH * 0.175
+                });
                 //param: (sourceTool, destinationTool)
                 if (res.data.Name == "Pour")
                   this.props.setShowInterModal(sourceTool, tool, e);
@@ -160,20 +161,37 @@ class LabTool extends Component {
   handleDragEnd = e => {
     let stageNum = this.props.stageNum,
       id = e.target.attrs.name;
-
-    this.props.stageTool.map(tool => {
-      // e.target.attrs.name is the id of img
-      if (tool.id === id) {
-        tool.x = e.target.attrs.x;
-        tool.y = e.target.attrs.y;
-        this.setState({ currentTool: tool });
-      }
-    });
-
-    let ctool = this.state.currentTool;
+    let ctool;
     if (this.checkInteraction(e, stageNum, id)) {
-      console.log(true);
-      ctool = this.state.sourceTool;
+      this.props.setCurrentStage(stageNum);
+    } else {
+      this.props.stageTool.map(tool => {
+        // e.target.attrs.name is the id of img
+        if (tool.id === id) {
+          tool.x = e.target.attrs.x;
+          tool.y = e.target.attrs.y;
+          this.setState({ currentTool: tool });
+        }
+      });
+      ctool = this.state.currentTool;
+      let data = JSON.stringify({
+        stageNum,
+        id,
+        ctool
+      });
+
+      axios
+        .post("http://localhost:8080/updatetoolprop", data, {
+          headers: { "Content-Type": "application/json;charset=UTF-8" },
+          params: {
+            stageNum: stageNum,
+            ID: id
+          },
+          toolProps: ctool
+        })
+        .then(res => {
+          this.props.setCurrentStage(stageNum);
+        });
     }
 
     e.target.to({
@@ -184,24 +202,6 @@ class LabTool extends Component {
       shadowOffsetX: 0,
       shadowOffsetY: 0
     });
-    let data = JSON.stringify({
-      stageNum,
-      id,
-      ctool
-    });
-
-    axios
-      .post("http://localhost:8080/updatetoolprop", data, {
-        headers: { "Content-Type": "application/json;charset=UTF-8" },
-        params: {
-          stageNum: stageNum,
-          ID: id
-        },
-        toolProps: ctool
-      })
-      .then(res => {
-        this.props.setCurrentStage(stageNum);
-      });
   };
 
   //left click show property read only form
@@ -269,8 +269,8 @@ class LabTool extends Component {
         <Image
           x={this.props.x}
           y={this.props.y}
-          width={stageW * 0.1}
-          height={stageH * 0.2}
+          width={stageW * 0.075}
+          height={stageH * 0.175}
           name={this.props.id}
           image={this.state.image}
           ref={node => {
@@ -294,6 +294,12 @@ class LabTool extends Component {
           ]}
           */
         />
+        <Text
+          x={this.props.x + 20}
+          y={this.props.y - 15}
+          text={this.props.nickname}
+        />
+
         <Portal isOpened={this.state.showTooltip}>
           <ToolContextMenu
             mousePosition={this.state.mousePosition}
