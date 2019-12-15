@@ -412,6 +412,7 @@ class Makelab extends Component {
                         <div className="stage" id="stageInstructions">
               <textarea
                   id="stageInstructionsText"
+                  placeholder={"Enter instructions here"}
                   value={this.state.currentStage.instructions}
                   onChange={this.updateInstructions}
                   disabled={this.state.currentStage.stageNum === -1}
