@@ -20,12 +20,12 @@ class AddAnnouncement extends Component {
             announTitle: "",
             content: ""
         });
-    };
+    };s
 
     addNewAnnouncement = event => {
         const form = event.currentTarget;
         if (this.state.announTitle === "" || this.state.content === "") {
-            this.setState({errMsg: "Please fill in all fields!"})
+            //this.setState({errMsg: "Please fill in all fields!"})
         } else {
             let title = this.state.announTitle;
             let content = this.state.content;
@@ -57,6 +57,7 @@ class AddAnnouncement extends Component {
                 content: ""
             });
         }
+        this.setState({ validated: true });
     };
 
     onChange = e => this.setState({[e.target.name]: e.target.value});
@@ -77,7 +78,6 @@ class AddAnnouncement extends Component {
                         <Modal.Title>New Announcement</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <p className="errmsg">{this.state.errMsg}</p>
                         <Form
                             noValidate
                             validated={this.state.validated}
