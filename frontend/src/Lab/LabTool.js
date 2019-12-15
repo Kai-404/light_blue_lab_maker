@@ -1,11 +1,11 @@
 import React, {Component} from "react";
 import axios from "axios";
 import Konva from "konva";
-import {Image, Layer, Rect} from "react-konva";
+import {Image, Layer, Rect, Text} from "react-konva";
 import Portal from "react-portal";
 import InteractionModal from "./InteractionModal";
 import ToolContextMenu from "./ToolContextMenu";
-import {Button, Form, Modal, Row, Col} from "react-bootstrap";
+import {Button, Form, Modal, Row, Col, ListGroup} from "react-bootstrap";
 
 /**
  * Props:
@@ -101,108 +101,108 @@ class LabTool extends Component {
         });
     };
 
-    //while dragging the tool, detection collision and perform interaction if any
-    checkInteraction = (e, stageNum, id) => {
-        let inter = false;
-        let targetTool = e.target.getClientRect();
-        let sourceTool;
-        this.props.stageTool.forEach(tool => {
-            let id2 = tool.id;
-            if (id2 == e.target.attrs.name) {
-                sourceTool = tool;
-            }
-        });
-        this.props.stageTool.forEach(tool => {
-            let id2 = tool.id;
-            if (id2 != e.target.attrs.name) {
-                if (this.haveIntersection(tool, targetTool)) {
-                    inter = true;
-                    this.setState({interactedTool: tool, sourceTool: sourceTool});
-                    e.target.setAttrs({
-                        x: this.state.interactedTool.x,
-                        y: this.state.interactedTool.y - stageH * 0.2
-                    });
-                    let data = JSON.stringify({
-                        stageNum,
-                        id,
-                        id2
-                    });
-                    //params: stage#, id1(dragging tool), id2(being hitted tool)
-                    axios
-                        .post("http://localhost:8080/checkInteraction", data, {
-                            headers: {"Content-Type": "application/json;charset=UTF-8"},
-                            params: {
-                                stageNum,
-                                id,
-                                id2
-                            }
-                        })
-                        .then(res => {
-                            //rotate the tool to the top of another
-                            if (res.status == 200) {
-                                //animation, goes to the top of interacted tool
-                                this.props.setInteraction(res.data);
-                                //param: (sourceTool, destinationTool)
-                                if (res.data.Name == "Pour")
-                                    this.props.setShowInterModal(sourceTool, tool, e);
-                            }
-                        })
-                        .catch(err => {
-                            console.log("no interaction");
-                        });
-                }
-            }
-        });
-        return inter;
-    };
-
-    //drag tool end animation, boundingBox disappears
-    handleDragEnd = e => {
-        let stageNum = this.props.stageNum,
-            id = e.target.attrs.name;
-
-        this.props.stageTool.map(tool => {
-            // e.target.attrs.name is the id of img
-            if (tool.id === id) {
-                tool.x = e.target.attrs.x;
-                tool.y = e.target.attrs.y;
-                this.setState({currentTool: tool});
-            }
-        });
-
-        let ctool = this.state.currentTool;
-        if (this.checkInteraction(e, stageNum, id)) {
-            console.log(true);
-            ctool = this.state.sourceTool;
-        }
-
-        e.target.to({
-            duration: 4,
-            easing: Konva.Easings.ElasticEaseOut,
-            scaleX: 1,
-            scaleY: 1,
-            shadowOffsetX: 0,
-            shadowOffsetY: 0
-        });
-        let data = JSON.stringify({
+  //while dragging the tool, detection collision and perform interaction if any
+  checkInteraction = (e, stageNum, id) => {
+    let inter = false;
+    let targetTool = e.target.getClientRect();
+    let sourceTool;
+    this.props.stageTool.forEach(tool => {
+      let id2 = tool.id;
+      if (id2 == e.target.attrs.name) {
+        sourceTool = tool;
+      }
+    });
+    this.props.stageTool.forEach(tool => {
+      let id2 = tool.id;
+      if (id2 != e.target.attrs.name) {
+        if (this.haveIntersection(tool, targetTool)) {
+          inter = true;
+          let data = JSON.stringify({
             stageNum,
             id,
-            ctool
-        });
-
-        axios
-            .post("http://localhost:8080/updatetoolprop", data, {
-                headers: {"Content-Type": "application/json;charset=UTF-8"},
-                params: {
-                    stageNum: stageNum,
-                    ID: id
-                },
-                toolProps: ctool
+            id2
+          });
+          //params: stage#, id1(dragging tool), id2(being hitted tool)
+          axios
+            .post("http://localhost:8080/checkInteraction", data, {
+              headers: { "Content-Type": "application/json;charset=UTF-8" },
+              params: {
+                stageNum,
+                id,
+                id2
+              }
             })
             .then(res => {
-                this.props.setCurrentStage(stageNum);
+              //rotate the tool to the top of another
+              if (res.status == 200) {
+                //animation, goes to the top of interacted tool
+                this.props.setInteraction(res.data);
+
+                this.setState({ interactedTool: tool });
+                e.target.setAttrs({
+                  x: this.state.interactedTool.x,
+                  y: this.state.interactedTool.y - stageH * 0.175
+                });
+                //param: (sourceTool, destinationTool)
+                if (res.data.Name == "Pour")
+                  this.props.setShowInterModal(sourceTool, tool, e);
+              }
+            })
+            .catch(err => {
+              console.log("no interaction");
             });
-    };
+        }
+      }
+    });
+    return inter;
+  };
+
+  //drag tool end animation, boundingBox disappears
+  handleDragEnd = e => {
+    let stageNum = this.props.stageNum,
+      id = e.target.attrs.name;
+    let ctool;
+    if (this.checkInteraction(e, stageNum, id)) {
+      this.props.setCurrentStage(stageNum);
+    } else {
+      this.props.stageTool.map(tool => {
+        // e.target.attrs.name is the id of img
+        if (tool.id === id) {
+          tool.x = e.target.attrs.x;
+          tool.y = e.target.attrs.y;
+          this.setState({ currentTool: tool });
+        }
+      });
+      ctool = this.state.currentTool;
+      let data = JSON.stringify({
+        stageNum,
+        id,
+        ctool
+      });
+
+      axios
+        .post("http://localhost:8080/updatetoolprop", data, {
+          headers: { "Content-Type": "application/json;charset=UTF-8" },
+          params: {
+            stageNum: stageNum,
+            ID: id
+          },
+          toolProps: ctool
+        })
+        .then(res => {
+          this.props.setCurrentStage(stageNum);
+        });
+    }
+
+    e.target.to({
+      duration: 4,
+      easing: Konva.Easings.ElasticEaseOut,
+      scaleX: 1,
+      scaleY: 1,
+      shadowOffsetX: 0,
+      shadowOffsetY: 0
+    });
+  };
 
     //left click show property read only form
     handleContextMenu = e => {
@@ -231,33 +231,33 @@ class LabTool extends Component {
             });
     };
 
-    //right click show property form
-    handleClickTool = e => {
-        this.setState({showTooltip: false});
-        if (e.evt.button === 0) {
-            let id = e.target.attrs.name;
-            let stageNum = this.props.stageNum;
-            let data = JSON.stringify({
-                stageNum,
-                id
-            });
-            axios
-                .post("http://localhost:8080/gettool", data, {
-                    headers: {"Content-Type": "application/json;charset=UTF-8"},
-                    params: {
-                        stageNum: stageNum,
-                        ID: id
-                    }
-                })
-                .then(res => {
-                    console.log(res.data);
-                    this.props.setTool(res.data);
-                    if (this.props.setShowModal) {
-                        this.props.setShowModal();
-                    }
-                });
-        }
-    };
+  //right click show property form
+  handleClickTool = e => {
+    this.setState({ showTooltip: false });
+    if (e.evt.button === 0) {
+      let id = e.target.attrs.name;
+      let stageNum = this.props.stageNum;
+      let data = JSON.stringify({
+        stageNum,
+        id
+      });
+      axios
+        .post("http://localhost:8080/gettool", data, {
+          headers: { "Content-Type": "application/json;charset=UTF-8" },
+          params: {
+            stageNum: stageNum,
+            ID: id
+          }
+        })
+        .then(res => {
+          console.log(res.data);
+          this.props.setTool(res.data);
+          if (this.props.setShowModal) {
+            this.props.setShowModal();
+          }
+        });
+    }
+  };
 
     setShowInterModal = () => {
         this.setState({hasInter: !this.state.hasInter});
@@ -302,6 +302,11 @@ class LabTool extends Component {
                       "lightblue"
                     ]}
                     */
+                />
+                <Text
+                    x={this.props.x + 20}
+                    y={this.props.y - 15}
+                    text={this.props.nickname}
                 />
                 <Portal isOpened={this.state.showTooltip}>
                     <ToolContextMenu

@@ -178,57 +178,86 @@ class Makelab extends Component {
             });
     };
 
-    saveLab = () => {
-        let title = document.getElementById("title").value;
-        let description = document.getElementById("description").value;
-        if (title === "" || description === "") {
-            alert("title and description must be filled");
-        } else {
-            sessionStorage.setItem("currentLabTitle", title);
-            sessionStorage.setItem("currentLabDescription", description);
-            axios
-                .get("http://localhost:8080/savelab", {
-                    headers: {"Content-Type": "application/json;charset=UTF-8"},
-                    params: {
-                        courseID: sessionStorage.getItem("currentCourse"),
-                        username: sessionStorage.getItem("username"),
-                        title: title,
-                        description: description,
-                    }
+  saveLab = () => {
+    let title = document.getElementById("title").value;
+    let description = document.getElementById("description").value;
+    if (title === "" || description === "") {
+      alert("title and description must be filled");
+    } else {
+      sessionStorage.setItem("currentLabTitle", title);
+      sessionStorage.setItem("currentLabDescription", description);
+      axios
+          .get("http://localhost:8080/savelab", {
+            headers: { "Content-Type": "application/json;charset=UTF-8" },
+            params: {
+              courseID: sessionStorage.getItem("currentCourse"),
+              username: sessionStorage.getItem("username"),
+              title: title,
+              description: description,
+            }
+          })
+          .then(res => {
+            if (res.data) {
+              alert("successfully saved lab");
+            } else {
+              alert("fail to save the lab");
+            }
+          });
+    }
+  };
+
+  publishLab = () => {
+    const r = window.confirm(
+      "Do you really want to publish the lab? After publish you cannot edit it."
+    );
+    if (r == true) {
+      let title = document.getElementById("title").value;
+      let description = document.getElementById("description").value;
+      if (title === "" || description === "") {
+        alert("title and description must be filled");
+      } else {
+        sessionStorage.setItem("currentLabTitle", title);
+        sessionStorage.setItem("currentLabDescription", description);
+        axios
+          .get("http://localhost:8080/savelab", {
+            headers: { "Content-Type": "application/json;charset=UTF-8" },
+            params: {
+              courseID: sessionStorage.getItem("currentCourse"),
+              username: sessionStorage.getItem("username"),
+              title: title,
+              description: description
+            }
+          })
+          .then(res => {
+            if (res.data) {
+              axios
+                .get("http://localhost:8080/publishlab", {
+                  params: {
+                    courseID: sessionStorage.getItem("currentCourse")
+                  }
                 })
                 .then(res => {
-                    if (res.data) {
-                        alert("successfully saved lab");
-                    } else {
-                        alert("fail to save the lab");
-                    }
-                });
-        }
-    };
-
-    publishLab = () => {
-        axios
-            .get("http://localhost:8080/publishlab", {
-                params: {
-                    courseID: sessionStorage.getItem("currentCourse")
-                }
-            })
-            .then(res => {
-                if (res.data == 0) {
-                    this.saveLab();
+                  if (res.data == 0) {
                     alert("successfully published lab");
-                } else if (res.data == 1) {
+                  } else if (res.data == 1) {
                     alert("there has to be at least one stage");
-                } else if (res.data == 2) {
+                  } else if (res.data == 2) {
                     alert("each stage must have at least one tool");
-                } else {
+                  } else {
                     alert("fail to publish the lab");
-                }
-            })
-            .catch(err => {
-                alert("fail to publish the lab with", err);
-            });
-    };
+                  }
+                })
+                .catch(err => {
+                  alert("fail to publish the lab with", err);
+                });
+            }
+          })
+          .catch(err => {
+            alert("fail to publish the lab with", err);
+          });
+      }
+    }
+  };
 
     setCurrentTool = tool => {
         this.setState({currentTool: tool});
@@ -306,53 +335,56 @@ class Makelab extends Component {
         });
     };
 
-    dragBoundary = pos => {
-        console.log(pos);
-    };
-
-    render() {
-        let toolBar = (
-            <React.Fragment>
-                {this.state.labTools.map(tool => (
-                    <Button
-                        className="toolButton"
-                        onClick={this.popTool}
-                        disabled={this.state.currentStage.stageNum === -1}
-                    >
-                        <img
-                            src={process.env.PUBLIC_URL + tool.Img}
-                            className="UserIcon"
-                            alt={tool.Name}
-                        />
-                    </Button>
-                ))}
-            </React.Fragment>
-        );
-        let textInput = (
-            <React.Fragment>
-                <div align="left">
-                    <TextField id="title" label="title" defaultValue={sessionStorage.getItem("currentLabTitle")}/>
-                    <TextField id="description" label="description"
-                               defaultValue={sessionStorage.getItem("currentLabDescription")}/>
-                </div>
-            </React.Fragment>
-        );
-        return (
-            <React.Fragment>
-                <p className="errmsg">{this.state.errMsg}</p>
-                <InteractionModal
-                    interaction={this.state.inter}
-                    setInteraction={this.setInteraction}
-                    show={this.state.hasInter}
-                    setShow={this.setShowInterModal}
-                    stageNum={this.state.currentStage.stageNum}
-                    updateTools={this.updateTools}
-                    sourceTool={this.state.sourceTool}
-                    destinationTool={this.state.destinationTool}
-                    eventTool={this.state.eventTool}
-                    setCurrentStage={this.setCurrentStage}
-                    getToolById={this.getToolById}
-                />
+  render() {
+    let toolBar = (
+      <React.Fragment>
+        {this.state.labTools.map(tool => (
+          <Button
+            className="toolButton"
+            onClick={this.popTool}
+            disabled={this.state.currentStage.stageNum === -1}
+          >
+            <img
+              src={process.env.PUBLIC_URL + tool.Img}
+              className="UserIcon"
+              alt={tool.Name}
+            />
+          </Button>
+        ))}
+      </React.Fragment>
+    );
+    let textInput = (
+      <React.Fragment>
+        <div align="left">
+          <TextField
+            id="title"
+            label="title"
+            defaultValue={sessionStorage.getItem("currentLabTitle")}
+          />
+          <TextField
+            id="description"
+            label="description"
+            defaultValue={sessionStorage.getItem("currentLabDescription")}
+          />
+        </div>
+      </React.Fragment>
+    );
+    return (
+      <React.Fragment>
+        <p className="errmsg">{this.state.errMsg}</p>
+        <InteractionModal
+          interaction={this.state.inter}
+          setInteraction={this.setInteraction}
+          show={this.state.hasInter}
+          setShow={this.setShowInterModal}
+          stageNum={this.state.currentStage.stageNum}
+          updateTools={this.updateTools}
+          sourceTool={this.state.sourceTool}
+          destinationTool={this.state.destinationTool}
+          eventTool={this.state.eventTool}
+          setCurrentStage={this.setCurrentStage}
+          getToolById={this.getToolById}
+        />
 
                 <ToolModal
                     setTool={this.setCurrentTool}
@@ -384,45 +416,50 @@ class Makelab extends Component {
                   onChange={this.updateInstructions}
                   disabled={this.state.currentStage.stageNum === -1}
               />
-                        </div>
-                        <Stage width={stageW} height={stageH} className="stage" id="toolStage">
-                            <Layer>
-                                {this.state.currentStage.stageTool.map((tool, key) => (
-                                    <LabTool
-                                        key={key}
-                                        src={tool.Img}
-                                        x={tool.x}
-                                        y={tool.y}
-                                        id={tool.id}
-                                        stageNum={this.state.currentStage.stageNum}
-                                        stageTool={this.state.currentStage.stageTool}
-                                        setCurrentStage={this.setCurrentStage}
-                                        setTool={this.setCurrentTool}
-                                        setShowModal={this.setShowModal}
-                                        setInteraction={this.setInteraction}
-                                        setShowInterModal={this.setShowInterModal}
-                                        toolStage={document.getElementsByTagName("canvas")}
-                                    />
-                                ))}
-                            </Layer>
-                        </Stage>
-                    </Col>
-                    <Card border="secondary" className="col-md-2" id="labStageComponent">
-                        <Card.Body>
-                            <Card.Title>Lab Stages</Card.Title>
-                            <Modal.Body
-                                style={{
-                                    "max-height": "calc(100vh - 540px)",
-                                    "overflow-y": "auto"
-                                }}
-                            >
-                                <LabStageBar
-                                    totalStage={this.state.getTotalStage}
-                                    currentStageNum={this.state.currentStage.stageNum}
-                                    setCurrentStage={this.setCurrentStage}
-                                />
-                            </Modal.Body>
-                        </Card.Body>
+            </div>
+            <Stage width={stageW} height={stageH} className="stage">
+              <Layer>
+                {this.state.currentStage.stageTool.map(
+                  (tool, key) => (
+                    console.log(tool.nickname),
+                    (
+                      <LabTool
+                        key={key}
+                        src={tool.Img}
+                        x={tool.x}
+                        y={tool.y}
+                        id={tool.id}
+                        nickname={tool.nickname}
+                        stageNum={this.state.currentStage.stageNum}
+                        stageTool={this.state.currentStage.stageTool}
+                        setCurrentStage={this.setCurrentStage}
+                        setTool={this.setCurrentTool}
+                        setShowModal={this.setShowModal}
+                        setInteraction={this.setInteraction}
+                        setShowInterModal={this.setShowInterModal}
+                      />
+                    )
+                  )
+                )}
+              </Layer>
+            </Stage>
+          </Col>
+          <Card border="secondary" className="col-md-2" id="labStageComponent">
+            <Card.Body>
+              <Card.Title>Lab Stages</Card.Title>
+              <Modal.Body
+                style={{
+                  "max-height": "calc(100vh - 540px)",
+                  "overflow-y": "auto"
+                }}
+              >
+                <LabStageBar
+                  totalStage={this.state.getTotalStage}
+                  currentStageNum={this.state.currentStage.stageNum}
+                  setCurrentStage={this.setCurrentStage}
+                />
+              </Modal.Body>
+            </Card.Body>
 
                         <Button onClick={() => this.addStage()} className="addtoolButton">
                             New

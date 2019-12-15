@@ -23,17 +23,19 @@ public class Pipette extends Tool {
     int x = 0;
     @Field("PipetteY")
     int y = 0;
+    @Field("PipetteNickName")
+    String nickName = "Pipette";
 
     //initial property
     double maxVolume = 10.0;
     ArrayList<String> currentChemicalsList = new ArrayList<>( );
-    String phStatus = "Neutral";
+    String phStatus = "NONE";
     boolean sucked = false;
 
     //final property
     double finalMaxVolume = 10.0;
     ArrayList<String> finalCurrentChemicalsList = new ArrayList<>();
-    String finalPhStatus = "Neutral";
+    String finalPhStatus = "NONE";
     boolean finalSucked = false;
 
 
@@ -66,7 +68,12 @@ public class Pipette extends Tool {
     }
 
     public ArrayList<String> chemicalStringToList(String chemicalString){
-        ArrayList<String> chemicalList = new ArrayList(Arrays.asList( chemicalString.split( "," )));
+
+        ArrayList<String> chemicalList = new ArrayList();
+
+        if (! chemicalString.equals( "" ) ){
+            chemicalList = new ArrayList(Arrays.asList( chemicalString.split( "," )));
+        }
 
         if (!chemicalList.isEmpty()){
             for(String s : chemicalList){
@@ -88,12 +95,13 @@ public class Pipette extends Tool {
         toolJSONObject.put( "Img",this.imageName );
         toolJSONObject.put( "x",this.x );
         toolJSONObject.put( "y",this.y );
+        toolJSONObject.put( "nickname",this.nickName );
 
         //initial property
         JSONArray properties = new JSONArray();
 
         JSONObject maxVolumeProp = new JSONObject();
-        maxVolumeProp.put( "Name","Max Volume" );
+        maxVolumeProp.put( "Name","Capacity" );
         maxVolumeProp.put( "Value",this.maxVolume );
         maxVolumeProp.put( "Editable", false );
         maxVolumeProp.put( "Max", "9999" );
@@ -109,17 +117,17 @@ public class Pipette extends Tool {
         JSONObject phStatusProp = new JSONObject();
         phStatusProp.put( "Name","PH Status" );
         phStatusProp.put( "Value",this.phStatus );
-        phStatusProp.put( "Editable", true );
+        phStatusProp.put( "Editable", false );
         phStatusProp.put( "ValidStatus",
                 new ArrayList<String>(
-                        Arrays.asList( "BASE", "ACID", "NEUTRAL" )
+                        Arrays.asList( "BASE", "ACID", "NEUTRAL", "NONE" )
                 )
         );
 
         JSONObject chemicalsListProp = new JSONObject();
         chemicalsListProp.put( "Name","Chemicals List" );
         chemicalsListProp.put( "Value",chemicalListToString( this.currentChemicalsList ) );
-        chemicalsListProp.put( "Editable", true );
+        chemicalsListProp.put( "Editable", false );
 
         properties.put(maxVolumeProp);
         //properties.put(currentVolumeProp);
@@ -132,7 +140,7 @@ public class Pipette extends Tool {
         JSONArray finalProperties = new JSONArray();
 
         JSONObject finalMaxVolumeProp = new JSONObject();
-        finalMaxVolumeProp.put( "Name","Max Volume" );
+        finalMaxVolumeProp.put( "Name","Capacity" );
         finalMaxVolumeProp.put( "Value",this.finalMaxVolume );
         finalMaxVolumeProp.put( "Editable", false );
         finalMaxVolumeProp.put( "Max", "9999" );
@@ -151,7 +159,7 @@ public class Pipette extends Tool {
         finalPhStatusProp.put( "Editable", true );
         finalPhStatusProp.put( "ValidStatus",
                 new ArrayList<String>(
-                        Arrays.asList( "BASE", "ACID", "NEUTRAL" )
+                        Arrays.asList( "BASE", "ACID", "NEUTRAL", "NONE" )
                 )
         );
 
@@ -193,6 +201,8 @@ public class Pipette extends Tool {
             this.y = (int) cTool.get( "y" );
         }
 
+        this.nickName = (String)cTool.get( "nickname" );
+
 
         JSONArray propArray = cTool.getJSONArray( "Prop" );
 
@@ -201,7 +211,7 @@ public class Pipette extends Tool {
 
         propArray.forEach( e->{
             JSONObject prop = (JSONObject) e;
-            if ( ((String)prop.get("Name")).equals( "Max Volume" ) ){
+            if ( ((String)prop.get("Name")).equals( "Capacity" ) ){
                 double temp = Double.parseDouble( String.valueOf( prop.get( "Value" ) ) );
 
                 if (temp  <0){
@@ -236,7 +246,7 @@ public class Pipette extends Tool {
 
         finalPropArray.forEach( e->{
             JSONObject prop = (JSONObject) e;
-            if ( ((String)prop.get("Name")).equals( "Max Volume" ) ){
+            if ( ((String)prop.get("Name")).equals( "Capacity" ) ){
 
                 double temp = Double.parseDouble( String.valueOf( prop.get( "Value" ) ) );
 
@@ -247,16 +257,6 @@ public class Pipette extends Tool {
                 }
 
             }
-//            else if (((String)prop.get("Name")).equals( "Current Volume" )){
-//
-//                double temp =  Double.parseDouble( String.valueOf( prop.get( "Value" ) ) );
-//
-//                if (temp > this.maxVolume || temp <0){
-//                    updateSuccess.set( false );
-//                }else {
-//                    this.finalCurrentVolume = temp;
-//                }
-//            }
             else if (((String)prop.get("Name")).equals( "PH Status" )){
                 this.finalPhStatus= (String) prop.get( "Value" );
             }
@@ -264,6 +264,7 @@ public class Pipette extends Tool {
                 this.finalCurrentChemicalsList = chemicalStringToList((String) prop.get( "Value" ) );
             }
         } );
+
 
         return updateSuccess.get();
 
@@ -296,10 +297,10 @@ public class Pipette extends Tool {
                         pourTo.phStatus = this.phStatus;
                     }else if(10.0 == pourTo.currentVolume){
                         if (! this.phStatus.equals( pourTo.getPhStatus())){
-                            if(pourTo.phStatus.equals( "Neutral" )){
+                            if(pourTo.phStatus.equals( "NEUTRAL" )){
                                 pourTo.phStatus=this.phStatus;
                             } else {
-                                pourTo.phStatus="Neutral";
+                                pourTo.phStatus="NEUTRAL";
                             }
                         }
                     }
@@ -310,6 +311,8 @@ public class Pipette extends Tool {
                     }
                     pourTo.currentVolume = pourTo.currentVolume + 10.0;
                     this.sucked = false;
+                    this.currentChemicalsList.clear();
+                    this.phStatus = "NONE";
                     return true;
                 }
             }else {
@@ -321,10 +324,10 @@ public class Pipette extends Tool {
                         pourTo.phStatus = this.phStatus;
                     }else if(10.0 == pourTo.currentVolume){
                         if (! this.phStatus.equals( pourTo.getPhStatus())){
-                            if(pourTo.phStatus.equals( "Neutral" )){
+                            if(pourTo.phStatus.equals( "NEUTRAL" )){
                                 pourTo.phStatus=this.phStatus;
                             } else {
-                                pourTo.phStatus="Neutral";
+                                pourTo.phStatus="NEUTRAL";
                             }
                         }
                     }
@@ -335,6 +338,8 @@ public class Pipette extends Tool {
                     }
                     pourTo.currentVolume = pourTo.currentVolume + 10.0;
                     this.sucked = false;
+                    this.currentChemicalsList.clear();
+                    this.phStatus = "NONE";
                     return true;
                 }
             }

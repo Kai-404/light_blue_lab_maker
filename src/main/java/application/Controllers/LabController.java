@@ -18,10 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
 
 @CrossOrigin
 @RestController
@@ -385,7 +382,25 @@ public class LabController {
             for (int i = 0; i < initialProperties.size(); i++) {
                 System.out.println(((LinkedHashMap) (initialProperties).get(i)).get("Value"));
                 System.out.println(((LinkedHashMap) (finalProperties).get(i)).get("Value"));
+                CHECK:
                 if (!((LinkedHashMap) (initialProperties).get(i)).get("Value").equals(((LinkedHashMap) (finalProperties).get(i)).get("Value"))) {
+
+                    if (((LinkedHashMap) (finalProperties).get(i)).get("Name") . equals( "Chemicals List" )){
+
+                        String initString = (String) ((LinkedHashMap) (initialProperties).get(i)).get("Value");
+                        ArrayList<String> one = new ArrayList( Arrays.asList( initString.split( "," )));
+
+                        String finalString = (String) ((LinkedHashMap) (finalProperties).get(i)).get("Value");
+                        ArrayList<String> two = new ArrayList( Arrays.asList( finalString.split( "," )));
+
+                        Collections.sort( one );
+                        Collections.sort( two );
+
+                        if (one.equals( two )){
+                            break CHECK;
+                        }
+                    }
+
                     if (student != null && stageNum == (student.getLabProgress().get(lab.getId()))) {
                         HashMap<Integer, Integer> labGrade = student.getGrade().get(lab.getId());
                         labGrade.put(stageNum, labGrade.get(stageNum) + 1);

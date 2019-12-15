@@ -130,14 +130,7 @@ class InteractionModal extends Component {
 
     return (
       <React.Fragment>
-        <Modal
-          size="sm"
-          centered
-          show={this.props.show}
-          onHide={this.onClose}
-          dialogClassName="modal-90w"
-          aria-labelledby="example-custom-modal-styling-title"
-        >
+        <Modal show={this.props.show} onHide={this.onClose}>
           <Modal.Header>
             <Modal.Title id="example-custom-modal-styling-title">
               {this.props.interaction.Name}
