@@ -66,12 +66,20 @@ public class Beaker extends Tool {
     }
 
     public ArrayList<String> chemicalStringToList(String chemicalString){
-        ArrayList<String> chemicalList = new ArrayList(Arrays.asList( chemicalString.split( "," )));
-        for(String s : chemicalList){
-            if (s.isBlank()){
-                chemicalList.remove( s );
+        ArrayList<String> chemicalList = new ArrayList();
+
+        if (! chemicalString.equals( "" ) ){
+            chemicalList = new ArrayList(Arrays.asList( chemicalString.split( "," )));
+        }
+
+        if (!chemicalList.isEmpty()){
+            for(String s : chemicalList){
+                if (s.isBlank()){
+                    chemicalList.remove( s );
+                }
             }
         }
+
         return chemicalList;
     }
 
@@ -125,7 +133,7 @@ public class Beaker extends Tool {
         phStatusProp.put( "Editable", true );
         phStatusProp.put( "ValidStatus",
                 new ArrayList<String>(
-                        Arrays.asList( "BASE", "ACID", "NEUTRAL" )
+                        Arrays.asList( "BASE", "ACID", "NEUTRAL", "NONE" )
                 )
         );
 
@@ -164,7 +172,7 @@ public class Beaker extends Tool {
         finalPhStatusProp.put( "Editable", true );
         finalPhStatusProp.put( "ValidStatus",
                 new ArrayList<String>(
-                        Arrays.asList( "BASE", "ACID", "NEUTRAL" )
+                        Arrays.asList( "BASE", "ACID", "NEUTRAL", "NONE" )
                 )
         );
 
@@ -281,6 +289,14 @@ public class Beaker extends Tool {
             }
         } );
 
+
+        if( this.currentChemicalsList.isEmpty() || currentVolume==0){
+            currentChemicalsList.clear();
+            this.currentVolume = 0 ;
+            this.phStatus = "NONE" ;
+
+        }
+
         return updateSuccess.get();
 
     }
@@ -328,6 +344,13 @@ public class Beaker extends Tool {
                 this.currentVolume = this.currentVolume - amount;
                 pourTo.currentVolume = pourTo.currentVolume + amount;
 
+                if( this.currentChemicalsList.isEmpty() || currentVolume==0){
+                    currentChemicalsList.clear();
+                    this.currentVolume = 0 ;
+                    this.phStatus = "NONE" ;
+
+                }
+
                 return true;
             }
         }else {
@@ -356,6 +379,13 @@ public class Beaker extends Tool {
 
                 this.currentVolume = this.currentVolume - amount;
                 pourTo.currentVolume = pourTo.currentVolume + amount;
+
+                if( this.currentChemicalsList.isEmpty() || currentVolume==0){
+                    currentChemicalsList.clear();
+                    this.currentVolume = 0 ;
+                    this.phStatus = "NONE" ;
+
+                }
 
                 return true;
             }

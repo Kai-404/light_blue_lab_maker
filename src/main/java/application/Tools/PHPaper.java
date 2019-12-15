@@ -95,7 +95,7 @@ public class PHPaper extends Tool {
         phStatusProp.put( "Editable", false );
         phStatusProp.put( "ValidStatus",
                 new ArrayList<String>(
-                        Arrays.asList( "BASE", "ACID", "NEUTRAL" )
+                        Arrays.asList( "BASE", "ACID", "NEUTRAL", "NONE" )
                 )
         );
 
@@ -124,7 +124,7 @@ public class PHPaper extends Tool {
         finalPhStatusProp.put( "Editable", true );
         finalPhStatusProp.put( "ValidStatus",
                 new ArrayList<String>(
-                        Arrays.asList( "BASE", "ACID", "NEUTRAL" )
+                        Arrays.asList( "BASE", "ACID", "NEUTRAL", "NONE" )
                 )
         );
 

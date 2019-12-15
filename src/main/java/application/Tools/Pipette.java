@@ -260,6 +260,7 @@ public class Pipette extends Tool {
             }
         } );
 
+
         return updateSuccess.get();
 
     }
