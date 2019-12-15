@@ -24,7 +24,7 @@ import java.util.UUID;
 @Document
 public class Stage {
 
-    private String instructions="Enter instructions here";
+    private String instructions="";
     private ArrayList<Tool> stageToolList;
     private int stageNum;
 
