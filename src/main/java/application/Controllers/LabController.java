@@ -7,6 +7,7 @@ import application.Models.Lab;
 import application.Tools.Beaker;
 import application.Tools.Flask;
 import application.Tools.PHPaper;
+import application.Tools.Pipette;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -202,7 +203,15 @@ public class LabController {
 
     @GetMapping("/publishlab")
     @ResponseBody
-    public boolean publishLab(@RequestParam(name = "courseID") String courseID) {
+    public int publishLab(@RequestParam(name = "courseID") String courseID) {
+        if (lab.getStageList().size() == 0) {
+            return 1;
+        }
+        for (Stage stage : lab.getStageList()) {
+            if (stage.getStageToolList().size() == 0) {
+                return 2;
+            }
+        }
         try {
             lab.setPublished(true);
             labRepository.save(lab);
@@ -220,9 +229,9 @@ public class LabController {
             }
         } catch (Error e) {
             e.printStackTrace();
-            return false;
+            return 3;
         }
-        return true;
+        return 0;
     }
 
     @GetMapping("/deletelab")
@@ -292,6 +301,10 @@ public class LabController {
                 return new ResponseEntity<>(tool.getInteractionDetail(interActionName).toString(), HttpStatus.OK);
             }else if(tool1.getName().equals( "Flask" )){
                 Flask tool = (Flask) tool1;
+                return new ResponseEntity<>(tool.getInteractionDetail(interActionName).toString(), HttpStatus.OK);
+            }else if (tool1.getName().equals( "Pipette" )){
+                Pipette tool = (Pipette) tool1;
+                tool.suckOrDrop( tool2 );
                 return new ResponseEntity<>(tool.getInteractionDetail(interActionName).toString(), HttpStatus.OK);
             }else if (tool1.getName().equals( "PHPaper" )) {
                 PHPaper tool = (PHPaper) tool1;
