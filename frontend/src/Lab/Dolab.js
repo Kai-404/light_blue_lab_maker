@@ -275,6 +275,7 @@ class Dolab extends Component {
                     x={tool.x}
                     y={tool.y}
                     id={tool.id}
+                    nickname={tool.nickname}
                     stageNum={this.state.stage.stageNum}
                     stageTool={this.state.stage.stageTool}
                     setCurrentStage={this.setCurrentStage}

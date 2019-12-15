@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import axios from "axios";
 import Konva from "konva";
-import { Image, Layer, Rect } from "react-konva";
+import { Image, Text } from "react-konva";
 import Portal from "react-portal";
 import InteractionModal from "./InteractionModal";
 import ToolContextMenu from "./ToolContextMenu";
-import { Button, Form, Modal, Row, Col } from "react-bootstrap";
+import { ListGroup } from "react-bootstrap";
 
 /**
  * Props:
@@ -116,6 +116,7 @@ class LabTool extends Component {
       let id2 = tool.id;
       if (id2 != e.target.attrs.name) {
         if (this.haveIntersection(tool, targetTool)) {
+          inter = true;
           let data = JSON.stringify({
             stageNum,
             id,
@@ -136,7 +137,7 @@ class LabTool extends Component {
               if (res.status == 200) {
                 //animation, goes to the top of interacted tool
                 this.props.setInteraction(res.data);
-                inter = true;
+
                 this.setState({ interactedTool: tool });
                 e.target.setAttrs({
                   x: this.state.interactedTool.x,
@@ -160,7 +161,6 @@ class LabTool extends Component {
   handleDragEnd = e => {
     let stageNum = this.props.stageNum,
       id = e.target.attrs.name;
-    console.log("tool: ", this.props.stageTool);
     let ctool;
     if (this.checkInteraction(e, stageNum, id)) {
       this.props.setCurrentStage(stageNum);
@@ -174,6 +174,24 @@ class LabTool extends Component {
         }
       });
       ctool = this.state.currentTool;
+      let data = JSON.stringify({
+        stageNum,
+        id,
+        ctool
+      });
+
+      axios
+        .post("http://localhost:8080/updatetoolprop", data, {
+          headers: { "Content-Type": "application/json;charset=UTF-8" },
+          params: {
+            stageNum: stageNum,
+            ID: id
+          },
+          toolProps: ctool
+        })
+        .then(res => {
+          this.props.setCurrentStage(stageNum);
+        });
     }
 
     e.target.to({
@@ -184,24 +202,6 @@ class LabTool extends Component {
       shadowOffsetX: 0,
       shadowOffsetY: 0
     });
-    let data = JSON.stringify({
-      stageNum,
-      id,
-      ctool
-    });
-
-    axios
-      .post("http://localhost:8080/updatetoolprop", data, {
-        headers: { "Content-Type": "application/json;charset=UTF-8" },
-        params: {
-          stageNum: stageNum,
-          ID: id
-        },
-        toolProps: ctool
-      })
-      .then(res => {
-        this.props.setCurrentStage(stageNum);
-      });
   };
 
   //left click show property read only form
@@ -294,6 +294,12 @@ class LabTool extends Component {
           ]}
           */
         />
+        <Text
+          x={this.props.x + 20}
+          y={this.props.y - 15}
+          text={this.props.nickname}
+        />
+
         <Portal isOpened={this.state.showTooltip}>
           <ToolContextMenu
             mousePosition={this.state.mousePosition}
