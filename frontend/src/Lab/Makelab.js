@@ -415,22 +415,28 @@ class Makelab extends Component {
             </div>
             <Stage width={stageW} height={stageH} className="stage">
               <Layer>
-                {this.state.currentStage.stageTool.map((tool, key) => (
-                  <LabTool
-                    key={key}
-                    src={tool.Img}
-                    x={tool.x}
-                    y={tool.y}
-                    id={tool.id}
-                    stageNum={this.state.currentStage.stageNum}
-                    stageTool={this.state.currentStage.stageTool}
-                    setCurrentStage={this.setCurrentStage}
-                    setTool={this.setCurrentTool}
-                    setShowModal={this.setShowModal}
-                    setInteraction={this.setInteraction}
-                    setShowInterModal={this.setShowInterModal}
-                  />
-                ))}
+                {this.state.currentStage.stageTool.map(
+                  (tool, key) => (
+                    console.log(tool.nickname),
+                    (
+                      <LabTool
+                        key={key}
+                        src={tool.Img}
+                        x={tool.x}
+                        y={tool.y}
+                        id={tool.id}
+                        nickname={tool.nickname}
+                        stageNum={this.state.currentStage.stageNum}
+                        stageTool={this.state.currentStage.stageTool}
+                        setCurrentStage={this.setCurrentStage}
+                        setTool={this.setCurrentTool}
+                        setShowModal={this.setShowModal}
+                        setInteraction={this.setInteraction}
+                        setShowInterModal={this.setShowInterModal}
+                      />
+                    )
+                  )
+                )}
               </Layer>
             </Stage>
           </Col>
