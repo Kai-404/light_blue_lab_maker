@@ -207,47 +207,52 @@ class Makelab extends Component {
   };
 
   publishLab = () => {
-    let title = document.getElementById("title").value;
-    let description = document.getElementById("description").value;
-    if (title === "" || description === "") {
-      alert("title and description must be filled");
-    } else {
-      sessionStorage.setItem("currentLabTitle", title);
-      sessionStorage.setItem("currentLabDescription", description);
-      axios
-        .get("http://localhost:8080/savelab", {
-          headers: { "Content-Type": "application/json;charset=UTF-8" },
-          params: {
-            courseID: sessionStorage.getItem("currentCourse"),
-            username: sessionStorage.getItem("username"),
-            title: title,
-            description: description
-          }
-        })
-        .then(res => {
-          if (res.data) {
-            axios
-              .get("http://localhost:8080/publishlab", {
-                params: {
-                  courseID: sessionStorage.getItem("currentCourse")
-                }
-              })
-              .then(res => {
-                if (res.data) {
-                  alert("successfully published lab");
-                  this.props.history.push("/labspage");
-                } else {
-                  alert("fail to publish the lab");
-                }
-              })
-              .catch(err => {
-                alert("fail to publish the lab with", err);
-              });
-          }
-        })
-        .catch(err => {
-          alert("fail to publish the lab with", err);
-        });
+    const r = window.confirm(
+      "Do you really want to publish the lab? After publish you cannot edit it."
+    );
+    if (r == true) {
+      let title = document.getElementById("title").value;
+      let description = document.getElementById("description").value;
+      if (title === "" || description === "") {
+        alert("title and description must be filled");
+      } else {
+        sessionStorage.setItem("currentLabTitle", title);
+        sessionStorage.setItem("currentLabDescription", description);
+        axios
+          .get("http://localhost:8080/savelab", {
+            headers: { "Content-Type": "application/json;charset=UTF-8" },
+            params: {
+              courseID: sessionStorage.getItem("currentCourse"),
+              username: sessionStorage.getItem("username"),
+              title: title,
+              description: description
+            }
+          })
+          .then(res => {
+            if (res.data) {
+              axios
+                .get("http://localhost:8080/publishlab", {
+                  params: {
+                    courseID: sessionStorage.getItem("currentCourse")
+                  }
+                })
+                .then(res => {
+                  if (res.data) {
+                    alert("successfully published lab");
+                    this.props.history.push("/labspage");
+                  } else {
+                    alert("fail to publish the lab");
+                  }
+                })
+                .catch(err => {
+                  alert("fail to publish the lab with", err);
+                });
+            }
+          })
+          .catch(err => {
+            alert("fail to publish the lab with", err);
+          });
+      }
     }
   };
 

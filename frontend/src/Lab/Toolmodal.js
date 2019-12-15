@@ -150,7 +150,7 @@ class Toolmodal extends Component {
                 required
                 id="nickname"
                 placeholder="nick name for the tool"
-                defaultValue={this.nickname}
+                defaultValue={this.props.tool.nickname}
                 onChange={this.handleChangeProps}
               />
             </Col>

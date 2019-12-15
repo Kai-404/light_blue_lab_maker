@@ -140,7 +140,7 @@ class LabTool extends Component {
                 this.setState({ interactedTool: tool });
                 e.target.setAttrs({
                   x: this.state.interactedTool.x,
-                  y: this.state.interactedTool.y - stageH * 0.1
+                  y: this.state.interactedTool.y - stageH * 0.175
                 });
                 //param: (sourceTool, destinationTool)
                 if (res.data.Name == "Pour")
