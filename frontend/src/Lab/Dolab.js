@@ -26,7 +26,7 @@ import LabTool from "./LabTool";
 import InteractionModal from "./InteractionModal";
 import "../App.css";
 
-const stageW = window.innerWidth - window.innerWidth * 0.4;
+const stageW = window.innerWidth - window.innerWidth * 0.3;
 const stageH = window.innerHeight - 400;
 
 class Dolab extends Component {
