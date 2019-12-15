@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import {withRouter} from "react-router";
-import {Card, ListGroup, Button} from "react-bootstrap";
+import {Card, ListGroup, Button, Row} from "react-bootstrap";
 import "../App.css";
 import axios from "axios";
 import AddCourse from "./AddCourse";
@@ -9,18 +9,32 @@ import EnrollCourse from "./EnrollCourse";
 class HomePage extends Component {
 
     state = {
-        courseList: []
+        courseList: [],
+        courseName: "",
+        term: ""
     };
 
     getCourseList = () => {
+        console.log((this.state.courseName));
         axios.get("http://localhost:8080/getcourselist", {
             headers: {"Content-Type": "application/json;charset=UTF-8"},
             params: {
                 id: sessionStorage.getItem("userID"),
                 username: sessionStorage.getItem("username"),
-                userType: sessionStorage.getItem("userType")
+                userType: sessionStorage.getItem("userType"),
+                courseName: this.state.courseName,
+                term: this.state.term
             }
         }).then(res => this.setState({courseList: res.data}))
+    };
+
+    onChange = e => {
+        this.setState(
+            {[e.target.name]: e.target.value},
+            () => {
+                this.getCourseList()
+            }
+        );
     };
 
     componentDidMount() {
@@ -43,6 +57,20 @@ class HomePage extends Component {
     render() {
         return (
             <ListGroup>
+                <Row>
+                    Course Name
+                    <input
+                        name="courseName"
+                        value={this.state.courseName}
+                        onChange={this.onChange}
+                    />
+                    Term
+                    <input
+                        name="term"
+                        value={this.state.term}
+                        onChange={this.onChange}
+                    />
+                </Row>
                 {this.state.courseList.map(course => (
                     <Card>
                         <Card.Header>{course.term}</Card.Header>
@@ -56,7 +84,7 @@ class HomePage extends Component {
                     </Card>
                 ))}
                 {
-                    sessionStorage.getItem("userType")==='Professor'?
+                    sessionStorage.getItem("userType") === 'Professor' ?
                         <AddCourse getCourseList={this.getCourseList}/>
                         :
                         <EnrollCourse getCourseList={this.getCourseList}/>
