@@ -1,6 +1,6 @@
-import React, {Component} from "react";
-import {withRouter} from "react-router";
-import {Card, ListGroup, Button, Row} from "react-bootstrap";
+import React, { Component } from "react";
+import { withRouter } from "react-router";
+import { Card, Col, Form, ListGroup, Button, Row } from "react-bootstrap";
 import "../App.css";
 import axios from "axios";
 import AddCourse from "./AddCourse";
@@ -17,7 +17,7 @@ class HomePage extends Component {
     getCourseList = () => {
         console.log((this.state.courseName));
         axios.get("http://localhost:8080/getcourselist", {
-            headers: {"Content-Type": "application/json;charset=UTF-8"},
+            headers: { "Content-Type": "application/json;charset=UTF-8" },
             params: {
                 id: sessionStorage.getItem("userID"),
                 username: sessionStorage.getItem("username"),
@@ -25,12 +25,12 @@ class HomePage extends Component {
                 courseName: this.state.courseName,
                 term: this.state.term
             }
-        }).then(res => this.setState({courseList: res.data}))
+        }).then(res => this.setState({ courseList: res.data }))
     };
 
     onChange = e => {
         this.setState(
-            {[e.target.name]: e.target.value},
+            { [e.target.name]: e.target.value },
             () => {
                 this.getCourseList()
             }
@@ -58,18 +58,27 @@ class HomePage extends Component {
         return (
             <ListGroup>
                 <Row>
-                    Course Name
-                    <input
-                        name="courseName"
-                        value={this.state.courseName}
-                        onChange={this.onChange}
-                    />
-                    Term
-                    <input
-                        name="term"
-                        value={this.state.term}
-                        onChange={this.onChange}
-                    />
+                    <Form.Label>Course Name</Form.Label>
+                    <Col>
+
+                        <Form.Control
+                            className="control"
+                            placeholder="Search by Course Name"
+                            name="courseName"
+                            value={this.state.courseName}
+                            onChange={this.onChange}
+                        />
+                    </Col>
+                    <Form.Label>Course Term</Form.Label>
+                    <Col>
+                        <Form.Control
+                            className="control"
+                            name="term"
+                            placeholder="Search by Course Term"
+                            value={this.state.term}
+                            onChange={this.onChange}
+                        />
+                    </Col>
                 </Row>
                 {this.state.courseList.map(course => (
                     <Card>
@@ -85,9 +94,9 @@ class HomePage extends Component {
                 ))}
                 {
                     sessionStorage.getItem("userType") === 'Professor' ?
-                        <AddCourse getCourseList={this.getCourseList}/>
+                        <AddCourse getCourseList={this.getCourseList} />
                         :
-                        <EnrollCourse getCourseList={this.getCourseList}/>
+                        <EnrollCourse getCourseList={this.getCourseList} />
                 }
             </ListGroup>
         );
