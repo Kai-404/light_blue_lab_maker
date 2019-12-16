@@ -11,7 +11,8 @@ class EnrollCourse extends Component {
         courseList: [],
         courseListIDs: [],
         courseName: '',
-        courseTerm: ''
+        courseTerm: '',
+        professorName: ''
     };
 
     openEnrollCourse = () => {
@@ -25,7 +26,8 @@ class EnrollCourse extends Component {
             courseList: [],
             courseListIDs: [],
             courseName: '',
-            courseTerm: ''
+            courseTerm: '',
+            professorName: ''
         })
     };
 
@@ -40,7 +42,8 @@ class EnrollCourse extends Component {
                         username: sessionStorage.getItem("username"),
                         userType: sessionStorage.getItem("userType"),
                         courseName: "",
-                        term: ""
+                        term: "",
+                        professorName: ""
                     }
                 }
             )
@@ -63,7 +66,8 @@ class EnrollCourse extends Component {
                     headers: {"Content-Type": "application/json;charset=UTF-8"},
                     params: {
                         courseName: this.state.courseName,
-                        courseTerm: this.state.courseTerm
+                        courseTerm: this.state.courseTerm,
+                        professorName: this.state.professorName
                     }
                 }
             )
@@ -160,6 +164,15 @@ class EnrollCourse extends Component {
                             >
                             </input>
                             <br/>
+                            Professor Name
+                            <input
+                                className="input"
+                                name="professorName"
+                                value={this.state.professorName}
+                                onChange={this.onChange}
+                            >
+                            </input>
+                            <br/>
                             <br/>
                             Course List
                             <ListGroup horizontal id='courseselectiongroup'>
@@ -173,7 +186,7 @@ class EnrollCourse extends Component {
                                                         :
                                                         <Button id='enrollbutton' onClick={() => this.enrollCourse(course.id)}>Enroll</Button>
                                                 }
-                                                {course.title + " / " + course.term}
+                                                {course.title + " / " + course.term + " / " + course.firstName + " " + course.lastName}
                                             </div>
                                         </ListGroup.Item>
                                     )

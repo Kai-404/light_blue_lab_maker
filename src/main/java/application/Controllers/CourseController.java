@@ -68,11 +68,12 @@ public class CourseController {
     @GetMapping("/getcourseselection")
     @ResponseBody
     public List<Course> getCourseSelection(@RequestParam(name = "courseName") String courseName,
-                                           @RequestParam(name = "courseTerm") String courseTerm) {
+                                           @RequestParam(name = "courseTerm") String courseTerm,
+                                           @RequestParam(name = "professorName") String professorName) {
         List<Course> allCourses = courseRepository.findAll();
         ArrayList<Course> courseList = new ArrayList<>();
         for (Course course : allCourses) {
-            if (course.getTitle().contains(courseName) && course.getTerm().contains(courseTerm)) {
+            if (course.getTitle().contains(courseName) && course.getTerm().contains(courseTerm) && (course.getFirstName()+" "+course.getLastName()).contains(professorName)) {
                 courseList.add(course);
             }
         }
@@ -143,7 +144,7 @@ public class CourseController {
             User user = userRepository.getById(studentID);
             ArrayList<String> studentGrade = new ArrayList<>();
             studentGrade.add(user.getFirstName() + " " + user.getLastName());
-            studentGrade.add((100 * (student.getLabProgress().get(labID)/labRepository.getById(labID).getTotalStage()))+"%");
+            studentGrade.add(Math.round(100 * (student.getLabProgress().get(labID)/(float)labRepository.getById(labID).getTotalStage()))+"%");
             int numTotalStages = labRepository.getById(labID).getTotalStage();
             for (int i = 0; i < numTotalStages; i++) {
                 studentGrade.add(student.getGrade().get(labID).get(i).toString());
