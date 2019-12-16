@@ -182,3 +182,8 @@ link:active {
 	width: 100%;
 	resize: none;
 }
+
+.dropdown-menu {
+	max-height: 200px;
+	overflow-y: scroll;
+}

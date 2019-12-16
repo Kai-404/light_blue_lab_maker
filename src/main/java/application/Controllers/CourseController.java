@@ -121,12 +121,12 @@ public class CourseController {
 
     @GetMapping("/getlabofcourse")
     @ResponseBody
-    public ArrayList<Lab> getLabOfCourse(@RequestParam(name = "id") String courseID) {
+    public ArrayList<Lab> getLabOfCourse(@RequestParam(name = "id") String courseID, @RequestParam(name = "labName") String labName) {
         Course course = courseRepository.getById(courseID);
         ArrayList<Lab> labList = new ArrayList<>();
         for (String labID : course.getLab_list()) {
             Lab lab = labRepository.getById(labID);
-            if (lab.isPublished()) {
+            if (lab.isPublished() && lab.getTitle().contains(labName)) {
                 labList.add(lab);
             }
         }
