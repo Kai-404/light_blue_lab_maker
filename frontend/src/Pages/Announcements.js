@@ -3,6 +3,7 @@ import {withRouter} from "react-router";
 import axios from "axios";
 import {Button, Card, Col, Row} from "react-bootstrap";
 import AddAnnouncement from "./AddAnnouncement";
+import nl2br from 'react-newline-to-break';
 
 class Announcements extends Component {
     state = {
@@ -32,6 +33,11 @@ class Announcements extends Component {
       this.getAnnounList();
     }
 
+    convertDate = date => {
+        let d = new Date(date);
+        return d.toDateString();
+    };
+
   render() {
         let Announcements;
         try {
@@ -43,10 +49,10 @@ class Announcements extends Component {
                                 {announ.title}
                             </Card.Title>
                             <Card.Subtitle className="text-muted" align="left">
-                                {announ.date.slice(0,10)}
+                                {this.convertDate(announ.date)}
                             </Card.Subtitle>
                             <br/>
-                            <Card.Text align="left">{announ.content}</Card.Text>
+                            <Card.Text align="left">{nl2br(announ.content)}</Card.Text>
                         </Card.Body>
                     </Card>
                 </React.Fragment>
