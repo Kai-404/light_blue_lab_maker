@@ -299,15 +299,19 @@ public class Pipette extends Tool {
                 if((pourTo.getCurrentVolume()+10.0) > pourTo.getMaxVolume()){
                     return false;
                 }else {
-                    if(10.0>pourTo.currentVolume){
-                        pourTo.phStatus = this.phStatus;
-                    }else if(10.0 == pourTo.currentVolume){
-                        if (! this.phStatus.equals( pourTo.getPhStatus())){
-                            if(pourTo.phStatus.equals( "NEUTRAL" )){
-                                pourTo.phStatus=this.phStatus;
-                            } else {
-                                pourTo.phStatus="NEUTRAL";
+                    if(! this.phStatus.equals( "NEUTRAL" )){
+                        if(10.0>pourTo.currentVolume){
+                            pourTo.phStatus = this.phStatus;
+                        }else if(10.0 == pourTo.currentVolume){
+                            if (! this.phStatus.equals( pourTo.getPhStatus())){
+                                if(pourTo.phStatus.equals( "NEUTRAL" )){
+                                    pourTo.phStatus=this.phStatus;
+                                } else {
+                                    pourTo.phStatus="NEUTRAL";
+                                }
                             }
+                        } else if(pourTo.phStatus.equals("NEUTRAL")){
+                            pourTo.phStatus = this.phStatus;
                         }
                     }
 
@@ -317,24 +321,29 @@ public class Pipette extends Tool {
                     }
                     pourTo.currentVolume = pourTo.currentVolume + 10.0;
                     this.sucked = false;
-                    this.currentChemicalsList.clear();
+                    this.currentChemicalsList = new ArrayList<>(  );
                     this.phStatus = "NONE";
                     return true;
                 }
             }else {
+                System.out.println( "It's a Flask" );
                 Flask pourTo = (Flask) tool;
                 if((pourTo.getCurrentVolume()+10.0) > pourTo.getMaxVolume()){
                     return false;
                 }else {
-                    if(10.0>pourTo.currentVolume){
-                        pourTo.phStatus = this.phStatus;
-                    }else if(10.0 == pourTo.currentVolume){
-                        if (! this.phStatus.equals( pourTo.getPhStatus())){
-                            if(pourTo.phStatus.equals( "NEUTRAL" )){
-                                pourTo.phStatus=this.phStatus;
-                            } else {
-                                pourTo.phStatus="NEUTRAL";
+                    if(! this.phStatus.equals( "NEUTRAL" )){
+                        if(10.0>pourTo.currentVolume){
+                            pourTo.phStatus = this.phStatus;
+                        }else if(10.0 == pourTo.currentVolume){
+                            if (! this.phStatus.equals( pourTo.getPhStatus())){
+                                if(pourTo.phStatus.equals( "NEUTRAL" )){
+                                    pourTo.phStatus=this.phStatus;
+                                } else {
+                                    pourTo.phStatus="NEUTRAL";
+                                }
                             }
+                        } else if(pourTo.phStatus.equals("NEUTRAL")){
+                            pourTo.phStatus = this.phStatus;
                         }
                     }
 
@@ -344,7 +353,7 @@ public class Pipette extends Tool {
                     }
                     pourTo.currentVolume = pourTo.currentVolume + 10.0;
                     this.sucked = false;
-                    this.currentChemicalsList.clear();
+                    this.currentChemicalsList = new ArrayList<>(  );
                     this.phStatus = "NONE";
                     return true;
                 }
@@ -357,8 +366,15 @@ public class Pipette extends Tool {
                 }else {
                     this.phStatus = suckFrom.phStatus;
                     this.currentChemicalsList = suckFrom.currentChemicalsList;
+
                     this.sucked = true;
                     suckFrom.currentVolume = suckFrom.currentVolume-10.0;
+
+                    if (suckFrom.currentVolume ==0){
+                        suckFrom.phStatus = "NONE";
+                        suckFrom.currentChemicalsList = new ArrayList<>(  );
+                    }
+
                     return true;
                 }
             }else {
@@ -370,6 +386,12 @@ public class Pipette extends Tool {
                     this.currentChemicalsList = suckFrom.currentChemicalsList;
                     this.sucked = true;
                     suckFrom.currentVolume = suckFrom.currentVolume-10.0;
+
+                    if (suckFrom.currentVolume ==0){
+                        suckFrom.phStatus = "NONE";
+                        suckFrom.currentChemicalsList = new ArrayList<>(  );
+                    }
+
                     return true;
                 }
             }
