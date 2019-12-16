@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import {withRouter} from "react-router";
-import {Table, DropdownButton, Dropdown} from "react-bootstrap";
+import {Table, DropdownButton, Dropdown, Form} from "react-bootstrap";
 import axios from "axios";
 
 class Discussion extends Component {
@@ -10,7 +10,8 @@ class Discussion extends Component {
         studentGrades: [[]],
         labTitle: "Select a lab",
         numStages: 0,
-        currentStage: ""
+        currentStage: "",
+        labName: ""
     };
 
 
@@ -19,7 +20,8 @@ class Discussion extends Component {
             .get("http://localhost:8080/getlabofcourse", {
                 headers: {"Content-Type": "application/json;charset=UTF-8"},
                 params: {
-                    id: sessionStorage.getItem("currentCourse")
+                    id: sessionStorage.getItem("currentCourse"),
+                    labName: this.state.labName
                 }
             })
             .then(
@@ -34,7 +36,11 @@ class Discussion extends Component {
     }
 
     selectLab = e => {
-        this.setState({labTitle: this.state.labList[e].title});
+        this.setState({
+            labTitle: this.state.labList[e].title,
+            numStages: this.state.labList[e].stageList.length,
+            currentStage: "0"
+        });
         this.getStudentGrades(e);
     };
 
@@ -58,24 +64,63 @@ class Discussion extends Component {
                 res => {
                     console.log(res.data);
                     this.setState({
-                        studentGrades: res.data,
-                        numStages: res.data[0].length - 2,
-                        currentStage: 0
+                        studentGrades: res.data
                     })
                 }
             )
     };
 
     getLabel(i) {
-        if (i===0) { return "Name"}
-        else if (i===1) { return "Progress"}
-        return "Stage " + (i-2);
+        if (i === 0) {
+            return "Name"
+        } else if (i === 1) {
+            return "Progress"
+        }
+        return "Stage " + (i - 2);
     }
+
+    populateLabSelection() {
+        let labSelection = [];
+        labSelection.push(
+            <Form.Control
+                className="control"
+                placeHolder="Search lab here ..."
+                name="labName"
+                value={this.state.labName}
+                onChange={this.onChange}
+            />
+            );
+        let i;
+        for (i=0; i<this.state.labList.length; i++) {
+            labSelection.push(
+                <Dropdown.Item
+                    eventKey={i}
+                >
+                    {this.state.labList[i].title}
+                </Dropdown.Item>
+            )
+        }
+        return labSelection;
+    };
+
+    onChange = e => {
+        this.setState(
+            { [e.target.name]: e.target.value },
+            () => {
+                this.getLabs();
+            }
+        );
+    };
+
+    resetSearch = () => {
+        this.setState({labName: ""});
+        this.getLabs();
+    };
 
     populateStageSelection() {
         let stageSelection = [];
         let i;
-        for (i=0; i<this.state.numStages; i++) {
+        for (i = 0; i < this.state.numStages; i++) {
             stageSelection.push(
                 <Dropdown.Item eventKey={i}>
                     {i}
@@ -91,32 +136,24 @@ class Discussion extends Component {
                 <DropdownButton
                     title={this.state.labTitle}
                     onSelect={this.selectLab}
+                    onClick={this.resetSearch}
                 >
-                    {
-                        this.state.labList.map((lab, index) =>
-                            (
-                                <Dropdown.Item
-                                    eventKey={index}
-                                >
-                                    {lab.title}
-                                </Dropdown.Item>
-                            )
-                        )
-                    }
+                    {this.populateLabSelection()}
                 </DropdownButton>
                 <br/>
                 <Table striped bordered>
                     <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Progress</th>
-                            <th>
-                                Stage
-                                <DropdownButton title={this.state.currentStage} onSelect={this.selectStage}>
-                                    {this.populateStageSelection()}
-                                </DropdownButton>
-                            </th>
-                        </tr>
+                    <tr>
+                        <th>Name</th>
+                        <th>Progress</th>
+                        <th>
+                            Stage
+                            <DropdownButton title={this.state.currentStage} onSelect={this.selectStage}
+                                            id="stageSelector">
+                                {this.populateStageSelection()}
+                            </DropdownButton>
+                        </th>
+                    </tr>
                     </thead>
                     <tbody>
                     {
@@ -125,7 +162,7 @@ class Discussion extends Component {
                                 <tr>
                                     {<td>{student[0]}</td>}
                                     {<td>{student[1]}</td>}
-                                    {<td>{student[parseInt(this.state.currentStage)+2]}</td>}
+                                    {<td>{student[parseInt(this.state.currentStage) + 2]}</td>}
                                 </tr>
                             )
                         )
