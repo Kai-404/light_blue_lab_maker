@@ -82,7 +82,7 @@ class Dolab extends Component {
           }
       );
     }
-x
+
     getStudentProgress() {
         axios
             .get("http://localhost:8080/getstudentprogress", {
