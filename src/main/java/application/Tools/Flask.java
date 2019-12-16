@@ -317,17 +317,22 @@ public class Flask extends Tool {
             }else if((pourTo.getCurrentVolume()+amount) > pourTo.getMaxVolume()){
                 return false;
             }else {
-                if(amount>this.currentVolume){
-                    pourTo.phStatus = this.phStatus;
-                }else if(amount == this.currentVolume){
-                    if (! this.phStatus.equals( pourTo.getPhStatus())){
-                        if(pourTo.phStatus.equals( "NEUTRAL" )){
-                            pourTo.phStatus=this.phStatus;
-                        } else {
-                            pourTo.phStatus="NEUTRAL";
+                if(! this.phStatus.equals( "NEUTRAL" )){
+                    if(amount>pourTo.currentVolume){
+                        pourTo.phStatus = this.phStatus;
+                    }else if(amount == pourTo.currentVolume){
+                        if (! this.phStatus.equals( pourTo.getPhStatus())){
+                            if(pourTo.phStatus.equals( "NEUTRAL" )){
+                                pourTo.phStatus=this.phStatus;
+                            } else {
+                                pourTo.phStatus="NEUTRAL";
+                            }
                         }
+                    } else if(pourTo.phStatus.equals("NEUTRAL")){
+                        pourTo.phStatus = this.phStatus;
                     }
                 }
+
 
                 for (String s : this.currentChemicalsList){
                     if (!pourTo.currentChemicalsList.contains(s))
@@ -353,15 +358,19 @@ public class Flask extends Tool {
             }else if((pourTo.getCurrentVolume()+amount) > pourTo.getMaxVolume()){
                 return false;
             }else {
-                if(amount>this.currentVolume){
-                    pourTo.phStatus = this.phStatus;
-                }else if(amount == this.currentVolume){
-                    if (! this.phStatus.equals( pourTo.getPhStatus())){
-                        if(pourTo.phStatus.equals( "NEUTRAL" )){
-                            pourTo.phStatus=this.phStatus;
-                        } else {
-                            pourTo.phStatus="NEUTRAL";
+                if(! this.phStatus.equals( "NEUTRAL" )){
+                    if(amount>pourTo.currentVolume){
+                        pourTo.phStatus = this.phStatus;
+                    }else if(amount == pourTo.currentVolume){
+                        if (! this.phStatus.equals( pourTo.getPhStatus())){
+                            if(pourTo.phStatus.equals( "NEUTRAL" )){
+                                pourTo.phStatus=this.phStatus;
+                            } else {
+                                pourTo.phStatus="NEUTRAL";
+                            }
                         }
+                    } else if(pourTo.phStatus.equals("NEUTRAL")){
+                        pourTo.phStatus = this.phStatus;
                     }
                 }
 
