@@ -17,7 +17,7 @@ class Announcements extends Component {
 
     getAnnounList = () => {
         axios
-            .get("http://localhost:8080/getannounlist", {
+            .get("/getannounlist", {
                 headers: {"Content-Type": "application/json;charset=UTF-8"},
                 params: {
                     courseId: sessionStorage.getItem("currentCourse")

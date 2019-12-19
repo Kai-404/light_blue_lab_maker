@@ -34,7 +34,7 @@ class EnrollCourse extends Component {
     getCourseList = () => {
         axios
             .get(
-                "http://localhost:8080/getcourselist",
+                "/getcourselist",
                 {
                     headers: {"Content-Type": "application/json;charset=UTF-8"},
                     params: {
@@ -61,7 +61,7 @@ class EnrollCourse extends Component {
     getCourseSelection() {
         axios
             .get(
-                "http://localhost:8080/getcourseselection",
+                "/getcourseselection",
                 {
                     headers: {"Content-Type": "application/json;charset=UTF-8"},
                     params: {
@@ -85,7 +85,7 @@ class EnrollCourse extends Component {
     enrollCourse = id => {
         axios
             .get(
-                "http://localhost:8080/enrollcourse",
+                "/enrollcourse",
                 {
                     headers: {"Content-Type": "application/json;charset=UTF-8"},
                     params: {
@@ -105,7 +105,7 @@ class EnrollCourse extends Component {
     unenrollCourse = id => {
         axios
             .get(
-                "http://localhost:8080/unenrollcourse",
+                "/unenrollcourse",
                 {
                     headers: {"Content-Type": "application/json;charset=UTF-8"},
                     params: {

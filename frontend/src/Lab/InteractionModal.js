@@ -37,7 +37,7 @@ class InteractionModal extends Component {
     });
     console.log("Stupid Kai Look here for do interaction:", data);
     axios
-      .post("http://localhost:8080/doInteraction", data, {
+      .post("/doInteraction", data, {
         headers: { "Content-Type": "application/json;charset=UTF-8" },
         params: {
           stageNum,

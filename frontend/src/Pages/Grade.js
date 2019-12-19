@@ -17,7 +17,7 @@ class Discussion extends Component {
 
     getLabs = () => {
         axios
-            .get("http://localhost:8080/getlabofcourse", {
+            .get("/getlabofcourse", {
                 headers: {"Content-Type": "application/json;charset=UTF-8"},
                 params: {
                     id: sessionStorage.getItem("currentCourse"),
@@ -53,7 +53,7 @@ class Discussion extends Component {
 
     getStudentGrades = e => {
         axios
-            .get("http://localhost:8080/getstudentgrades", {
+            .get("/getstudentgrades", {
                 headers: {"Content-Type": "application/json;charset=UTF-8"},
                 params: {
                     courseID: sessionStorage.getItem("currentCourse"),

@@ -32,8 +32,8 @@ public class MailService {
     private static final String RESETPASSWORD_EMAIL_SUBJECT = "Reset password";
     private static final String RESETPASSWORD_EMAIL_TEXT = "Here is the code and link for reset password. <br/> Please click below link to reset your password.<br/>";
 
-    private static final String VERIFICATION_API = "http://localhost:8080/verify-email?userId=";
-    private static final String RESETPASSWORD_API = "http://localhost:8080/resetpassword";
+    private static final String VERIFICATION_API = "http://lightbluelabmaker.herokuapp.com/verify-email?userId=";
+    private static final String RESETPASSWORD_API = "http://lightbluelabmaker.herokuapp.com/resetpassword";
 
     public void sendVerificationEmail(String userId, String email) {
         String link = "<a href='" + VERIFICATION_API + userId + "'>link</a>";

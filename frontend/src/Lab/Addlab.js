@@ -32,7 +32,7 @@ class Addlab extends Component {
                 description
             });
             axios
-                .post("http://localhost:8080/newlab", data, {
+                .post("/newlab", data, {
                     headers: {"Content-Type": "application/json;charset=UTF-8"},
                     params: {title: title, author: author, description: description}
                 })

@@ -34,7 +34,7 @@ class LabsPage extends Component {
 
   getLabsList = () => {
     axios
-      .get("http://localhost:8080/getlablist", {
+      .get("/getlablist", {
         headers: { "Content-Type": "application/json;charset=UTF-8" },
         params: {
           courseID: sessionStorage.getItem("currentCourse"),
@@ -49,7 +49,7 @@ class LabsPage extends Component {
 
   getStudentProgress() {
     axios
-      .get("http://localhost:8080/getallstudentprogress", {
+      .get("/getallstudentprogress", {
         headers: { "Content-Type": "application/json;charset=UTF-8" },
         params: {
           id: sessionStorage.getItem("userID")
@@ -62,7 +62,7 @@ class LabsPage extends Component {
 
   setDoLab(id) {
     axios
-      .get("http://localhost:8080/setdolab", {
+      .get("/setdolab", {
         headers: { "Content-Type": "application/json;charset=UTF-8" },
         params: {
           labID: id
@@ -75,7 +75,7 @@ class LabsPage extends Component {
 
   deleteLab = id => {
     axios
-      .get("http://localhost:8080/deletelab", {
+      .get("/deletelab", {
         headers: { "Content-Type": "application/json;charset=UTF-8" },
         params: {
           labID: id,
@@ -98,7 +98,7 @@ class LabsPage extends Component {
 
   editLab = lab => {
     axios
-      .get("http://localhost:8080/editlab", {
+      .get("/editlab", {
         headers: { "Content-Type": "application/json;charset=UTF-8" },
         params: { id: lab.id }
       })
@@ -123,7 +123,7 @@ class LabsPage extends Component {
         this.getLabsList();
       } else {
         axios
-          .get("http://localhost:8080/searchlab", {
+          .get("/searchlab", {
             headers: { "Content-Type": "application/json;charset=UTF-8" },
             params: {
               id: this.state.searchInput,

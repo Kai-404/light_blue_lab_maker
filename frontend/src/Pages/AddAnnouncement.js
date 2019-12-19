@@ -36,7 +36,7 @@ class AddAnnouncement extends Component {
                 content
             });
             axios
-                .post("http://localhost:8080/newAnnouncement", data, {
+                .post("/newAnnouncement", data, {
                     headers: {"Content-Type": "application/json;charset=UTF-8"},
                     params: {
                         courseId: courseId,

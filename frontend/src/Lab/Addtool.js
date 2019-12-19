@@ -10,7 +10,7 @@ class Addtool extends Component {
   };
 
   componentDidMount() {
-    axios.get("http://localhost:8080/getalltools").then(res => {
+    axios.get("/getalltools").then(res => {
       this.setState({ tools: res.data });
     });
   }
@@ -23,7 +23,7 @@ class Addtool extends Component {
       }
     });
     axios
-      .post("http://localhost:8080/updatetoollist", {
+      .post("/updatetoollist", {
         tool: this.state.tools
       })
       .then(res => {

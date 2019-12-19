@@ -61,7 +61,7 @@ class Toolmodal extends Component {
       ctool
     });
     axios
-      .post("http://localhost:8080/updatetoolprop", data, {
+      .post("/updatetoolprop", data, {
         headers: { "Content-Type": "application/json;charset=UTF-8" },
         params: {
           stageNum: stageNum,
@@ -92,7 +92,7 @@ class Toolmodal extends Component {
       id
     });
     axios
-      .post("http://localhost:8080/stagedeletetool", data, {
+      .post("/stagedeletetool", data, {
         headers: { "Content-Type": "application/json;charset=UTF-8" },
         params: {
           stageNum: stageNum,

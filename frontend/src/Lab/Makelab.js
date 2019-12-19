@@ -62,13 +62,13 @@ class Makelab extends Component {
     this.getTotalStage();
     this.setCurrentStage(-1);
     //  to display the lab tool bar when loading the page
-    axios.get("http://localhost:8080/getalltools").then(res => {
+    axios.get("/getalltools").then(res => {
       this.addLabTool(res.data);
     });
   }
 
   getTotalStage() {
-    axios.get("http://localhost:8080/gettotalstage").then(res => {
+    axios.get("/gettotalstage").then(res => {
       this.setState({ getTotalStage: res.data });
     });
   }
@@ -77,7 +77,7 @@ class Makelab extends Component {
     let data = JSON.stringify(i);
     if (i > -1) {
       axios
-        .post("http://localhost:8080/getstage", data, {
+        .post("/getstage", data, {
           headers: { "Content-Type": "application/json;charset=UTF-8" },
           params: { stageNum: i }
         })
@@ -92,7 +92,7 @@ class Makelab extends Component {
   duplicateStage() {
     axios
       .post(
-        "http://localhost:8080/duplicatestage",
+        "/duplicatestage",
         JSON.stringify(this.state.currentStage.stageNum),
         {
           headers: { "Content-Type": "application/json;charset=UTF-8" }
@@ -107,7 +107,7 @@ class Makelab extends Component {
   addStage() {
     axios
       .post(
-        "http://localhost:8080/addstage",
+        "/addstage",
         JSON.stringify(this.state.currentStage.stageNum),
         {
           headers: { "Content-Type": "application/json;charset=UTF-8" }
@@ -122,7 +122,7 @@ class Makelab extends Component {
   deleteStage() {
     let stageNum = this.state.currentStage.stageNum;
     axios
-      .post("http://localhost:8080/deletestage", JSON.stringify(stageNum), {
+      .post("/deletestage", JSON.stringify(stageNum), {
         headers: { "Content-Type": "application/json;charset=UTF-8" }
       })
       .then(res => {
@@ -163,7 +163,7 @@ class Makelab extends Component {
     });
     //request a tool with , get back a default tool
     axios
-      .post("http://localhost:8080/stageaddtool", data, {
+      .post("/stageaddtool", data, {
         headers: { "Content-Type": "application/json;charset=UTF-8" },
         params: {
           stageNum: stageNum,
@@ -187,7 +187,7 @@ class Makelab extends Component {
       sessionStorage.setItem("currentLabTitle", title);
       sessionStorage.setItem("currentLabDescription", description);
       axios
-        .get("http://localhost:8080/savelab", {
+        .get("/savelab", {
           headers: { "Content-Type": "application/json;charset=UTF-8" },
           params: {
             courseID: sessionStorage.getItem("currentCourse"),
@@ -219,7 +219,7 @@ class Makelab extends Component {
         sessionStorage.setItem("currentLabTitle", title);
         sessionStorage.setItem("currentLabDescription", description);
         axios
-          .get("http://localhost:8080/savelab", {
+          .get("/savelab", {
             headers: { "Content-Type": "application/json;charset=UTF-8" },
             params: {
               courseID: sessionStorage.getItem("currentCourse"),
@@ -231,7 +231,7 @@ class Makelab extends Component {
           .then(res => {
             if (res.data) {
               axios
-                .get("http://localhost:8080/publishlab", {
+                .get("/publishlab", {
                   params: {
                     courseID: sessionStorage.getItem("currentCourse")
                   }
@@ -294,7 +294,7 @@ class Makelab extends Component {
       destination
     });
     axios
-      .post("http://localhost:8080/gettool", data, {
+      .post("/gettool", data, {
         headers: { "Content-Type": "application/json;charset=UTF-8" },
         params: {
           stageNum: stageNum,
@@ -305,7 +305,7 @@ class Makelab extends Component {
         this.setState({ sourceTool: res.data });
       });
     axios
-      .post("http://localhost:8080/gettool", data, {
+      .post("/gettool", data, {
         headers: { "Content-Type": "application/json;charset=UTF-8" },
         params: {
           stageNum: stageNum,
@@ -321,7 +321,7 @@ class Makelab extends Component {
   }
 
   updateInstructions = event => {
-    axios.post("http://localhost:8080/saveinstructions", null, {
+    axios.post("/saveinstructions", null, {
       headers: { "Content-Type": "application/json;charset=UTF-8" },
       params: {
         stageNum: this.state.currentStage.stageNum,

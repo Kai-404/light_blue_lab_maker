@@ -36,7 +36,7 @@ class Register extends Component {
     });
     console.log(data);
     axios
-      .post("http://localhost:8080/register", data, {
+      .post("/register", data, {
         headers: { "Content-Type": "application/json;charset=UTF-8" },
         params: {
           username: username,

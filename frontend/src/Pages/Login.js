@@ -49,7 +49,7 @@ class Login extends Component {
       this.setState({ errmsg: "fill in all blanks" });
     } else {
       axios
-        .get("http://localhost:8080/login", {
+        .get("/login", {
           headers: { "Content-Type": "application/json;charset=UTF-8" },
           params: { email: email, password: password }
         })
@@ -98,7 +98,7 @@ class Login extends Component {
             this.setState({resetPasswordErrMsg: "Please enter an email!"})
         } else {
             axios
-                .get("http://localhost:8080/reset", {
+                .get("/reset", {
                     headers: {"Content-Type": "application/json;charset=UTF-8"},
                     params: {email: this.state.resetPasswordEmail}
                 })

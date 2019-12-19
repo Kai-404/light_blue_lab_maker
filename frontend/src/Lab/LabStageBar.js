@@ -8,7 +8,7 @@ class LabStageBar extends Component {
     onSortEnd = ({oldIndex, newIndex}) => {
         axios
             .post(
-                'http://localhost:8080/swapstages',
+                '/swapstages',
                 null,
                 {
                     headers: {"Content-Type": "application/json;charset=UTF-8"},

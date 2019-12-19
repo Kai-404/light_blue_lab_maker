@@ -124,7 +124,7 @@ class LabTool extends Component {
           });
           //params: stage#, id1(dragging tool), id2(being hitted tool)
           axios
-            .post("http://localhost:8080/checkInteraction", data, {
+            .post("/checkInteraction", data, {
               headers: { "Content-Type": "application/json;charset=UTF-8" },
               params: {
                 stageNum,
@@ -181,7 +181,7 @@ class LabTool extends Component {
       });
 
       axios
-        .post("http://localhost:8080/updatetoolprop", data, {
+        .post("/updatetoolprop", data, {
           headers: { "Content-Type": "application/json;charset=UTF-8" },
           params: {
             stageNum: stageNum,
@@ -215,7 +215,7 @@ class LabTool extends Component {
             id
         });
         axios
-            .post("http://localhost:8080/gettool", data, {
+            .post("/gettool", data, {
                 headers: {"Content-Type": "application/json;charset=UTF-8"},
                 params: {
                     stageNum: stageNum,
@@ -242,7 +242,7 @@ class LabTool extends Component {
         id
       });
       axios
-        .post("http://localhost:8080/gettool", data, {
+        .post("/gettool", data, {
           headers: { "Content-Type": "application/json;charset=UTF-8" },
           params: {
             stageNum: stageNum,

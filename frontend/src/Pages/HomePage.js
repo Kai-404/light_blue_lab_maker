@@ -16,7 +16,7 @@ class HomePage extends Component {
 
     getCourseList = () => {
         console.log((this.state.courseName));
-        axios.get("http://localhost:8080/getcourselist", {
+        axios.get("/getcourselist", {
             headers: { "Content-Type": "application/json;charset=UTF-8" },
             params: {
                 id: sessionStorage.getItem("userID"),

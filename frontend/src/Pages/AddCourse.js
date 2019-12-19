@@ -32,7 +32,7 @@ class AddCourse extends Component {
             //this.setState({errMsg: "Please fill in all fields!"})
         }
         else {
-            axios.post("http://localhost:8080/addcourse", {
+            axios.post("/addcourse", {
                 title: this.state.courseName,
                 term: this.state.term,
                 professor: sessionStorage.getItem("username"),

@@ -85,7 +85,7 @@ class Dolab extends Component {
 
     getStudentProgress() {
         axios
-            .get("http://localhost:8080/getstudentprogress", {
+            .get("/getstudentprogress", {
                 headers: {"Content-Type": "application/json;charset=UTF-8"},
                 params: {
                     id: sessionStorage.getItem("userID")
@@ -98,14 +98,14 @@ class Dolab extends Component {
     }
 
     getTotalStage() {
-        axios.get("http://localhost:8080/gettotalstage").then(res => {
+        axios.get("/gettotalstage").then(res => {
             this.setState({getTotalStage: res.data});
         });
     }
 
     getStage = () => {
         axios
-            .get("http://localhost:8080/getdolabstage", {
+            .get("/getdolabstage", {
                 headers: {"Content-Type": "application/json;charset=UTF-8"},
                 params: {
                     id: sessionStorage.getItem("userID"),
@@ -133,7 +133,7 @@ class Dolab extends Component {
         let data = JSON.stringify(i);
         if (i > -1) {
             axios
-                .post("http://localhost:8080/getstage", data, {
+                .post("/getstage", data, {
                     headers: {"Content-Type": "application/json;charset=UTF-8"},
                     params: {stageNum: i}
                 })
@@ -175,7 +175,7 @@ class Dolab extends Component {
             destination
         });
         axios
-            .post("http://localhost:8080/gettool", data, {
+            .post("/gettool", data, {
                 headers: {"Content-Type": "application/json;charset=UTF-8"},
                 params: {
                     stageNum: stageNum,
@@ -186,7 +186,7 @@ class Dolab extends Component {
                 this.setState({sourceTool: res.data});
             });
         axios
-            .post("http://localhost:8080/gettool", data, {
+            .post("/gettool", data, {
                 headers: {"Content-Type": "application/json;charset=UTF-8"},
                 params: {
                     stageNum: stageNum,
@@ -200,7 +200,7 @@ class Dolab extends Component {
 
     check = () => {
         axios
-            .get("http://localhost:8080/dolabcheckstage", {
+            .get("/dolabcheckstage", {
                 headers: {"Content-Type": "application/json;charset=UTF-8"},
                 params: {
                     stageNum: this.state.stage.stageNum,
@@ -223,7 +223,7 @@ class Dolab extends Component {
 
     resetLab = () => {
         axios
-            .get("http://localhost:8080/resetlabstage",
+            .get("/resetlabstage",
                 {
                     headers: {"Content-Type": "application/json;charset=UTF-8"},
                     params: {
@@ -240,7 +240,7 @@ class Dolab extends Component {
     getNextStage = () => {
         console.log("test");
         axios
-            .get("http://localhost:8080/getnextstage", {
+            .get("/getnextstage", {
                 headers: {"Content-Type": "application/json;charset=UTF-8"},
                 params: {stageNum: this.state.stage.stageNum}
             })
